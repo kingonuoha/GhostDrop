@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><title>GhostDrop</title><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Syne:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base { html, body { margin: 0; padding: 0; } body { overscroll-behavior: none; } main > :first-child { margin-top: 0 !important; } main > :last-child { margin-bottom: 0 !important; } } ::-webkit-scrollbar { display: none; }</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-primary": "#ffffff", "outline-variant": "#c5c9ad", "on-tertiary-fixed": "#002116", "on-error": "#ffffff", "surface-dim": "#d9dade", "secondary-fixed": "#dee0ff", "secondary-fixed-dim": "#bbc3ff", "on-primary-container": "#596c00", "on-secondary": "#ffffff", "surface-container-low": "#f3f3f7", "surface-variant": "#e2e2e6", "outline": "#757961", "surface-container-highest": "#e2e2e6", "on-secondary-container": "#dbdeff", "secondary": "#0030d8", "primary": "#546500", "inverse-primary": "#b2d400", "on-tertiary-fixed-variant": "#18503c", "surface-container": "#eeedf2", "primary-fixed": "#cdf22a", "on-background": "#1a1c1f", "on-secondary-fixed": "#000f5d", "background": "#f9f9fd", "tertiary": "#336853", "error": "#ba1a1a", "on-tertiary": "#ffffff", "on-error-container": "#93000a", "on-tertiary-container": "#396e59", "secondary-container": "#254aff", "tertiary-container": "#b6efd5", "primary-fixed-dim": "#b2d400", "primary-container": "#cdf22b", "error-container": "#ffdad6", "on-primary-fixed": "#171e00", "on-primary-fixed-variant": "#3e4c00", "inverse-on-surface": "#f0f0f5", "inverse-surface": "#2f3034", "tertiary-fixed": "#b6efd4", "surface": "#f9f9fd", "tertiary-fixed-dim": "#9bd2b9", "surface-container-high": "#e8e8ec", "on-surface-variant": "#454934", "surface-tint": "#546500", "surface-container-lowest": "#ffffff", "on-secondary-fixed-variant": "#002dcc", "surface-bright": "#f9f9fd", "on-surface": "#1a1c1f" }, "borderRadius": { "DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px" }, "spacing": { "space-md": "1rem", "gutter": "1.5rem", "gutter-mobile": "1rem", "margin": "3rem", "margin-mobile": "1.25rem", "space-lg": "1.5rem", "space-xl": "2.5rem", "space-sm": "0.5rem", "space-xs": "0.25rem" }, "fontFamily": { "body-sm": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "mono-lg": ["JetBrains Mono"], "mono-sm": ["JetBrains Mono"], "body-lg": ["Plus Jakarta Sans"], "headline-sm": ["Syne"], "display-hero": ["Syne"], "headline-lg": ["Syne"], "mono-md": ["JetBrains Mono"], "headline-lg-mobile": ["Syne"], "display-hero-mobile": ["Syne"], "headline-md": ["Syne"] }, "fontSize": { "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }], "body-md": ["15px", { "lineHeight": "22px", "fontWeight": "400" }], "mono-lg": ["16px", { "lineHeight": "22px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "mono-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "500" }], "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "500" }], "headline-sm": ["20px", { "lineHeight": "26px", "letterSpacing": "0em", "fontWeight": "600" }], "display-hero": ["56px", { "lineHeight": "60px", "letterSpacing": "-0.03em", "fontWeight": "800" }], "headline-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "mono-md": ["13px", { "lineHeight": "18px", "letterSpacing": "0em", "fontWeight": "500" }], "headline-lg-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "display-hero-mobile": ["36px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "800" }], "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }] } } } };</script></head><body class="bg-background font-body-md text-on-surface antialiased"><header class="fixed top-0 left-0 right-0 z-50 flex items-center justify-center pt-space-md pointer-events-none px-gutter-mobile md:px-gutter"><div class="pointer-events-auto h-16 w-full max-w-7xl mx-auto px-gutter bg-surface-container-lowest/90 backdrop-blur-xl rounded-full shadow-[0_1px_8px_rgba(0,0,0,0.04)] flex items-center justify-between transition-all"><div class="flex items-center gap-space-sm"><div class="w-9 h-9 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><span class="material-symbols-outlined text-[20px]">water_drop</span></div><span class="font-headline-sm text-headline-sm tracking-tight text-on-surface">GhostDrop</span></div><nav class="hidden md:flex items-center gap-space-lg" data-active-classes="text-on-surface font-semibold"><a aria-current="page" class="transition-colors text-on-surface font-semibold" data-path="how-it-works" href="#">How It Works</a><a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md text-body-md" data-path="security-spec" href="#">Security Spec</a><a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md text-body-md" data-path="network-telemetry" href="#">Telemetry</a><a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md text-body-md" data-path="faq" href="#">FAQ</a></nav><div class="flex items-center gap-space-sm"><a class="group flex items-center gap-space-xs pl-space-md pr-space-xs py-space-xs bg-inverse-surface rounded-full text-inverse-on-surface hover:bg-on-background transition-all" data-path="transfer-stream" href="#"><span class="font-mono-md text-mono-md pr-space-xs">Back to App</span><div class="w-7 h-7 rounded-full bg-primary-container flex items-center justify-center text-on-primary-fixed transition-transform group-hover:rotate-45"><span class="material-symbols-outlined text-[16px]">arrow_forward</span></div></a><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-16 bg-background min-h-screen"><div class="flex flex-col w-full">
+<!-- Interactive Intro Header -->
+<section class="w-full px-gutter md:px-margin text-center pt-space-xl pb-space-lg flex flex-col items-center">
+<div class="inline-flex items-center gap-space-xs px-space-md py-space-xs bg-secondary-fixed text-on-secondary-fixed rounded-full shadow-sm mb-space-md">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+<span class="font-mono-sm text-mono-sm tracking-wider uppercase font-bold">Simple For Everyone</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg md:text-display-hero text-on-surface tracking-tight max-w-4xl mx-auto">
+      How it works in 3 easy steps.
+    </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto mt-space-sm">
+      No accounts, no passwords, and nothing saved in the cloud.
+    </p>
+<!-- Visual reassurance pill group -->
+<div class="flex flex-wrap items-center justify-center gap-space-sm mt-space-md">
+<div class="inline-flex items-center gap-space-xs px-space-md py-space-xs rounded-full bg-surface-container text-on-surface-variant font-mono-sm text-mono-sm">
+<span class="material-symbols-outlined text-[16px] text-tertiary">check_circle</span>
+        Works on iPad, Mac &amp; PC
+      </div>
+<div class="inline-flex items-center gap-space-xs px-space-md py-space-xs rounded-full bg-surface-container text-on-surface-variant font-mono-sm text-mono-sm">
+<span class="material-symbols-outlined text-[16px] text-tertiary">sentiment_satisfied</span>
+        Grandma-tested &amp; approved
+      </div>
+<div class="inline-flex items-center gap-space-xs px-space-md py-space-xs rounded-full bg-surface-container text-on-surface-variant font-mono-sm text-mono-sm">
+<span class="material-symbols-outlined text-[16px] text-secondary">flash_on</span>
+        Zero installations
+      </div>
+</div>
+</section>
+<!-- 3 Giant Visual Step Cards with Continuous Self-Drawing Squiggly Vector Loop -->
+<section class="w-full max-w-7xl mx-auto px-gutter md:px-margin my-space-lg relative">
+<!-- Continuous Self-Drawing Squiggly Loop SVG Line -->
+<div class="absolute inset-0 pointer-events-none hidden lg:block overflow-visible -top-6">
+<svg class="w-full h-full" fill="none" preserveaspectratio="none" viewbox="0 0 1140 460">
+<path class="opacity-25" d="M 60,80 C 180,20 280,220 380,140 C 470,70 560,390 690,160 C 800,20 920,290 1080,120" id="squiggly-track" stroke="#254aff" stroke-dasharray="8 8" stroke-linecap="round" stroke-width="4"></path>
+<path class="transition-all duration-1000 ease-out" d="M 60,80 C 180,20 280,220 380,140 C 470,70 560,390 690,160 C 800,20 920,290 1080,120" id="squiggly-animated-loop" stroke="#0030d8" stroke-dasharray="1400" stroke-dashoffset="0" stroke-linecap="round" stroke-width="3"></path>
+</svg>
+</div>
+<!-- Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-lg relative z-10">
+<!-- STEP 1 CARD -->
+<div class="group bg-primary-container text-on-primary-fixed rounded-lg p-space-xl flex flex-col justify-between shadow-[0_4px_24px_rgba(84,101,0,0.12)] hover:-translate-y-1 transition-all duration-300 min-h-[440px]">
+<div>
+<!-- Header circular badges -->
+<div class="flex items-center justify-between">
+<div class="w-14 h-14 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-headline-md text-headline-md shadow-md">
+              1
+            </div>
+<div class="w-11 h-11 rounded-full bg-surface-container-lowest/90 text-secondary flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[24px]">qr_code_scanner</span>
+</div>
+</div>
+<!-- Step Graphic / Tactile Preview -->
+<div class="my-space-md p-space-md bg-surface-container-lowest/70 backdrop-blur rounded-DEFAULT flex items-center gap-space-md">
+<div class="w-12 h-12 rounded-full bg-secondary-fixed text-on-secondary-fixed flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-[24px]">photo_camera</span>
+</div>
+<div class="flex flex-col">
+<span class="font-mono-sm text-mono-sm text-on-surface-variant font-bold uppercase tracking-wider">Pairing Step</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">No login required</span>
+</div>
+</div>
+<!-- Title -->
+<h2 class="font-headline-md text-headline-md text-on-primary-fixed mt-space-md">
+            Scan the code
+          </h2>
+<!-- Simple sentence -->
+<p class="font-body-md text-body-md text-on-primary-fixed-variant font-medium mt-space-xs">
+            Point your phone camera at the screen to link them together.
+          </p>
+</div>
+<!-- Bottom Pill Tag -->
+<div class="mt-space-lg pt-space-md flex items-center">
+<div class="inline-flex items-center gap-space-xs px-space-md py-space-xs bg-surface-container-lowest text-on-surface rounded-full shadow-sm font-mono-md text-mono-md font-semibold">
+<span class="material-symbols-outlined text-[18px] text-secondary">camera_alt</span>
+            Instant camera connection
+          </div>
+</div>
+</div>
+<!-- STEP 2 CARD -->
+<div class="group bg-secondary text-on-secondary rounded-lg p-space-xl flex flex-col justify-between shadow-[0_12px_32px_rgba(0,48,216,0.22)] hover:-translate-y-1 transition-all duration-300 min-h-[440px]">
+<div>
+<!-- Header circular badges -->
+<div class="flex items-center justify-between">
+<div class="w-14 h-14 rounded-full bg-primary-container text-on-primary-fixed flex items-center justify-center font-headline-md text-headline-md shadow-md">
+              2
+            </div>
+<div class="w-11 h-11 rounded-full bg-surface-container-lowest/20 text-on-secondary flex items-center justify-center backdrop-blur">
+<span class="material-symbols-outlined text-[24px]">send</span>
+</div>
+</div>
+<!-- Step Graphic / Tactile Preview -->
+<div class="my-space-md p-space-md bg-surface-container-lowest/15 backdrop-blur rounded-DEFAULT flex items-center gap-space-md">
+<div class="w-12 h-12 rounded-full bg-primary-container text-on-primary-fixed flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-[24px]">bolt</span>
+</div>
+<div class="flex flex-col">
+<span class="font-mono-sm text-mono-sm text-secondary-fixed font-bold uppercase tracking-wider">Instant Leap</span>
+<span class="font-headline-sm text-headline-sm text-on-secondary">Direct screen-to-screen</span>
+</div>
+</div>
+<!-- Title -->
+<h2 class="font-headline-md text-headline-md text-on-secondary mt-space-md">
+            Send photos or notes
+          </h2>
+<!-- Simple sentence -->
+<p class="font-body-md text-body-md text-secondary-fixed font-normal mt-space-xs">
+            Pick any photo, file, or text and it pops up on your other screen.
+          </p>
+</div>
+<!-- Bottom Pill Tag -->
+<div class="mt-space-lg pt-space-md flex items-center">
+<div class="inline-flex items-center gap-space-xs px-space-md py-space-xs bg-surface-container-lowest/20 text-on-secondary rounded-full backdrop-blur font-mono-md text-mono-md font-semibold">
+<span class="material-symbols-outlined text-[18px] text-primary-container">bolt</span>
+            Direct screen to screen
+          </div>
+</div>
+</div>
+<!-- STEP 3 CARD -->
+<div class="group bg-surface-container text-on-surface rounded-lg p-space-xl flex flex-col justify-between shadow-[0_4px_24px_rgba(0,0,0,0.04)] hover:-translate-y-1 transition-all duration-300 min-h-[440px]">
+<div>
+<!-- Header circular badges -->
+<div class="flex items-center justify-between">
+<div class="w-14 h-14 rounded-full bg-tertiary text-on-tertiary flex items-center justify-center font-headline-md text-headline-md shadow-md">
+              3
+            </div>
+<div class="w-11 h-11 rounded-full bg-surface-container-lowest text-tertiary flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[24px]">auto_delete</span>
+</div>
+</div>
+<!-- Step Graphic / Tactile Preview -->
+<div class="my-space-md p-space-md bg-surface-container-lowest rounded-DEFAULT flex items-center gap-space-md">
+<div class="w-12 h-12 rounded-full bg-tertiary-container text-on-tertiary-container flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-[24px]">timer</span>
+</div>
+<div class="flex flex-col">
+<span class="font-mono-sm text-mono-sm text-on-surface-variant font-bold uppercase tracking-wider">Self Clean-up</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">50 min countdown</span>
+</div>
+</div>
+<!-- Title -->
+<h2 class="font-headline-md text-headline-md text-on-surface mt-space-md">
+            Cleans up by itself
+          </h2>
+<!-- Simple sentence -->
+<p class="font-body-md text-body-md text-on-surface-variant font-medium mt-space-xs">
+            After 50 minutes, everything disappears automatically so your screens stay tidy.
+          </p>
+</div>
+<!-- Bottom Pill Tag -->
+<div class="mt-space-lg pt-space-md flex items-center">
+<div class="inline-flex items-center gap-space-xs px-space-md py-space-xs bg-surface-container-lowest text-on-surface rounded-full shadow-sm font-mono-md text-mono-md font-semibold">
+<span class="material-symbols-outlined text-[18px] text-tertiary">schedule</span>
+            50-minute automatic wipe
+          </div>
+</div>
+</div>
+</div>
+</section>
+<!-- Interactive Demo Bar: Try Drawing the Path -->
+<div class="w-full max-w-7xl mx-auto px-gutter md:px-margin text-center mb-space-xl">
+<div class="inline-flex items-center gap-space-md p-space-sm pl-space-md pr-space-sm bg-surface-container-lowest rounded-full shadow-sm">
+<div class="flex items-center gap-space-xs">
+<span class="w-3 h-3 rounded-full bg-primary-container"></span>
+<span class="font-mono-sm text-mono-sm text-on-surface-variant uppercase font-semibold">Live Loop Status: Synchronized Peer Relay</span>
+</div>
+<button class="px-space-md py-space-xs bg-secondary-fixed text-on-secondary-fixed rounded-full font-mono-sm text-mono-sm hover:bg-secondary hover:text-on-secondary transition-colors flex items-center gap-space-xs" id="retrigger-loop-btn">
+<span class="material-symbols-outlined text-[14px]">replay</span>
+        Replay Line
+      </button>
+</div>
+</div>
+<!-- Section Subheader: Friendly Language -->
+<section class="w-full max-w-7xl mx-auto px-gutter md:px-margin mt-space-md mb-space-lg text-center">
+<div class="inline-flex items-center gap-space-xs px-space-md py-space-xs bg-tertiary-container text-on-tertiary-container rounded-full mb-space-xs font-mono-sm text-mono-sm uppercase font-bold tracking-wider">
+      Kind Language For Peace of Mind
+    </div>
+<h2 class="font-headline-md text-headline-md md:text-headline-lg text-on-surface tracking-tight mt-space-xs">
+      Helpful notifications you will actually understand
+    </h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-xl mx-auto mt-space-xs">
+      No cryptic numbers, error logs, or scary computer warnings. Just plain, friendly English.
+    </p>
+</section>
+<!-- Playful Friendly Alerts Preview Row -->
+<section class="w-full max-w-7xl mx-auto px-gutter md:px-margin mb-space-xl">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md">
+<!-- Alert 1: Success -->
+<div class="bg-primary-container text-on-primary-fixed rounded-DEFAULT p-space-lg flex items-start gap-space-md shadow-sm transition-transform hover:scale-[1.01]">
+<div class="w-12 h-12 rounded-full bg-secondary text-on-secondary flex items-center justify-center flex-shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[24px]">check</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs">
+<h3 class="font-headline-sm text-headline-sm text-on-primary-fixed font-bold">
+              All sent!
+            </h3>
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+</div>
+<p class="font-body-md text-body-md text-on-primary-fixed font-medium mt-space-xs">
+            Your photo is ready on your computer.
+          </p>
+</div>
+</div>
+<!-- Alert 2: Auto-Cleaned -->
+<div class="bg-surface-container-lowest text-on-surface rounded-DEFAULT p-space-lg flex items-start gap-space-md shadow-sm transition-transform hover:scale-[1.01]">
+<div class="w-12 h-12 rounded-full bg-tertiary text-on-tertiary flex items-center justify-center flex-shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[24px]">auto_awesome</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs">
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">
+              Poof! All gone.
+            </h3>
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant font-medium mt-space-xs">
+            50 minutes passed, so we cleaned this up.
+          </p>
+</div>
+</div>
+<!-- Alert 3: Friendly Mistake -->
+<div class="bg-error-container text-on-error-container rounded-DEFAULT p-space-lg flex items-start gap-space-md shadow-sm transition-transform hover:scale-[1.01]">
+<div class="w-12 h-12 rounded-full bg-error text-on-error flex items-center justify-center flex-shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[24px]">refresh</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs">
+<h3 class="font-headline-sm text-headline-sm text-on-error-container font-bold">
+              Hmm, check that code
+            </h3>
+<span class="w-2 h-2 rounded-full bg-error"></span>
+</div>
+<p class="font-body-md text-body-md text-on-error-container font-medium mt-space-xs">
+            We could not find that 6-letter code. Try typing it again!
+          </p>
+</div>
+</div>
+</div>
+</section>
+<!-- Friendly Reassurance Bottom Card -->
+<section class="w-full max-w-7xl mx-auto px-gutter md:px-margin mb-space-xl">
+<div class="bg-surface-container-lowest rounded-DEFAULT p-space-lg md:p-space-xl shadow-sm flex flex-col md:flex-row items-center justify-between gap-space-lg">
+<!-- Reassurance Left Content -->
+<div class="flex items-center gap-space-md max-w-2xl">
+<div class="w-14 h-14 rounded-full bg-tertiary-container text-on-tertiary-container flex items-center justify-center flex-shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[28px]">verified_user</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-on-surface">Have any questions?</span>
+<p class="font-body-md text-body-md text-on-surface-variant mt-space-xs">
+            GhostDrop will never ask for your email address, phone number, or bank details.
+          </p>
+</div>
+</div>
+<!-- Action Button: Pill with nested Acid Lime circle ArrowRight -->
+<div class="flex-shrink-0 w-full md:w-auto">
+<a class="group w-full md:w-auto inline-flex items-center justify-between gap-space-md pl-space-lg pr-space-xs py-space-xs bg-secondary rounded-full text-on-secondary shadow-md hover:-translate-y-0.5 hover:shadow-lg transition-all duration-200" data-path="transfer-stream" href="#">
+<span class="font-headline-sm text-headline-sm text-on-secondary font-bold">Try it now</span>
+<div class="w-11 h-11 rounded-full bg-primary-container text-on-primary-fixed flex items-center justify-center transition-transform group-hover:translate-x-1">
+<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</div>
+</a>
+</div>
+</div>
+</section>
+<!-- Inline Script for Interactive Self-Drawing Squiggly Vector Line -->
+<script>
+    (function() {
+      const loopPath = document.getElementById('squiggly-animated-loop');
+      const btn = document.getElementById('retrigger-loop-btn');
+      
+      if (loopPath) {
+        const length = loopPath.getTotalLength ? loopPath.getTotalLength() : 1400;
+        loopPath.style.strokeDasharray = length;
+        loopPath.style.strokeDashoffset = length;
+        
+        // Trigger draw animation
+        setTimeout(() => {
+          loopPath.style.strokeDashoffset = '0';
+        }, 150);
+
+        if (btn) {
+          btn.addEventListener('click', () => {
+            loopPath.style.transition = 'none';
+            loopPath.style.strokeDashoffset = length;
+            setTimeout(() => {
+              loopPath.style.transition = 'stroke-dashoffset 1.4s cubic-bezier(0.22, 1, 0.36, 1)';
+              loopPath.style.strokeDashoffset = '0';
+            }, 50);
+          });
+        }
+      }
+    })();
+  </script>
+</div></main><footer class="w-full bg-surface-container-low mt-space-xl"><div class="w-full max-w-7xl mx-auto px-gutter py-space-xl flex flex-col md:flex-row items-center justify-between gap-space-md"><div class="flex items-center gap-space-sm"><div class="w-2.5 h-2.5 rounded-full bg-tertiary"></div><span class="font-mono-sm text-mono-sm uppercase text-on-surface-variant">Direct peer-to-peer chunk stream • Zero cloud storage • RAM buffer only</span></div><div class="flex items-center gap-space-md"><span class="font-mono-sm text-mono-sm text-on-surface-variant">© 2025 GhostDrop Protocol</span><span class="font-mono-sm text-mono-sm px-space-sm py-space-xs rounded-full bg-surface-container-high text-on-surface-variant">E2EE 256-GCM</span></div></div></footer></body></html>

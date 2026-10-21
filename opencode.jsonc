@@ -1,0 +1,112 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+
+  // Project-level GhostDrop agent routing (OpenCode V2 format).
+  // Agent prompts live in .agent/agents/GhostDrop/
+  "default_agent": "ghostdrop-orchestrator",
+
+  "instructions": [
+    "AGENTS.md",
+    ".agent/rules/GEMINI.md"
+  ],
+
+  "skills": [".agents/skills"],
+
+  "mcp": {
+    "servers": {
+      "stitch": {
+        "type": "local",
+        "command": ["npx", "-y", "stitch-mcp"],
+        "timeout": { "startup": 120000 }
+      },
+      "context7": {
+        "type": "local",
+        "command": ["npx", "-y", "@upstash/context7-mcp"],
+        "timeout": { "startup": 120000 }
+      }
+    }
+  },
+
+  "agents": {
+    // ================================================================
+    //  PRIMARY AGENT: GhostDrop Orchestrator
+    // ================================================================
+    "ghostdrop-orchestrator": {
+      "mode": "primary",
+      "description": "GhostDrop primary coordinator. Manages task delegation, sequential build order gates, and handshake protocol.",
+      "system": "{file:.agent/agents/GhostDrop/orchestrator.md}",
+      "color": "#1E45FB",
+      "permissions": [
+        { "action": "read", "resource": "*", "effect": "allow" },
+        { "action": "edit", "resource": "*", "effect": "allow" },
+        { "action": "shell", "resource": "*", "effect": "allow" },
+        { "action": "glob", "resource": "*", "effect": "allow" },
+        { "action": "grep", "resource": "*", "effect": "allow" },
+        { "action": "subagent", "resource": "*", "effect": "allow" },
+        { "action": "skill", "resource": "*", "effect": "allow" },
+        { "action": "todowrite", "resource": "*", "effect": "allow" },
+        { "action": "webfetch", "resource": "*", "effect": "allow" },
+        { "action": "question", "resource": "*", "effect": "allow" }
+      ]
+    },
+
+    // ================================================================
+    //  GHOSTDROP SPECIALIST SUBAGENTS
+    // ================================================================
+    "ghostdrop-web": {
+      "mode": "subagent",
+      "description": "Vite + React + TypeScript Web App and PWA specialist. Scope: screens, desktop top bar / FAB, mobile sleek bottom navbar, QR pairing, dropzone, feed, PWA share target.",
+      "system": "{file:.agent/agents/GhostDrop/web.md}",
+      "color": "#CDF22B",
+      "permissions": [
+        { "action": "read", "resource": "*", "effect": "allow" },
+        { "action": "edit", "resource": "*", "effect": "allow" },
+        { "action": "shell", "resource": "*", "effect": "allow" },
+        { "action": "glob", "resource": "*", "effect": "allow" },
+        { "action": "grep", "resource": "*", "effect": "allow" }
+      ]
+    },
+
+    "ghostdrop-ui-polish": {
+      "mode": "subagent",
+      "description": "UI craft, Laroka typography, Acid Lime and Electric Cobalt tokens, SVG icons, playful error/success copy, and self-drawing SVG squiggly line animations.",
+      "system": "{file:.agent/agents/GhostDrop/ui-polish.md}",
+      "color": "#CDF22B",
+      "permissions": [
+        { "action": "read", "resource": "*", "effect": "allow" },
+        { "action": "edit", "resource": "*", "effect": "allow" },
+        { "action": "shell", "resource": "*", "effect": "allow" },
+        { "action": "glob", "resource": "*", "effect": "allow" },
+        { "action": "grep", "resource": "*", "effect": "allow" }
+      ]
+    },
+
+    "ghostdrop-qa": {
+      "mode": "subagent",
+      "description": "Read-only QA auditor across the codebase. Validates 6 gates (tokens, squiggly line draw, zero emojis/em-dashes, playful copy, 16KB protocol, TTL cleanup, build) and writes qa-reports.",
+      "system": "{file:.agent/agents/GhostDrop/qa.md}",
+      "color": "#124B38",
+      "permissions": [
+        { "action": "read", "resource": "*", "effect": "allow" },
+        { "action": "glob", "resource": "*", "effect": "allow" },
+        { "action": "grep", "resource": "*", "effect": "allow" },
+        { "action": "shell", "resource": "*", "effect": "allow" },
+        { "action": "edit", "resource": "*", "effect": "deny" }
+      ]
+    },
+
+    "ghostdrop-backend": {
+      "mode": "subagent",
+      "description": "WebRTC DataChannel wire protocol, 16KB chunk streamer with backpressure, PeerJS/Supabase signaling adapter, PWA service worker, and ephemeral TTL data engine.",
+      "system": "{file:.agent/agents/GhostDrop/backend.md}",
+      "color": "#0D0F12",
+      "permissions": [
+        { "action": "read", "resource": "*", "effect": "allow" },
+        { "action": "edit", "resource": "*", "effect": "allow" },
+        { "action": "shell", "resource": "*", "effect": "allow" },
+        { "action": "glob", "resource": "*", "effect": "allow" },
+        { "action": "grep", "resource": "*", "effect": "allow" }
+      ]
+    }
+  }
+}

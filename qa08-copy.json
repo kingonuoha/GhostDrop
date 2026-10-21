@@ -1,0 +1,500 @@
+[
+ {
+  "file": "src/components/brand/Logo.tsx",
+  "line": 59,
+  "kind": "jsx-text",
+  "text": "GhostDrop"
+ },
+ {
+  "file": "src/components/brand/SquiggleConnectionBridge.tsx",
+  "line": 50,
+  "kind": "attr:aria-label",
+  "text": "Device connection"
+ },
+ {
+  "file": "src/components/nav/DesktopTopPillBar.tsx",
+  "line": 26,
+  "kind": "attr:aria-label",
+  "text": "Main"
+ },
+ {
+  "file": "src/components/nav/DesktopTopPillBar.tsx",
+  "line": 31,
+  "kind": "attr:aria-label",
+  "text": "GhostDrop home"
+ },
+ {
+  "file": "src/components/nav/DesktopTopPillBar.tsx",
+  "line": 74,
+  "kind": "jsx-text",
+  "text": "Auto-delete:"
+ },
+ {
+  "file": "src/components/nav/DesktopTopPillBar.tsx",
+  "line": 80,
+  "kind": "jsx-text",
+  "text": "Enter a Code"
+ },
+ {
+  "file": "src/components/nav/MobileBottomDock.tsx",
+  "line": 87,
+  "kind": "attr:aria-label",
+  "text": "Auto-delete timer"
+ },
+ {
+  "file": "src/components/nav/MobileBottomDock.tsx",
+  "line": 91,
+  "kind": "jsx-text",
+  "text": "Cleans up after"
+ },
+ {
+  "file": "src/components/nav/MobileBottomDock.tsx",
+  "line": 95,
+  "kind": "attr:aria-label",
+  "text": "Close timer options"
+ },
+ {
+  "file": "src/components/nav/MobileBottomDock.tsx",
+  "line": 134,
+  "kind": "attr:aria-label",
+  "text": "Quick actions"
+ },
+ {
+  "file": "src/components/nav/MobileStatusHeader.tsx",
+  "line": 50,
+  "kind": "jsx-text",
+  "text": "Room"
+ },
+ {
+  "file": "src/components/nav/MobileStatusHeader.tsx",
+  "line": 51,
+  "kind": "jsx-text",
+  "text": "#"
+ },
+ {
+  "file": "src/components/pwa/InstallCard.tsx",
+  "line": 74,
+  "kind": "jsx-text",
+  "text": "Keep GhostDrop one tap away"
+ },
+ {
+  "file": "src/components/pwa/InstallCard.tsx",
+  "line": 77,
+  "kind": "jsx-text",
+  "text": "Next time, open GhostDrop right from your home screen."
+ },
+ {
+  "file": "src/components/pwa/InstallCard.tsx",
+  "line": 97,
+  "kind": "attr:aria-label",
+  "text": "Hide install hint"
+ },
+ {
+  "file": "src/components/qr/QrScannerModal.tsx",
+  "line": 369,
+  "kind": "jsx-text",
+  "text": "Direct pairing"
+ },
+ {
+  "file": "src/components/qr/QrScannerModal.tsx",
+  "line": 371,
+  "kind": "jsx-text",
+  "text": "Connect to your screen"
+ },
+ {
+  "file": "src/components/qr/QrScannerModal.tsx",
+  "line": 377,
+  "kind": "attr:aria-label",
+  "text": "Close the scanner"
+ },
+ {
+  "file": "src/components/qr/QrScannerModal.tsx",
+  "line": 385,
+  "kind": "jsx-text",
+  "text": "Point the camera at the QR code on your other screen, or type the 6 letter code below."
+ },
+ {
+  "file": "src/components/qr/QrScannerModal.tsx",
+  "line": 432,
+  "kind": "jsx-text",
+  "text": "Try camera again"
+ },
+ {
+  "file": "src/components/qr/QrScannerModal.tsx",
+  "line": 516,
+  "kind": "jsx-text",
+  "text": "Or type the 6 letter code"
+ },
+ {
+  "file": "src/components/qr/QrScannerModal.tsx",
+  "line": 551,
+  "kind": "jsx-text",
+  "text": "6 letter room code"
+ },
+ {
+  "file": "src/components/qr/QrScannerModal.tsx",
+  "line": 586,
+  "kind": "jsx-text",
+  "text": "Type the 6 letters shown on your other screen."
+ },
+ {
+  "file": "src/components/qr/QrScannerModal.tsx",
+  "line": 599,
+  "kind": "jsx-text",
+  "text": "Connect Now"
+ },
+ {
+  "file": "src/components/qr/QrScannerModal.tsx",
+  "line": 605,
+  "kind": "jsx-text",
+  "text": "Takes less than 2 seconds. No passwords needed."
+ },
+ {
+  "file": "src/components/room/ConnectionBridge.tsx",
+  "line": 90,
+  "kind": "jsx-text",
+  "text": "Your GhostDrop room for"
+ },
+ {
+  "file": "src/components/room/ConnectionBridge.tsx",
+  "line": 95,
+  "kind": "jsx-text",
+  "text": "Your code"
+ },
+ {
+  "file": "src/components/room/ConnectionBridge.tsx",
+  "line": 134,
+  "kind": "jsx-text",
+  "text": "Waiting for your phone"
+ },
+ {
+  "file": "src/components/room/ConnectionBridge.tsx",
+  "line": 141,
+  "kind": "jsx-text",
+  "text": "Type this code on your other screen, or scan the code on the hub."
+ },
+ {
+  "file": "src/components/room/DropOverlay.tsx",
+  "line": 20,
+  "kind": "jsx-text",
+  "text": "Drop it here"
+ },
+ {
+  "file": "src/components/room/DropOverlay.tsx",
+  "line": 22,
+  "kind": "jsx-text",
+  "text": "We will send it straight to your other screen."
+ },
+ {
+  "file": "src/components/room/DropZone.tsx",
+  "line": 52,
+  "kind": "attr:aria-label",
+  "text": "Choose photos or files to send"
+ },
+ {
+  "file": "src/components/room/RoomCodeCard.tsx",
+  "line": 77,
+  "kind": "jsx-text",
+  "text": "1"
+ },
+ {
+  "file": "src/components/room/RoomCodeCard.tsx",
+  "line": 79,
+  "kind": "jsx-text",
+  "text": "1. Scan with your phone"
+ },
+ {
+  "file": "src/components/room/RoomCodeCard.tsx",
+  "line": 82,
+  "kind": "jsx-text",
+  "text": "Open your phone camera and point it here:"
+ },
+ {
+  "file": "src/components/room/RoomCodeCard.tsx",
+  "line": 94,
+  "kind": "attr:title",
+  "text": "Scan this code with your phone camera"
+ },
+ {
+  "file": "src/components/room/RoomCodeCard.tsx",
+  "line": 101,
+  "kind": "jsx-text",
+  "text": "Or type code:"
+ },
+ {
+  "file": "src/components/room/RoomCodeCard.tsx",
+  "line": 107,
+  "kind": "jsx-text",
+  "text": "Room code"
+ },
+ {
+  "file": "src/components/room/TextComposer.tsx",
+  "line": 81,
+  "kind": "jsx-text",
+  "text": "Send"
+ },
+ {
+  "file": "src/components/room/TransferCard.tsx",
+  "line": 42,
+  "kind": "attr:aria-label",
+  "text": "Sending progress"
+ },
+ {
+  "file": "src/components/room/TransferCard.tsx",
+  "line": 143,
+  "kind": "jsx-text",
+  "text": "On its way across"
+ },
+ {
+  "file": "src/components/room/TransferCard.tsx",
+  "line": 148,
+  "kind": "jsx-text",
+  "text": "Sending..."
+ },
+ {
+  "file": "src/components/room/TransferCard.tsx",
+  "line": 155,
+  "kind": "jsx-text",
+  "text": "To"
+ },
+ {
+  "file": "src/components/room/TransferCard.tsx",
+  "line": 172,
+  "kind": "jsx-text",
+  "text": "Did not make it across. Pick it again."
+ },
+ {
+  "file": "src/components/room/TransferCard.tsx",
+  "line": 221,
+  "kind": "jsx-text",
+  "text": "Copy"
+ },
+ {
+  "file": "src/components/room/TransferCard.tsx",
+  "line": 286,
+  "kind": "jsx-text",
+  "text": "was cleaned up. Nothing left behind."
+ },
+ {
+  "file": "src/components/room/TransferFeed.tsx",
+  "line": 46,
+  "kind": "jsx-text",
+  "text": "Shared Items"
+ },
+ {
+  "file": "src/components/room/TransferFeed.tsx",
+  "line": 50,
+  "kind": "jsx-text",
+  "text": "Latest"
+ },
+ {
+  "file": "src/components/room/TransferFeed.tsx",
+  "line": 50,
+  "kind": "jsx-text",
+  "text": "only"
+ },
+ {
+  "file": "src/components/room/TransferFeed.tsx",
+  "line": 57,
+  "kind": "attr:title",
+  "text": "Nothing sent yet"
+ },
+ {
+  "file": "src/components/room/TransferFeed.tsx",
+  "line": 89,
+  "kind": "jsx-text",
+  "text": "Everything here lives on your screens only and cleans itself up."
+ },
+ {
+  "file": "src/components/shell/AppShell.tsx",
+  "line": 21,
+  "kind": "jsx-text",
+  "text": "Skip to main content"
+ },
+ {
+  "file": "src/pages/ConnectedWorkspace.tsx",
+  "line": 113,
+  "kind": "jsx-text",
+  "text": "Pick what to send"
+ },
+ {
+  "file": "src/pages/ConnectedWorkspace.tsx",
+  "line": 116,
+  "kind": "jsx-text",
+  "text": "Anything you send lands on"
+ },
+ {
+  "file": "src/pages/ConnectedWorkspace.tsx",
+  "line": 116,
+  "kind": "jsx-text",
+  "text": "."
+ },
+ {
+  "file": "src/pages/ConnectedWorkspace.tsx",
+  "line": 123,
+  "kind": "attr:helper",
+  "text": "Or drag files right here"
+ },
+ {
+  "file": "src/pages/ConnectedWorkspace.tsx",
+  "line": 135,
+  "kind": "jsx-text",
+  "text": "Cleans up after"
+ },
+ {
+  "file": "src/pages/HomeHub.tsx",
+  "line": 92,
+  "kind": "jsx-text",
+  "text": "Send photos and text between your screens."
+ },
+ {
+  "file": "src/pages/HomeHub.tsx",
+  "line": 116,
+  "kind": "jsx-text",
+  "text": "2"
+ },
+ {
+  "file": "src/pages/HomeHub.tsx",
+  "line": 118,
+  "kind": "jsx-text",
+  "text": "2. Pick what to send"
+ },
+ {
+  "file": "src/pages/HomeHub.tsx",
+  "line": 136,
+  "kind": "attr:placeholder",
+  "text": "Type or paste a link or note..."
+ },
+ {
+  "file": "src/pages/HomeHub.tsx",
+  "line": 142,
+  "kind": "jsx-text",
+  "text": "Cleans up after"
+ },
+ {
+  "file": "src/pages/HowItWorks.tsx",
+  "line": 125,
+  "kind": "jsx-text",
+  "text": "Simple for everyone"
+ },
+ {
+  "file": "src/pages/HowItWorks.tsx",
+  "line": 128,
+  "kind": "jsx-text",
+  "text": "How it works in 3 easy steps."
+ },
+ {
+  "file": "src/pages/HowItWorks.tsx",
+  "line": 130,
+  "kind": "jsx-text",
+  "text": "No accounts, no passwords, and nothing saved anywhere."
+ },
+ {
+  "file": "src/pages/HowItWorks.tsx",
+  "line": 173,
+  "kind": "jsx-text",
+  "text": "Step"
+ },
+ {
+  "file": "src/pages/HowItWorks.tsx",
+  "line": 173,
+  "kind": "jsx-text",
+  "text": ":"
+ },
+ {
+  "file": "src/pages/HowItWorks.tsx",
+  "line": 197,
+  "kind": "jsx-text",
+  "text": "Kind language for peace of mind"
+ },
+ {
+  "file": "src/pages/HowItWorks.tsx",
+  "line": 200,
+  "kind": "jsx-text",
+  "text": "Helpful messages you will actually understand."
+ },
+ {
+  "file": "src/pages/HowItWorks.tsx",
+  "line": 228,
+  "kind": "jsx-text",
+  "text": "Have any questions?"
+ },
+ {
+  "file": "src/pages/HowItWorks.tsx",
+  "line": 231,
+  "kind": "jsx-text",
+  "text": "GhostDrop never asks for your email address, phone number, or bank details."
+ },
+ {
+  "file": "src/pages/HowItWorks.tsx",
+  "line": 242,
+  "kind": "jsx-text",
+  "text": "Try it now"
+ },
+ {
+  "file": "src/pages/MobileJoin.tsx",
+  "line": 48,
+  "kind": "jsx-text",
+  "text": "Connect to your screen"
+ },
+ {
+  "file": "src/pages/MobileJoin.tsx",
+  "line": 51,
+  "kind": "jsx-text",
+  "text": "Scan the code on your other screen, or type the 6 letters by hand."
+ },
+ {
+  "file": "src/pages/MobileJoin.tsx",
+  "line": 61,
+  "kind": "jsx-text",
+  "text": "Scan or Type a Code"
+ },
+ {
+  "file": "src/pages/MobileJoin.tsx",
+  "line": 90,
+  "kind": "jsx-text",
+  "text": "Back to the hub"
+ },
+ {
+  "file": "src/pages/MobileJoin.tsx",
+  "line": 188,
+  "kind": "jsx-text",
+  "text": "Send Photos or Files"
+ },
+ {
+  "file": "src/pages/MobileJoin.tsx",
+  "line": 200,
+  "kind": "attr:label",
+  "text": "Choose Photos or Files"
+ },
+ {
+  "file": "src/pages/MobileJoin.tsx",
+  "line": 201,
+  "kind": "attr:helper",
+  "text": "Or drag files right here"
+ },
+ {
+  "file": "src/pages/MobileJoin.tsx",
+  "line": 240,
+  "kind": "jsx-text",
+  "text": "Room"
+ },
+ {
+  "file": "src/pages/MobileJoin.tsx",
+  "line": 240,
+  "kind": "jsx-text",
+  "text": "#"
+ },
+ {
+  "file": "src/pages/NotFound.tsx",
+  "line": 8,
+  "kind": "jsx-text",
+  "text": "Page not found"
+ },
+ {
+  "file": "src/pages/NotFound.tsx",
+  "line": 12,
+  "kind": "attr:title",
+  "text": "This page ghosted us"
+ }
+]

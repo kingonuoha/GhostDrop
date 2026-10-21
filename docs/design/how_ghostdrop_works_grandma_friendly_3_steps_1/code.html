@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><title>GhostDrop</title><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Syne:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base { html, body { margin: 0; padding: 0; } body { overscroll-behavior: none; } main > :first-child { margin-top: 0 !important; } main > :last-child { margin-bottom: 0 !important; } } ::-webkit-scrollbar { display: none; }</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-primary-fixed-variant": "#3e4c00", "error": "#ba1a1a", "tertiary-fixed": "#b6efd4", "on-surface": "#1a1c1f", "error-container": "#ffdad6", "tertiary-fixed-dim": "#9bd2b9", "secondary-container": "#254aff", "on-secondary-container": "#dbdeff", "on-error": "#ffffff", "inverse-on-surface": "#f0f0f5", "surface-variant": "#e2e2e6", "surface-tint": "#546500", "outline-variant": "#c5c9ad", "on-secondary-fixed": "#000f5d", "on-primary": "#ffffff", "secondary-fixed": "#dee0ff", "on-tertiary-fixed": "#002116", "on-primary-container": "#596c00", "tertiary-container": "#b6efd5", "surface-container-low": "#f3f3f7", "on-background": "#1a1c1f", "surface-container-highest": "#e2e2e6", "surface-dim": "#d9dade", "primary-fixed-dim": "#b2d400", "surface-bright": "#f9f9fd", "inverse-surface": "#2f3034", "primary-fixed": "#cdf22a", "on-tertiary-container": "#396e59", "surface-container-high": "#e8e8ec", "on-surface-variant": "#454934", "background": "#f9f9fd", "primary-container": "#cdf22b", "tertiary": "#336853", "on-secondary-fixed-variant": "#002dcc", "on-error-container": "#93000a", "inverse-primary": "#b2d400", "secondary": "#0030d8", "surface-container": "#eeedf2", "outline": "#757961", "surface": "#f9f9fd", "on-tertiary": "#ffffff", "on-tertiary-fixed-variant": "#18503c", "surface-container-lowest": "#ffffff", "on-primary-fixed": "#171e00", "primary": "#546500", "secondary-fixed-dim": "#bbc3ff", "on-secondary": "#ffffff" }, "borderRadius": { "DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px" }, "spacing": { "margin-mobile": "1.25rem", "space-sm": "0.5rem", "gutter-mobile": "1rem", "space-md": "1rem", "margin": "3rem", "space-xs": "0.25rem", "space-lg": "1.5rem", "gutter": "1.5rem", "space-xl": "2.5rem" }, "fontFamily": { "display-hero": [ "Syne" ], "headline-sm": [ "Syne" ], "body-sm": [ "Plus Jakarta Sans" ], "headline-lg": [ "Syne" ], "mono-md": [ "JetBrains Mono" ], "mono-lg": [ "JetBrains Mono" ], "mono-sm": [ "JetBrains Mono" ], "headline-lg-mobile": [ "Syne" ], "body-md": [ "Plus Jakarta Sans" ], "display-hero-mobile": [ "Syne" ], "headline-md": [ "Syne" ], "body-lg": [ "Plus Jakarta Sans" ] }, "fontSize": { "display-hero": [ "56px", { "lineHeight": "60px", "letterSpacing": "-0.03em", "fontWeight": "800" } ], "headline-sm": [ "20px", { "lineHeight": "26px", "letterSpacing": "0em", "fontWeight": "600" } ], "body-sm": [ "13px", { "lineHeight": "18px", "fontWeight": "400" } ], "headline-lg": [ "40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" } ], "mono-md": [ "13px", { "lineHeight": "18px", "letterSpacing": "0em", "fontWeight": "500" } ], "mono-lg": [ "16px", { "lineHeight": "22px", "letterSpacing": "-0.01em", "fontWeight": "600" } ], "mono-sm": [ "11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "500" } ], "headline-lg-mobile": [ "28px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" } ], "body-md": [ "15px", { "lineHeight": "22px", "fontWeight": "400" } ], "display-hero-mobile": [ "36px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "800" } ], "headline-md": [ "24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" } ], "body-lg": [ "18px", { "lineHeight": "28px", "fontWeight": "500" } ] } } } };</script></head><body class="bg-surface font-body-md text-on-surface antialiased selection:bg-primary-container selection:text-on-primary-container min-h-screen flex flex-col justify-between"><header class="fixed top-0 left-0 right-0 z-50 pointer-events-none"><div class="h-24 max-w-[1120px] mx-auto px-margin-mobile md:px-margin flex items-center justify-between pointer-events-auto"><div class="w-full mt-6 rounded-full bg-surface-container-lowest px-8 py-3.5 shadow-[0_1px_8px_rgba(0,0,0,0.04)] flex items-center justify-between"><div class="flex items-center gap-space-lg"><a class="flex items-center gap-space-sm group" data-path="transfer" href="#"><div class="w-9 h-9 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary shadow-sm transition-transform duration-200 group-hover:scale-105"><span class="material-symbols-outlined text-[20px]">water_drop</span></div><span class="font-headline-sm text-headline-sm font-bold tracking-tight text-on-surface">GhostDrop</span></a><nav class="hidden md:flex items-center gap-space-xs ml-space-md" data-active-classes="bg-surface-container-high text-on-surface font-semibold rounded-full"><a class="px-4 py-2 rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all" data-path="transfer" href="#">Send</a><a class="px-4 py-2 rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all" data-path="receive" href="#">Receive</a><a aria-current="page" class="px-4 py-2 transition-all bg-surface-container-high text-on-surface font-semibold rounded-full" data-path="how-it-works" href="#">Safety</a></nav></div><div class="hidden sm:flex items-center gap-space-sm px-4 py-1.5 rounded-full bg-surface-container-low text-on-surface-variant"><span class="material-symbols-outlined text-[16px] text-tertiary">schedule</span><span class="font-mono-sm text-mono-sm uppercase tracking-wider text-on-surface">Auto-delete: 50 mins</span></div><div class="flex items-center gap-space-md"><a class="inline-flex items-center gap-space-xs px-5 py-2.5 rounded-full bg-inverse-surface text-inverse-on-surface hover:bg-on-surface font-body-sm text-body-sm font-semibold transition-all duration-200 shadow-sm" data-path="enter-code" href="#"><span class="material-symbols-outlined text-[18px]">pin</span><span>Enter a Code</span></a><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></div></header><main class="w-full pt-24 max-w-[1120px] mx-auto px-margin-mobile md:px-margin flex-1 flex flex-col"><div class="flex flex-col w-full pb-16">
+<!-- Minimal Context Nav Bar -->
+<div class="w-full flex items-center justify-between py-space-sm mb-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary shadow-sm">
+<span class="material-symbols-outlined text-[22px]">water_drop</span>
+</div>
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface">GhostDrop</span>
+</div>
+<a class="inline-flex items-center gap-space-xs px-5 py-2.5 rounded-full bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-body-md text-body-md font-semibold transition-all shadow-sm group" data-path="transfer" href="#">
+<span class="material-symbols-outlined text-[20px] transition-transform group-hover:-translate-x-0.5">arrow_back</span>
+<span>Back to App</span>
+</a>
+</div>
+<!-- Big Friendly Centered Header -->
+<div class="text-center max-w-[760px] mx-auto mt-space-sm mb-space-xl">
+<div class="inline-flex items-center gap-space-xs px-4 py-1.5 rounded-full bg-primary-fixed text-on-primary-fixed mb-space-md font-mono-sm text-mono-sm uppercase tracking-wider">
+<span class="material-symbols-outlined text-[16px]">sentiment_satisfied</span>
+<span>Simple for everyone</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface font-extrabold tracking-tight mb-space-sm">
+      How it works in 3 easy steps.
+    </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant font-normal">
+      No accounts, no passwords, and nothing saved in the cloud.
+    </p>
+</div>
+<!-- Giant Visual Step Cards with Continuous Squiggly Loop -->
+<div class="relative w-full my-space-lg">
+<!-- Continuous Self-Drawing Squiggly Vector Loop in Background -->
+<div class="hidden lg:block absolute inset-0 pointer-events-none z-0 overflow-visible">
+<svg class="w-full h-full" fill="none" preserveaspectratio="none" viewbox="0 0 1120 420">
+<path class="opacity-40" d="M 60,180 C 180,60 260,320 380,210 C 460,130 520,340 680,190 C 780,100 880,300 1060,160" stroke="#254aff" stroke-dasharray="8 8" stroke-linecap="round" stroke-width="4"></path>
+<path class="opacity-25" d="M 120,280 C 220,380 340,30 500,260 C 620,440 760,40 920,240 C 990,320 1040,260 1080,210" stroke="#596c00" stroke-linecap="round" stroke-width="2"></path>
+</svg>
+</div>
+<!-- 3 Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-lg relative z-10">
+<!-- STEP 1 CARD -->
+<div class="rounded-xl p-space-lg bg-primary-container text-on-primary-fixed relative overflow-hidden shadow-sm flex flex-col justify-between min-h-[380px] transition-transform duration-300 hover:-translate-y-1">
+<div class="relative z-10">
+<div class="flex items-center justify-between mb-space-lg">
+<div class="w-14 h-14 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary shadow-md">
+<span class="font-headline-md text-headline-md font-bold">1</span>
+</div>
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest/60 flex items-center justify-center text-on-surface">
+<span class="material-symbols-outlined text-[22px]">qr_code_scanner</span>
+</div>
+</div>
+<h2 class="font-headline-md text-headline-md font-bold text-on-surface tracking-tight mb-space-sm">
+            Scan the code
+          </h2>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+            Point your phone camera at the screen to link them together.
+          </p>
+</div>
+<div class="mt-space-lg pt-space-md border-t-0 bg-surface-container-lowest/40 rounded-lg p-space-md flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-secondary text-[24px]">photo_camera</span>
+<span class="font-mono-md text-mono-md font-semibold text-on-surface">Instant camera connection</span>
+</div>
+</div>
+<!-- STEP 2 CARD -->
+<div class="rounded-xl p-space-lg bg-secondary-container text-on-secondary relative overflow-hidden shadow-sm flex flex-col justify-between min-h-[380px] transition-transform duration-300 hover:-translate-y-1">
+<div class="relative z-10">
+<div class="flex items-center justify-between mb-space-lg">
+<div class="w-14 h-14 rounded-full bg-primary-container flex items-center justify-center text-on-primary-fixed shadow-md">
+<span class="font-headline-md text-headline-md font-bold">2</span>
+</div>
+<div class="w-10 h-10 rounded-full bg-on-secondary/20 flex items-center justify-center text-on-secondary">
+<span class="material-symbols-outlined text-[22px]">send</span>
+</div>
+</div>
+<h2 class="font-headline-md text-headline-md font-bold text-on-secondary tracking-tight mb-space-sm">
+            Send photos or notes
+          </h2>
+<p class="font-body-md text-body-md text-on-secondary-container leading-relaxed">
+            Pick any photo, file, or text and it pops up on your other screen.
+          </p>
+</div>
+<div class="mt-space-lg pt-space-md bg-on-secondary/15 rounded-lg p-space-md flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary-container text-[24px]">bolt</span>
+<span class="font-mono-md text-mono-md font-semibold text-on-secondary">Direct screen to screen</span>
+</div>
+</div>
+<!-- STEP 3 CARD -->
+<div class="rounded-xl p-space-lg bg-surface-container text-on-surface relative overflow-hidden shadow-sm flex flex-col justify-between min-h-[380px] transition-transform duration-300 hover:-translate-y-1">
+<div class="relative z-10">
+<div class="flex items-center justify-between mb-space-lg">
+<div class="w-14 h-14 rounded-full bg-tertiary flex items-center justify-center text-on-tertiary shadow-md">
+<span class="font-headline-md text-headline-md font-bold">3</span>
+</div>
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined text-[22px]">auto_delete</span>
+</div>
+</div>
+<h2 class="font-headline-md text-headline-md font-bold text-on-surface tracking-tight mb-space-sm">
+            Cleans up by itself
+          </h2>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+            After 50 minutes, everything disappears automatically so your screens stay tidy.
+          </p>
+</div>
+<div class="mt-space-lg pt-space-md bg-surface-container-low rounded-lg p-space-md flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-tertiary text-[24px]">timer</span>
+<span class="font-mono-md text-mono-md font-semibold text-on-surface">50-minute automatic wipe</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Joyful Brand Tone Showcase Header -->
+<div class="text-left mt-space-xl mb-space-md">
+<div class="flex items-center gap-space-xs text-on-surface-variant mb-space-xs">
+<span class="material-symbols-outlined text-[18px] text-primary">chat_bubble</span>
+<span class="font-mono-sm text-mono-sm uppercase tracking-wider font-semibold">Kind language for peace of mind</span>
+</div>
+<h3 class="font-headline-md text-headline-md font-bold text-on-surface">
+      Helpful notifications you will actually understand
+    </h3>
+</div>
+<!-- Playful Friendly Alerts Preview Row -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md w-full">
+<!-- Alert 1: Success -->
+<div class="rounded-lg p-space-md bg-primary-container text-on-primary-fixed flex items-start gap-space-md shadow-sm">
+<div class="w-11 h-11 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[22px]">check</span>
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="font-headline-sm text-headline-sm font-bold text-on-surface leading-tight mb-1">
+          All sent!
+        </h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+          Your photo is ready on your computer.
+        </p>
+</div>
+</div>
+<!-- Alert 2: Auto-Cleaned -->
+<div class="rounded-lg p-space-md bg-surface-container-lowest text-on-surface flex items-start gap-space-md shadow-sm">
+<div class="w-11 h-11 rounded-full bg-tertiary flex items-center justify-center text-on-tertiary shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[22px]">auto_awesome</span>
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="font-headline-sm text-headline-sm font-bold text-on-surface leading-tight mb-1">
+          Poof! All gone.
+        </h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+          50 minutes passed, so we cleaned this up.
+        </p>
+</div>
+</div>
+<!-- Alert 3: Friendly Mistake -->
+<div class="rounded-lg p-space-md bg-error-container text-on-error-container flex items-start gap-space-md shadow-sm">
+<div class="w-11 h-11 rounded-full bg-error flex items-center justify-center text-on-error shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[22px]">replay</span>
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="font-headline-sm text-headline-sm font-bold text-error leading-tight mb-1">
+          Hmm, check that code
+        </h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+          We could not find that 6-letter code. Try typing it again!
+        </p>
+</div>
+</div>
+</div>
+<!-- Gentle Reassurance Pill Strip -->
+<div class="w-full mt-space-xl p-space-lg rounded-xl bg-surface-container-low flex flex-col md:flex-row items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-md">
+<div class="w-12 h-12 rounded-full bg-tertiary-container flex items-center justify-center text-on-tertiary-container shrink-0">
+<span class="material-symbols-outlined text-[26px]">shield</span>
+</div>
+<div>
+<p class="font-headline-sm text-headline-sm font-bold text-on-surface">
+          Have any questions?
+        </p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+          GhostDrop will never ask for your email address, phone number, or bank details.
+        </p>
+</div>
+</div>
+<div class="flex items-center gap-space-sm shrink-0">
+<a class="inline-flex items-center gap-space-xs px-6 py-3 rounded-full bg-secondary-container hover:bg-secondary text-on-secondary font-body-md text-body-md font-semibold transition-all shadow-sm" data-path="transfer" href="#">
+<span>Try it now</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</a>
+</div>
+</div>
+</div></main><footer class="w-full max-w-[1120px] mx-auto px-margin-mobile md:px-margin py-space-xl flex flex-col sm:flex-row items-center justify-between gap-space-md text-on-surface-variant font-body-sm text-body-sm"><div class="flex items-center gap-space-sm"><span class="w-2 h-2 rounded-full bg-primary-fixed"></span><span>Direct peer transfer • Zero storage footprint</span></div><div class="flex items-center gap-space-lg"><a class="hover:text-on-surface transition-colors" data-path="safety-privacy" href="#">Privacy</a><a class="hover:text-on-surface transition-colors" data-path="terms-of-use" href="#">Terms</a><a class="hover:text-on-surface transition-colors" data-path="direct-help" href="#">Help</a></div></footer></body></html>

@@ -1,0 +1,2485 @@
+{
+ "fileCount": 61,
+ "unicodeHits": [],
+ "cpInventory": [],
+ "jargonHits": [
+  {
+   "file": "src/components/nav/DesktopTopPillBar.tsx",
+   "line": 2,
+   "word": "TTL",
+   "snippet": "import { Clock, Plus } from 'lucide-react' <NL> import { TTL_LABELS, TTL_SHORT_LABELS } from '../../lib/constants' <NL> import { cn "
+  },
+  {
+   "file": "src/components/nav/DesktopTopPillBar.tsx",
+   "line": 2,
+   "word": "TTL",
+   "snippet": "import { Clock, Plus } from 'lucide-react' <NL> import { TTL_LABELS, TTL_SHORT_LABELS } from '../../lib/constants' <NL> import { cn } from '../."
+  },
+  {
+   "file": "src/components/nav/DesktopTopPillBar.tsx",
+   "line": 74,
+   "word": "TTL",
+   "snippet": "sName=\"hidden whitespace-nowrap lg:inline\"> <NL>             Auto-delete: {TTL_LABELS[ttlPreset]} <NL>           </span> <NL>           <span className=\"wh"
+  },
+  {
+   "file": "src/components/nav/DesktopTopPillBar.tsx",
+   "line": 76,
+   "word": "TTL",
+   "snippet": "     </span> <NL>           <span className=\"whitespace-nowrap lg:hidden\">{TTL_SHORT_LABELS[ttlPreset]}</span> <NL>         </div> <NL>  <NL>         <NestedPil"
+  },
+  {
+   "file": "src/components/nav/MobileBottomDock.tsx",
+   "line": 5,
+   "word": "TTL",
+   "snippet": "Icon } from 'lucide-react' <NL> import { cn } from '../../lib/cn' <NL> import { TTL_LABELS, TTL_PRESET_ORDER, TTL_SHORT_LABELS } from '../../lib/const"
+  },
+  {
+   "file": "src/components/nav/MobileBottomDock.tsx",
+   "line": 5,
+   "word": "TTL",
+   "snippet": "'lucide-react' <NL> import { cn } from '../../lib/cn' <NL> import { TTL_LABELS, TTL_PRESET_ORDER, TTL_SHORT_LABELS } from '../../lib/constants' <NL> import"
+  },
+  {
+   "file": "src/components/nav/MobileBottomDock.tsx",
+   "line": 5,
+   "word": "TTL",
+   "snippet": "ort { cn } from '../../lib/cn' <NL> import { TTL_LABELS, TTL_PRESET_ORDER, TTL_SHORT_LABELS } from '../../lib/constants' <NL> import { navigate, useRo"
+  },
+  {
+   "file": "src/components/nav/MobileBottomDock.tsx",
+   "line": 47,
+   "word": "TTL",
+   "snippet": "'scan', label: 'Scan QR', icon: ScanLine }, <NL>     { id: 'timer', label: TTL_SHORT_LABELS[ttlPreset], icon: Clock }, <NL>   ] <NL>  <NL>   const isSendPage = "
+  },
+  {
+   "file": "src/components/nav/MobileBottomDock.tsx",
+   "line": 103,
+   "word": "TTL",
+   "snippet": "iv> <NL>  <NL>           <ul className=\"mt-1 flex flex-col gap-1\"> <NL>             {TTL_PRESET_ORDER.map((preset) => { <NL>               const isSelected = pr"
+  },
+  {
+   "file": "src/components/nav/MobileBottomDock.tsx",
+   "line": 121,
+   "word": "TTL",
+   "snippet": "                    )} <NL>                   > <NL>                     <span>{TTL_LABELS[preset]}</span> <NL>                     {isSelected ? ( <NL>        "
+  },
+  {
+   "file": "src/components/pwa/InstallCard.tsx",
+   "line": 4,
+   "word": "PWA",
+   "snippet": "urce-of-truth.md FR-1.6, docs/02-brand-persona-and-copy.md <NL>  * SUCCESS_PWA_INSTALLED, decisions.md D-004. <NL>  * <NL>  * The card is a quiet offer, ne"
+  },
+  {
+   "file": "src/components/pwa/InstallCard.tsx",
+   "line": 29,
+   "word": "PWA",
+   "snippet": "^a-zA-Z0-9_-]/g, '')}` <NL>   const installedCopy = buildFeedback('SUCCESS_PWA_INSTALLED') <NL>  <NL>   const handleInstall = async (): Promise<void> => { <NL> "
+  },
+  {
+   "file": "src/components/qr/QrScannerModal.tsx",
+   "line": 30,
+   "word": "payload",
+   "snippet": "_NOT_FOUND = buildFeedback('ERR_ROOM_NOT_FOUND') <NL>  <NL> /** Turns a scanned payload into a room code, or null when it is not ours. */ <NL> function ext"
+  },
+  {
+   "file": "src/components/qr/QrScannerModal.tsx",
+   "line": 31,
+   "word": "payload",
+   "snippet": "a room code, or null when it is not ours. */ <NL> function extractRoomCode(payload: string): string | null { <NL>   const value = payload.trim() <NL>   if "
+  },
+  {
+   "file": "src/components/qr/QrScannerModal.tsx",
+   "line": 32,
+   "word": "payload",
+   "snippet": "ion extractRoomCode(payload: string): string | null { <NL>   const value = payload.trim() <NL>   if (value.length === 0) return null <NL>  <NL>   if (/^https?:\\"
+  },
+  {
+   "file": "src/components/room/FeedbackNotice.tsx",
+   "line": 36,
+   "word": "TTL",
+   "snippet": "R_COPY_BLOCKED: RefreshCw, <NL>   ERR_CHUNK_INTERRUPTED: RefreshCw, <NL>   WARN_TTL_EXPIRING_SOON: Clock, <NL>   INFO_TTL_EXPIRED: Sparkles, <NL> } <NL>  <NL> type Feedba"
+  },
+  {
+   "file": "src/components/room/FeedbackNotice.tsx",
+   "line": 37,
+   "word": "TTL",
+   "snippet": "CHUNK_INTERRUPTED: RefreshCw, <NL>   WARN_TTL_EXPIRING_SOON: Clock, <NL>   INFO_TTL_EXPIRED: Sparkles, <NL> } <NL>  <NL> type FeedbackNoticeProps = { <NL>   feedback: Roo"
+  },
+  {
+   "file": "src/components/room/FeedbackNotice.tsx",
+   "line": 59,
+   "word": "TTL",
+   "snippet": ", <NL>   className, <NL> }: FeedbackNoticeProps) { <NL>   if (feedback.key === 'INFO_TTL_EXPIRED') { <NL>     return ( <NL>       <PoofNotice <NL>         preset={feedbac"
+  },
+  {
+   "file": "src/components/room/FeedbackNotice.tsx",
+   "line": 28,
+   "word": "PWA",
+   "snippet": "UCCESS_FILE_SENT: Check, <NL>   SUCCESS_DROP_AND_NUKE: Sparkles, <NL>   SUCCESS_PWA_INSTALLED: Download, <NL>   SUCCESS_SHARE_CAUGHT: Share2, <NL>   ERR_SHARE_M"
+  },
+  {
+   "file": "src/components/room/FeedbackNotice.tsx",
+   "line": 35,
+   "word": "CHUNK",
+   "snippet": " <NL>   ERR_CAMERA_DENIED: CameraOff, <NL>   ERR_COPY_BLOCKED: RefreshCw, <NL>   ERR_CHUNK_INTERRUPTED: RefreshCw, <NL>   WARN_TTL_EXPIRING_SOON: Clock, <NL>   INFO_"
+  },
+  {
+   "file": "src/components/room/PoofNotice.tsx",
+   "line": 16,
+   "word": "TTL",
+   "snippet": " string <NL>   onDismiss: () => void <NL>   className?: string <NL> } <NL>  <NL> /** <NL>  * Joyful TTL expiry card. <NL>  * Copy: docs/02-brand-persona-and-copy.md INFO_TTL_E"
+  },
+  {
+   "file": "src/components/room/PoofNotice.tsx",
+   "line": 17,
+   "word": "TTL",
+   "snippet": "yful TTL expiry card. <NL>  * Copy: docs/02-brand-persona-and-copy.md INFO_TTL_EXPIRED. <NL>  */ <NL> export function PoofNotice({ preset, itemName, onDism"
+  },
+  {
+   "file": "src/components/room/PoofNotice.tsx",
+   "line": 20,
+   "word": "TTL",
+   "snippet": "s, className }: PoofNoticeProps) { <NL>   const copy = buildFeedback('INFO_TTL_EXPIRED', { <NL>     preset, <NL>     ...(itemName ? { itemName } : {}), <NL>   }"
+  },
+  {
+   "file": "src/components/room/TransferCard.tsx",
+   "line": 163,
+   "word": "CHUNK",
+   "snippet": " <NL>   if (item.status === 'error') { <NL>     const copy = buildFeedback('ERR_CHUNK_INTERRUPTED') <NL>  <NL>     return ( <NL>       <article className=\"flex items"
+  },
+  {
+   "file": "src/components/room/TtlPicker.tsx",
+   "line": 14,
+   "word": "TTL",
+   "snippet": "presets from docs/02-brand-persona-and-copy.md section 2. <NL>  * The word TTL never reaches the screen. <NL>  */ <NL> export const TTL_OPTIONS: readonly T"
+  },
+  {
+   "file": "src/components/room/TtlPicker.tsx",
+   "line": 16,
+   "word": "TTL",
+   "snippet": "section 2. <NL>  * The word TTL never reaches the screen. <NL>  */ <NL> export const TTL_OPTIONS: readonly TtlOption[] = [ <NL>   { preset: 'BURN_ON_COPY', labe"
+  },
+  {
+   "file": "src/components/room/TtlPicker.tsx",
+   "line": 46,
+   "word": "TTL",
+   "snippet": "rid-cols-4 sm:rounded-full', <NL>         className, <NL>       )} <NL>     > <NL>       {TTL_OPTIONS.map((option) => { <NL>         const isActive = option.preset ="
+  },
+  {
+   "file": "src/components/shell/ShellProvider.tsx",
+   "line": 12,
+   "word": "TTL",
+   "snippet": " from 'react' <NL> import type { ReactNode } from 'react' <NL> import { DEFAULT_TTL_PRESET } from '../../lib/constants' <NL> import type { TtlPreset } from"
+  },
+  {
+   "file": "src/components/shell/ShellProvider.tsx",
+   "line": 51,
+   "word": "TTL",
+   "snippet": "null) <NL>   const [ttlPreset, setTtlPreset] = useState<TtlPreset>(DEFAULT_TTL_PRESET) <NL>   const [scannerOpen, setScannerOpen] = useState(false) <NL>  <NL>  "
+  },
+  {
+   "file": "src/hooks/useGhostRoom.ts",
+   "line": 17,
+   "word": "P2P",
+   "snippet": "Receiver, <NL>   EphemeralStore, <NL>   generateRoomCode, <NL>   getRemainingMs, <NL>   isP2PError, <NL>   isValidRoomCode, <NL>   normalizeRoomCode, <NL>   PeerJsEngine, <NL>   st"
+  },
+  {
+   "file": "src/hooks/useGhostRoom.ts",
+   "line": 27,
+   "word": "P2P",
+   "snippet": "s, <NL> } from '../lib/p2p' <NL> import type { <NL>   DeviceType, <NL>   EphemeralItem, <NL>   P2PErrorCode, <NL>   P2PTransport, <NL>   PeerInfo, <NL>   PeerRole, <NL>   TransferProgre"
+  },
+  {
+   "file": "src/hooks/useGhostRoom.ts",
+   "line": 28,
+   "word": "P2P",
+   "snippet": "b/p2p' <NL> import type { <NL>   DeviceType, <NL>   EphemeralItem, <NL>   P2PErrorCode, <NL>   P2PTransport, <NL>   PeerInfo, <NL>   PeerRole, <NL>   TransferProgress, <NL>   TtlPreset,"
+  },
+  {
+   "file": "src/hooks/useGhostRoom.ts",
+   "line": 140,
+   "word": "P2P",
+   "snippet": "r onto a playful copy deck key. */ <NL> function feedbackKeyForError(code: P2PErrorCode, role: PeerRole): RoomFeedbackKey { <NL>   switch (code) { <NL>    "
+  },
+  {
+   "file": "src/hooks/useGhostRoom.ts",
+   "line": 153,
+   "word": "P2P",
+   "snippet": "urn 'ERR_CHUNK_INTERRUPTED' <NL>   } <NL> } <NL>  <NL> function isConnectionFailure(code: P2PErrorCode): boolean { <NL>   return ( <NL>     code === 'INVALID_ROOM_CODE' |"
+  },
+  {
+   "file": "src/hooks/useGhostRoom.ts",
+   "line": 529,
+   "word": "P2P",
+   "snippet": "        if (!active) return <NL>         const key = feedbackKeyForError(isP2PError(error) ? error.code : 'SIGNALING_ERROR', role) <NL>         setSta"
+  },
+  {
+   "file": "src/hooks/useGhostRoom.ts",
+   "line": 597,
+   "word": "P2P",
+   "snippet": "EER_DISCONNECTED')) <NL>         return 0 <NL>       } <NL>  <NL>       const transports: P2PTransport[] = [] <NL>       for (const peer of engine.peers) { <NL>         c"
+  },
+  {
+   "file": "src/hooks/useGhostRoom.ts",
+   "line": 327,
+   "word": "TTL",
+   "snippet": "amesRef.current.delete(id) <NL>     setFeedback( <NL>       buildFeedback('INFO_TTL_EXPIRED', { <NL>         preset: ttlPresetRef.current, <NL>         ...(item"
+  },
+  {
+   "file": "src/hooks/useGhostRoom.ts",
+   "line": 348,
+   "word": "TTL",
+   "snippet": "m.id) ?? item.fileName <NL>       setFeedback( <NL>         buildFeedback('WARN_TTL_EXPIRING_SOON', itemName ? { itemName } : undefined), <NL>       ) <NL>     "
+  },
+  {
+   "file": "src/hooks/useGhostRoom.ts",
+   "line": 696,
+   "word": "TTL",
+   "snippet": "at note' : undefined) <NL>         announce( <NL>           buildFeedback('INFO_TTL_EXPIRED', { <NL>             preset: 'BURN_ON_COPY', <NL>             ...(it"
+  },
+  {
+   "file": "src/hooks/useGhostRoom.ts",
+   "line": 721,
+   "word": "TTL",
+   "snippet": "mName = item.fileName <NL>         announce( <NL>           buildFeedback('INFO_TTL_EXPIRED', { <NL>             preset: 'BURN_ON_COPY', <NL>             ...(it"
+  },
+  {
+   "file": "src/hooks/useGhostRoom.ts",
+   "line": 149,
+   "word": "CHUNK",
+   "snippet": "M_NOT_FOUND' : 'ERR_PEER_DISCONNECTED' <NL>     default: <NL>       return 'ERR_CHUNK_INTERRUPTED' <NL>   } <NL> } <NL>  <NL> function isConnectionFailure(code: P2PErrorC"
+  },
+  {
+   "file": "src/hooks/useGhostRoom.ts",
+   "line": 405,
+   "word": "CHUNK",
+   "snippet": " { <NL>         if (!active) return <NL>         setFeedback(buildFeedback('ERR_CHUNK_INTERRUPTED')) <NL>       }, <NL>     }) <NL>  <NL>     const unsubscribePacket = en"
+  },
+  {
+   "file": "src/hooks/useGhostRoom.ts",
+   "line": 433,
+   "word": "CHUNK",
+   "snippet": "       return <NL>         } <NL>         case 'FILE_START': <NL>         case 'FILE_CHUNK': <NL>         case 'FILE_END': <NL>           receiver.handlePacket(packe"
+  },
+  {
+   "file": "src/hooks/useGhostRoom.ts",
+   "line": 455,
+   "word": "CHUNK",
+   "snippet": "t.id, { status: 'error' }) <NL>             setFeedback(buildFeedback('ERR_CHUNK_INTERRUPTED')) <NL>           } <NL>           return <NL>         } <NL>         ca"
+  },
+  {
+   "file": "src/hooks/useGhostRoom.ts",
+   "line": 582,
+   "word": "CHUNK",
+   "snippet": "      return true <NL>       } catch { <NL>         announce(buildFeedback('ERR_CHUNK_INTERRUPTED')) <NL>         return false <NL>       } <NL>     }, <NL>     [announce"
+  },
+  {
+   "file": "src/hooks/useGhostRoom.ts",
+   "line": 647,
+   "word": "CHUNK",
+   "snippet": "Item(id, { status: 'error' }) <NL>             announce(buildFeedback('ERR_CHUNK_INTERRUPTED')) <NL>             continue <NL>           } <NL>  <NL>           sent "
+  },
+  {
+   "file": "src/hooks/useGhostRoom.ts",
+   "line": 655,
+   "word": "CHUNK",
+   "snippet": "teItem(id, { status: 'error' }) <NL>           announce(buildFeedback('ERR_CHUNK_INTERRUPTED')) <NL>         } <NL>       } <NL>  <NL>       return sent <NL>     }, <NL>     ["
+  },
+  {
+   "file": "src/hooks/useGhostRoom.ts",
+   "line": 687,
+   "word": "CHUNK",
+   "snippet": "lse <NL>       } <NL>  <NL>       if (!copied) { <NL>         announce(buildFeedback('ERR_CHUNK_INTERRUPTED')) <NL>         return false <NL>       } <NL>  <NL>       // Burn on co"
+  },
+  {
+   "file": "src/hooks/useGhostRoom.ts",
+   "line": 280,
+   "word": "ACK",
+   "snippet": "([]) <NL>     setConnectionError(null) <NL>  <NL>     return () => { <NL>       // A lost ACK leaves an entry behind, so stale send metadata is dropped <NL>       //"
+  },
+  {
+   "file": "src/hooks/useGhostRoom.ts",
+   "line": 437,
+   "word": "ACK",
+   "snippet": "    receiver.handlePacket(packet) <NL>           return <NL>         case 'FILE_ACK': { <NL>           const meta = sendMetaRef.current.get(packet.id) <NL>     "
+  },
+  {
+   "file": "src/hooks/useGhostRoom.ts",
+   "line": 439,
+   "word": "ACK",
+   "snippet": "onst meta = sendMetaRef.current.get(packet.id) <NL>           // A relayed ACK for another device's file is not ours to settle. <NL>           if (!me"
+  },
+  {
+   "file": "src/hooks/useGhostRoom.ts",
+   "line": 306,
+   "word": "payload",
+   "snippet": "dreds of times per file. <NL>    */ <NL>   const publishProgress = useCallback((payload: TransferProgress) => { <NL>     const total = payload.totalBytes <NL>  "
+  },
+  {
+   "file": "src/hooks/useGhostRoom.ts",
+   "line": 307,
+   "word": "payload",
+   "snippet": "ress = useCallback((payload: TransferProgress) => { <NL>     const total = payload.totalBytes <NL>     const ratio = total > 0 ? payload.bytesTransfer"
+  },
+  {
+   "file": "src/hooks/useGhostRoom.ts",
+   "line": 308,
+   "word": "payload",
+   "snippet": " { <NL>     const total = payload.totalBytes <NL>     const ratio = total > 0 ? payload.bytesTransferred / total : payload.percent / 100 <NL>     const cla"
+  },
+  {
+   "file": "src/hooks/useGhostRoom.ts",
+   "line": 308,
+   "word": "payload",
+   "snippet": "ytes <NL>     const ratio = total > 0 ? payload.bytesTransferred / total : payload.percent / 100 <NL>     const clamped = Math.min(1, Math.max(0, rati"
+  },
+  {
+   "file": "src/hooks/useGhostRoom.ts",
+   "line": 312,
+   "word": "payload",
+   "snippet": "t = Math.round(clamped * 100) <NL>  <NL>     if (progressPercentRef.current.get(payload.id) === percent) return <NL>     progressPercentRef.current.set(pay"
+  },
+  {
+   "file": "src/hooks/useGhostRoom.ts",
+   "line": 313,
+   "word": "payload",
+   "snippet": "et(payload.id) === percent) return <NL>     progressPercentRef.current.set(payload.id, percent) <NL>  <NL>     if (!mountedRef.current) return <NL>     setProgr"
+  },
+  {
+   "file": "src/hooks/useGhostRoom.ts",
+   "line": 317,
+   "word": "payload",
+   "snippet": "mountedRef.current) return <NL>     setProgress((current) => <NL>       current[payload.id] === clamped ? current : { ...current, [payload.id]: clampe"
+  },
+  {
+   "file": "src/hooks/useGhostRoom.ts",
+   "line": 317,
+   "word": "payload",
+   "snippet": ") => <NL>       current[payload.id] === clamped ? current : { ...current, [payload.id]: clamped }, <NL>     ) <NL>   }, []) <NL>  <NL>   const handleExpire = useCall"
+  },
+  {
+   "file": "src/hooks/useGhostRoom.ts",
+   "line": 390,
+   "word": "payload",
+   "snippet": "send: (packet: WirePacket) => engine.send(packet), <NL>       onProgress: (payload) => engine.reportTransferProgress(payload), <NL>       onItem: (rec"
+  },
+  {
+   "file": "src/hooks/useGhostRoom.ts",
+   "line": 390,
+   "word": "payload",
+   "snippet": "packet), <NL>       onProgress: (payload) => engine.reportTransferProgress(payload), <NL>       onItem: (received) => { <NL>         if (!active || store.i"
+  },
+  {
+   "file": "src/hooks/useGhostRoom.ts",
+   "line": 474,
+   "word": "payload",
+   "snippet": "urce. <NL>     const unsubscribeProgress = engine.on('transfer:progress', (payload) => { <NL>       if (!active) return <NL>       publishProgress(payload)"
+  },
+  {
+   "file": "src/hooks/useGhostRoom.ts",
+   "line": 476,
+   "word": "payload",
+   "snippet": "ress', (payload) => { <NL>       if (!active) return <NL>       publishProgress(payload) <NL>     }) <NL>  <NL>     const unsubscribeStatus = engine.on('status', ({ "
+  },
+  {
+   "file": "src/hooks/useGhostRoom.ts",
+   "line": 638,
+   "word": "payload",
+   "snippet": "e.name, <NL>                 mime: file.type, <NL>                 onProgress: (payload) => engine.reportTransferProgress(payload), <NL>               }), <NL> "
+  },
+  {
+   "file": "src/hooks/useGhostRoom.ts",
+   "line": 638,
+   "word": "payload",
+   "snippet": "               onProgress: (payload) => engine.reportTransferProgress(payload), <NL>               }), <NL>             ), <NL>           ) <NL>  <NL>           cons"
+  },
+  {
+   "file": "src/hooks/useGhostRoom.ts",
+   "line": 113,
+   "word": "crypto",
+   "snippet": "    return null <NL>   } <NL> } <NL>  <NL> function createItemId(): string { <NL>   if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') { <NL>  "
+  },
+  {
+   "file": "src/hooks/useGhostRoom.ts",
+   "line": 113,
+   "word": "crypto",
+   "snippet": "reateItemId(): string { <NL>   if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') { <NL>     return crypto.randomUUID() <NL>   }"
+  },
+  {
+   "file": "src/hooks/useGhostRoom.ts",
+   "line": 114,
+   "word": "crypto",
+   "snippet": " 'undefined' && typeof crypto.randomUUID === 'function') { <NL>     return crypto.randomUUID() <NL>   } <NL>   return `drop-${Date.now().toString(36)}-${Ma"
+  },
+  {
+   "file": "src/hooks/useGhostRoom.ts",
+   "line": 7,
+   "word": "16KB",
+   "snippet": "ecycle, one signaling engine per room, <NL>  * inbound packet routing, the 16KB receiver, and the playful feedback layer. <NL>  * Nothing here renders"
+  },
+  {
+   "file": "src/hooks/useGhostRoom.ts",
+   "line": 250,
+   "word": "16KB",
+   "snippet": "Ref<TtlPreset>('50m') <NL>   /** Last committed whole percent per item, so 16KB frames never thrash React. */ <NL>   const progressPercentRef = useRef"
+  },
+  {
+   "file": "src/hooks/useGhostRoom.ts",
+   "line": 303,
+   "word": "16KB",
+   "snippet": "lue for the feed. <NL>    * One whole percent step per commit keeps a fast 16KB stream from <NL>    * re-rendering the page hundreds of times per file"
+  },
+  {
+   "file": "src/hooks/useShareIntake.ts",
+   "line": 52,
+   "word": "payload",
+   "snippet": "shared === 'error') return buildFeedback('ERR_SHARE_MISSED') <NL>  <NL>   const payload = await takeSharePayload() <NL>   if (!payload) return buildFeedbac"
+  },
+  {
+   "file": "src/hooks/useShareIntake.ts",
+   "line": 53,
+   "word": "payload",
+   "snippet": "ERR_SHARE_MISSED') <NL>  <NL>   const payload = await takeSharePayload() <NL>   if (!payload) return buildFeedback('ERR_SHARE_MISSED') <NL>  <NL>   stashPendingDrop("
+  },
+  {
+   "file": "src/hooks/useShareIntake.ts",
+   "line": 56,
+   "word": "payload",
+   "snippet": "R_SHARE_MISSED') <NL>  <NL>   stashPendingDrop({ <NL>     files: sharePayloadToFiles(payload), <NL>     text: payload.text, <NL>   }) <NL>  <NL>   return buildFeedback('SUCCES"
+  },
+  {
+   "file": "src/hooks/useShareIntake.ts",
+   "line": 57,
+   "word": "payload",
+   "snippet": "stashPendingDrop({ <NL>     files: sharePayloadToFiles(payload), <NL>     text: payload.text, <NL>   }) <NL>  <NL>   return buildFeedback('SUCCESS_SHARE_CAUGHT') <NL> } <NL>  <NL> "
+  },
+  {
+   "file": "src/hooks/useShareIntake.ts",
+   "line": 19,
+   "word": "Payload",
+   "snippet": "' <NL> import { stashPendingDrop } from '../lib/pendingDrop' <NL> import { sharePayloadToFiles, takeSharePayload } from '../lib/shareHandoff' <NL>  <NL> export "
+  },
+  {
+   "file": "src/hooks/useShareIntake.ts",
+   "line": 19,
+   "word": "Payload",
+   "snippet": "op } from '../lib/pendingDrop' <NL> import { sharePayloadToFiles, takeSharePayload } from '../lib/shareHandoff' <NL>  <NL> export interface ShareIntake { <NL>  "
+  },
+  {
+   "file": "src/hooks/useShareIntake.ts",
+   "line": 52,
+   "word": "Payload",
+   "snippet": "n buildFeedback('ERR_SHARE_MISSED') <NL>  <NL>   const payload = await takeSharePayload() <NL>   if (!payload) return buildFeedback('ERR_SHARE_MISSED') <NL>  <NL>   "
+  },
+  {
+   "file": "src/hooks/useShareIntake.ts",
+   "line": 56,
+   "word": "Payload",
+   "snippet": "ildFeedback('ERR_SHARE_MISSED') <NL>  <NL>   stashPendingDrop({ <NL>     files: sharePayloadToFiles(payload), <NL>     text: payload.text, <NL>   }) <NL>  <NL>   return buildF"
+  },
+  {
+   "file": "src/hooks/useTtlJanitor.ts",
+   "line": 2,
+   "word": "TTL",
+   "snippet": "/** <NL>  * 1 second TTL sweep for the ephemeral store. <NL>  * Source: docs/00-prd-source-of-tr"
+  },
+  {
+   "file": "src/hooks/useTtlJanitor.ts",
+   "line": 15,
+   "word": "TTL",
+   "snippet": "or' <NL> import { getRemainingMs } from '../lib/p2p/janitor' <NL>  <NL> export const TTL_SWEEP_INTERVAL_MS = 1000 <NL>  <NL> export interface TtlJanitorOptions { <NL>   s"
+  },
+  {
+   "file": "src/hooks/useTtlJanitor.ts",
+   "line": 36,
+   "word": "TTL",
+   "snippet": "ber | null <NL> } <NL>  <NL> export function useTtlJanitor({ <NL>   store, <NL>   intervalMs = TTL_SWEEP_INTERVAL_MS, <NL>   onExpire, <NL>   enabled = true, <NL> }: TtlJanitorOpti"
+  },
+  {
+   "file": "src/index.css",
+   "line": 239,
+   "word": "TTL",
+   "snippet": " animation: squiggle-tip-pulse 1600ms var(--ease-out) infinite; <NL> } <NL>  <NL> /* TTL lifecycle motion. Source: docs/05-motion-spec.md sections 1.3, 1.4"
+  },
+  {
+   "file": "src/lib/constants.ts",
+   "line": 6,
+   "word": "TTL",
+   "snippet": "-013. */ <NL> export const DEMO_ROOM_CODE = 'GHST48' <NL>  <NL> export const DEFAULT_TTL_PRESET: TtlPreset = '50m' <NL>  <NL> /** <NL>  * Auto-delete choices exactly as t"
+  },
+  {
+   "file": "src/lib/constants.ts",
+   "line": 12,
+   "word": "TTL",
+   "snippet": "d-persona-and-copy.md section 2, decisions.md D-012. <NL>  */ <NL> export const TTL_PRESET_ORDER: readonly TtlPreset[] = ['BURN_ON_COPY', '15m', '50m'"
+  },
+  {
+   "file": "src/lib/constants.ts",
+   "line": 14,
+   "word": "TTL",
+   "snippet": "lPreset[] = ['BURN_ON_COPY', '15m', '50m', 'TAB_CLOSE'] <NL>  <NL> export const TTL_LABELS: Readonly<Record<TtlPreset, string>> = { <NL>   BURN_ON_COPY: 'D"
+  },
+  {
+   "file": "src/lib/constants.ts",
+   "line": 23,
+   "word": "TTL",
+   "snippet": " page', <NL> } <NL>  <NL> /** Short dock label for the same presets. */ <NL> export const TTL_SHORT_LABELS: Readonly<Record<TtlPreset, string>> = { <NL>   BURN_ON_CO"
+  },
+  {
+   "file": "src/lib/copyDeck.ts",
+   "line": 28,
+   "word": "TTL",
+   "snippet": "_DENIED' <NL>   | 'ERR_COPY_BLOCKED' <NL>   | 'ERR_CHUNK_INTERRUPTED' <NL>   | 'WARN_TTL_EXPIRING_SOON' <NL>   | 'INFO_TTL_EXPIRED' <NL>  <NL> export type RoomFeedbackTon"
+  },
+  {
+   "file": "src/lib/copyDeck.ts",
+   "line": 29,
+   "word": "TTL",
+   "snippet": "D' <NL>   | 'ERR_CHUNK_INTERRUPTED' <NL>   | 'WARN_TTL_EXPIRING_SOON' <NL>   | 'INFO_TTL_EXPIRED' <NL>  <NL> export type RoomFeedbackTone = 'success' | 'error' | 'wa"
+  },
+  {
+   "file": "src/lib/copyDeck.ts",
+   "line": 204,
+   "word": "TTL",
+   "snippet": "once more!', <NL>         actionLabel: 'Try Again', <NL>       } <NL>     case 'WARN_TTL_EXPIRING_SOON': <NL>       return { <NL>         key, <NL>         tone: 'warning"
+  },
+  {
+   "file": "src/lib/copyDeck.ts",
+   "line": 213,
+   "word": "TTL",
+   "snippet": "    actionLabel: 'Save Now', <NL>         itemName, <NL>       } <NL>     case 'INFO_TTL_EXPIRED': <NL>       return { <NL>         key, <NL>         tone: 'info', <NL>       "
+  },
+  {
+   "file": "src/lib/copyDeck.ts",
+   "line": 20,
+   "word": "PWA",
+   "snippet": "IED' <NL>   | 'SUCCESS_FILE_SENT' <NL>   | 'SUCCESS_DROP_AND_NUKE' <NL>   | 'SUCCESS_PWA_INSTALLED' <NL>   | 'SUCCESS_SHARE_CAUGHT' <NL>   | 'ERR_SHARE_MISSED' <NL>   | '"
+  },
+  {
+   "file": "src/lib/copyDeck.ts",
+   "line": 138,
+   "word": "PWA",
+   "snippet": "     actionLabel: 'Done', <NL>         roomCode, <NL>       } <NL>     case 'SUCCESS_PWA_INSTALLED': <NL>       return { <NL>         key, <NL>         tone: 'success', <NL>  "
+  },
+  {
+   "file": "src/lib/copyDeck.ts",
+   "line": 147,
+   "word": "PWA",
+   "snippet": "e 'SUCCESS_SHARE_CAUGHT': <NL>       // Source: docs/design.md section 6.1 PWA Share Target Received. <NL>       return { <NL>         key, <NL>         tone: '"
+  },
+  {
+   "file": "src/lib/copyDeck.ts",
+   "line": 27,
+   "word": "CHUNK",
+   "snippet": "DISCONNECTED' <NL>   | 'ERR_CAMERA_DENIED' <NL>   | 'ERR_COPY_BLOCKED' <NL>   | 'ERR_CHUNK_INTERRUPTED' <NL>   | 'WARN_TTL_EXPIRING_SOON' <NL>   | 'INFO_TTL_EXPIRED'"
+  },
+  {
+   "file": "src/lib/copyDeck.ts",
+   "line": 188,
+   "word": "CHUNK",
+   "snippet": "reen below.', <NL>         actionLabel: 'Type Code', <NL>       } <NL>     case 'ERR_CHUNK_INTERRUPTED': <NL>       return { <NL>         key, <NL>         tone: 'error',"
+  },
+  {
+   "file": "src/lib/copyDeck.ts",
+   "line": 55,
+   "word": "ACK",
+   "snippet": "eName?: string <NL>   itemName?: string <NL>   preset?: TtlPreset <NL> } <NL>  <NL> const FALLBACK_ITEM = 'that item' <NL>  <NL> function poofBody(preset: TtlPreset | undefine"
+  },
+  {
+   "file": "src/lib/copyDeck.ts",
+   "line": 58,
+   "word": "ACK",
+   "snippet": "emName: string | undefined): string { <NL>   const name = itemName ?? FALLBACK_ITEM <NL>  <NL>   switch (preset) { <NL>     case 'BURN_ON_COPY': <NL>       return `Y"
+  },
+  {
+   "file": "src/lib/p2p/adapter.ts",
+   "line": 83,
+   "word": "RTCDataChannel",
+   "snippet": " transport surface consumed by the 16KB streamer. <NL>  * Implemented over RTCDataChannel with bufferedAmount backpressure. <NL>  */ <NL> export interface "
+  },
+  {
+   "file": "src/lib/p2p/adapter.ts",
+   "line": 83,
+   "word": "DataChannel",
+   "snippet": "ansport surface consumed by the 16KB streamer. <NL>  * Implemented over RTCDataChannel with bufferedAmount backpressure. <NL>  */ <NL> export interface P2P"
+  },
+  {
+   "file": "src/lib/p2p/adapter.ts",
+   "line": 3,
+   "word": "PeerJS",
+   "snippet": "/** <NL>  * Signaling adapter contract. <NL>  * Nothing in this file talks to PeerJS, so a SupabaseRealtimeAdapter can be <NL>  * dropped in later withou"
+  },
+  {
+   "file": "src/lib/p2p/adapter.ts",
+   "line": 8,
+   "word": "P2P",
+   "snippet": "nsferProgress, WirePacket } from '../../types/protocol' <NL> import type { P2PErrorCode } from './errors' <NL>  <NL> export type PeerRole = 'host' | 'peer'"
+  },
+  {
+   "file": "src/lib/p2p/adapter.ts",
+   "line": 12,
+   "word": "P2P",
+   "snippet": " from './errors' <NL>  <NL> export type PeerRole = 'host' | 'peer' <NL>  <NL> export type P2PStatus = <NL>   | 'idle' <NL>   | 'connecting' <NL>   | 'connected' <NL>   | 'reconnect"
+  },
+  {
+   "file": "src/lib/p2p/adapter.ts",
+   "line": 43,
+   "word": "P2P",
+   "snippet": "ayBuffer <NL>   from: string <NL> } <NL>  <NL> export interface StatusPayload { <NL>   status: P2PStatus <NL>   detail?: string <NL> } <NL>  <NL> export interface ErrorPayload { <NL>   code:"
+  },
+  {
+   "file": "src/lib/p2p/adapter.ts",
+   "line": 48,
+   "word": "P2P",
+   "snippet": "2PStatus <NL>   detail?: string <NL> } <NL>  <NL> export interface ErrorPayload { <NL>   code: P2PErrorCode <NL>   message: string <NL> } <NL>  <NL> export interface P2PEventMap { <NL>   'pe"
+  },
+  {
+   "file": "src/lib/p2p/adapter.ts",
+   "line": 52,
+   "word": "P2P",
+   "snippet": "rPayload { <NL>   code: P2PErrorCode <NL>   message: string <NL> } <NL>  <NL> export interface P2PEventMap { <NL>   'peer:join': PeerInfo <NL>   'peer:leave': PeerLeavePayload"
+  },
+  {
+   "file": "src/lib/p2p/adapter.ts",
+   "line": 62,
+   "word": "P2P",
+   "snippet": ": ErrorPayload <NL>   'transfer:progress': TransferProgress <NL> } <NL>  <NL> export type P2PEventName = keyof P2PEventMap <NL>  <NL> export type P2PEventListener<K exten"
+  },
+  {
+   "file": "src/lib/p2p/adapter.ts",
+   "line": 62,
+   "word": "P2P",
+   "snippet": "nsfer:progress': TransferProgress <NL> } <NL>  <NL> export type P2PEventName = keyof P2PEventMap <NL>  <NL> export type P2PEventListener<K extends P2PEventName> = (p"
+  },
+  {
+   "file": "src/lib/p2p/adapter.ts",
+   "line": 64,
+   "word": "P2P",
+   "snippet": "Progress <NL> } <NL>  <NL> export type P2PEventName = keyof P2PEventMap <NL>  <NL> export type P2PEventListener<K extends P2PEventName> = (payload: P2PEventMap[K]) ="
+  },
+  {
+   "file": "src/lib/p2p/adapter.ts",
+   "line": 64,
+   "word": "P2P",
+   "snippet": "EventName = keyof P2PEventMap <NL>  <NL> export type P2PEventListener<K extends P2PEventName> = (payload: P2PEventMap[K]) => void <NL>  <NL> export interface P2"
+  },
+  {
+   "file": "src/lib/p2p/adapter.ts",
+   "line": 64,
+   "word": "P2P",
+   "snippet": "Map <NL>  <NL> export type P2PEventListener<K extends P2PEventName> = (payload: P2PEventMap[K]) => void <NL>  <NL> export interface P2PConnectOptions { <NL>   roomCo"
+  },
+  {
+   "file": "src/lib/p2p/adapter.ts",
+   "line": 66,
+   "word": "P2P",
+   "snippet": "s P2PEventName> = (payload: P2PEventMap[K]) => void <NL>  <NL> export interface P2PConnectOptions { <NL>   roomCode: string <NL>   role: PeerRole <NL>   deviceName: "
+  },
+  {
+   "file": "src/lib/p2p/adapter.ts",
+   "line": 74,
+   "word": "P2P",
+   "snippet": "g <NL>   deviceType: DeviceType <NL>   signal?: AbortSignal <NL> } <NL>  <NL> export interface P2PSendOptions { <NL>   /** Restrict delivery to one peer id. Omit to reach"
+  },
+  {
+   "file": "src/lib/p2p/adapter.ts",
+   "line": 85,
+   "word": "P2P",
+   "snippet": "RTCDataChannel with bufferedAmount backpressure. <NL>  */ <NL> export interface P2PTransport { <NL>   readonly peerId: string <NL>   readonly isOpen: boolean <NL>   "
+  },
+  {
+   "file": "src/lib/p2p/adapter.ts",
+   "line": 104,
+   "word": "P2P",
+   "snippet": "fferedAmountLow(listener: () => void): () => void <NL> } <NL>  <NL> export interface P2PSignalingAdapter { <NL>   readonly role: PeerRole | null <NL>   readonly room"
+  },
+  {
+   "file": "src/lib/p2p/adapter.ts",
+   "line": 108,
+   "word": "P2P",
+   "snippet": "ly roomCode: string <NL>   readonly localPeerId: string <NL>   readonly status: P2PStatus <NL>   readonly peers: readonly PeerInfo[] <NL>  <NL>   isConnected(): bool"
+  },
+  {
+   "file": "src/lib/p2p/adapter.ts",
+   "line": 113,
+   "word": "P2P",
+   "snippet": "rs: readonly PeerInfo[] <NL>  <NL>   isConnected(): boolean <NL>  <NL>   connect(options: P2PConnectOptions): Promise<void> <NL>   disconnect(): void <NL>   destroy(): vo"
+  },
+  {
+   "file": "src/lib/p2p/adapter.ts",
+   "line": 118,
+   "word": "P2P",
+   "snippet": " a set of peers, or everyone. */ <NL>   send(packet: WirePacket, options?: P2PSendOptions): void <NL>   /** <NL>    * Sends one raw binary frame. Rejects w"
+  },
+  {
+   "file": "src/lib/p2p/adapter.ts",
+   "line": 123,
+   "word": "P2P",
+   "snippet": "n `CHUNK_SIZE_BYTES`. <NL>    */ <NL>   sendBinary(data: ArrayBuffer, options?: P2PSendOptions): Promise<void> <NL>   /** Sends a packet to every connected"
+  },
+  {
+   "file": "src/lib/p2p/adapter.ts",
+   "line": 127,
+   "word": "P2P",
+   "snippet": " broadcast(packet: WirePacket): void <NL>  <NL>   getTransport(peerId: string): P2PTransport | null <NL>  <NL>   /** Publishes local transfer progress through t"
+  },
+  {
+   "file": "src/lib/p2p/adapter.ts",
+   "line": 132,
+   "word": "P2P",
+   "snippet": "ortTransferProgress(progress: TransferProgress): void <NL>  <NL>   on<K extends P2PEventName>(event: K, listener: P2PEventListener<K>): () => void <NL>   o"
+  },
+  {
+   "file": "src/lib/p2p/adapter.ts",
+   "line": 132,
+   "word": "P2P",
+   "snippet": "sferProgress): void <NL>  <NL>   on<K extends P2PEventName>(event: K, listener: P2PEventListener<K>): () => void <NL>   off<K extends P2PEventName>(event: "
+  },
+  {
+   "file": "src/lib/p2p/adapter.ts",
+   "line": 133,
+   "word": "P2P",
+   "snippet": "(event: K, listener: P2PEventListener<K>): () => void <NL>   off<K extends P2PEventName>(event: K, listener: P2PEventListener<K>): void <NL> } <NL> "
+  },
+  {
+   "file": "src/lib/p2p/adapter.ts",
+   "line": 133,
+   "word": "P2P",
+   "snippet": "ner<K>): () => void <NL>   off<K extends P2PEventName>(event: K, listener: P2PEventListener<K>): void <NL> } <NL> "
+  },
+  {
+   "file": "src/lib/p2p/adapter.ts",
+   "line": 121,
+   "word": "CHUNK",
+   "snippet": "en no channel is open or when the <NL>    * frame is empty or larger than `CHUNK_SIZE_BYTES`. <NL>    */ <NL>   sendBinary(data: ArrayBuffer, options?: P2P"
+  },
+  {
+   "file": "src/lib/p2p/adapter.ts",
+   "line": 64,
+   "word": "payload",
+   "snippet": " P2PEventMap <NL>  <NL> export type P2PEventListener<K extends P2PEventName> = (payload: P2PEventMap[K]) => void <NL>  <NL> export interface P2PConnectOptions {"
+  },
+  {
+   "file": "src/lib/p2p/adapter.ts",
+   "line": 27,
+   "word": "Payload",
+   "snippet": "ceType: DeviceType <NL>   connectedAt: number <NL> } <NL>  <NL> export interface PeerLeavePayload { <NL>   peerId: string <NL>   reason: string <NL> } <NL>  <NL> export interface Packet"
+  },
+  {
+   "file": "src/lib/p2p/adapter.ts",
+   "line": 32,
+   "word": "Payload",
+   "snippet": "Payload { <NL>   peerId: string <NL>   reason: string <NL> } <NL>  <NL> export interface PacketPayload { <NL>   packet: WirePacket <NL>   from: string <NL> } <NL>  <NL> export interface Bina"
+  },
+  {
+   "file": "src/lib/p2p/adapter.ts",
+   "line": 37,
+   "word": "Payload",
+   "snippet": "yload { <NL>   packet: WirePacket <NL>   from: string <NL> } <NL>  <NL> export interface BinaryPayload { <NL>   data: ArrayBuffer <NL>   from: string <NL> } <NL>  <NL> export interface Statu"
+  },
+  {
+   "file": "src/lib/p2p/adapter.ts",
+   "line": 42,
+   "word": "Payload",
+   "snippet": "ayload { <NL>   data: ArrayBuffer <NL>   from: string <NL> } <NL>  <NL> export interface StatusPayload { <NL>   status: P2PStatus <NL>   detail?: string <NL> } <NL>  <NL> export interface Er"
+  },
+  {
+   "file": "src/lib/p2p/adapter.ts",
+   "line": 47,
+   "word": "Payload",
+   "snippet": "load { <NL>   status: P2PStatus <NL>   detail?: string <NL> } <NL>  <NL> export interface ErrorPayload { <NL>   code: P2PErrorCode <NL>   message: string <NL> } <NL>  <NL> export interface P"
+  },
+  {
+   "file": "src/lib/p2p/adapter.ts",
+   "line": 54,
+   "word": "Payload",
+   "snippet": "erface P2PEventMap { <NL>   'peer:join': PeerInfo <NL>   'peer:leave': PeerLeavePayload <NL>   packet: PacketPayload <NL>   binary: BinaryPayload <NL>   status: Stat"
+  },
+  {
+   "file": "src/lib/p2p/adapter.ts",
+   "line": 55,
+   "word": "Payload",
+   "snippet": "peer:join': PeerInfo <NL>   'peer:leave': PeerLeavePayload <NL>   packet: PacketPayload <NL>   binary: BinaryPayload <NL>   status: StatusPayload <NL>   error: Error"
+  },
+  {
+   "file": "src/lib/p2p/adapter.ts",
+   "line": 56,
+   "word": "Payload",
+   "snippet": "peer:leave': PeerLeavePayload <NL>   packet: PacketPayload <NL>   binary: BinaryPayload <NL>   status: StatusPayload <NL>   error: ErrorPayload <NL>   'transfer:prog"
+  },
+  {
+   "file": "src/lib/p2p/adapter.ts",
+   "line": 57,
+   "word": "Payload",
+   "snippet": "yload <NL>   packet: PacketPayload <NL>   binary: BinaryPayload <NL>   status: StatusPayload <NL>   error: ErrorPayload <NL>   'transfer:progress': TransferProgress <NL> "
+  },
+  {
+   "file": "src/lib/p2p/adapter.ts",
+   "line": 58,
+   "word": "Payload",
+   "snippet": "Payload <NL>   binary: BinaryPayload <NL>   status: StatusPayload <NL>   error: ErrorPayload <NL>   'transfer:progress': TransferProgress <NL> } <NL>  <NL> export type P2PEven"
+  },
+  {
+   "file": "src/lib/p2p/adapter.ts",
+   "line": 83,
+   "word": "backpressure",
+   "snippet": "16KB streamer. <NL>  * Implemented over RTCDataChannel with bufferedAmount backpressure. <NL>  */ <NL> export interface P2PTransport { <NL>   readonly peerId: s"
+  },
+  {
+   "file": "src/lib/p2p/adapter.ts",
+   "line": 82,
+   "word": "16KB",
+   "snippet": "string[] <NL> } <NL>  <NL> /** <NL>  * Minimal per-peer transport surface consumed by the 16KB streamer. <NL>  * Implemented over RTCDataChannel with bufferedAmount "
+  },
+  {
+   "file": "src/lib/p2p/adapter.ts",
+   "line": 92,
+   "word": "16KB",
+   "snippet": "d <NL>   /** Enqueues one binary frame. Rejects when closed or outside the 16KB budget. */ <NL>   sendBinary(data: ArrayBuffer): Promise<void> <NL>   /** <NL>  "
+  },
+  {
+   "file": "src/lib/p2p/adapter.ts",
+   "line": 97,
+   "word": "16KB",
+   "snippet": ". Rejects when the <NL>    * channel is closed or the frame is outside the 16KB budget. <NL>    */ <NL>   sendFrame(headerText: string, data: ArrayBuffer):"
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 21,
+   "word": "P2P",
+   "snippet": "ransferProgress, <NL>   WirePacket, <NL> } from '../../types/protocol' <NL> import { P2PError, type P2PErrorCode } from './errors' <NL>  <NL> /** Bounded memory of t"
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 21,
+   "word": "P2P",
+   "snippet": ", <NL>   WirePacket, <NL> } from '../../types/protocol' <NL> import { P2PError, type P2PErrorCode } from './errors' <NL>  <NL> /** Bounded memory of transfer ids tha"
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 51,
+   "word": "P2P",
+   "snippet": "onProgress?: (progress: TransferProgress) => void <NL>   onError?: (error: P2PError) => void <NL>   maxConcurrentTransfers?: number <NL>   maxTotalBytes?: "
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 76,
+   "word": "P2P",
+   "snippet": "erProgress) => void) | undefined <NL>   private readonly onError: ((error: P2PError) => void) | undefined <NL>   private readonly maxConcurrentTransfe"
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 138,
+   "word": "P2P",
+   "snippet": "wance -= 1 <NL>         return <NL>       } <NL>       this.reportError( <NL>         new P2PError('PROTOCOL_ERROR', 'Binary frame arrived without a FILE_CHUNK "
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 236,
+   "word": "P2P",
+   "snippet": "ransferIds.has(header.id)) return <NL>       this.reportError( <NL>         new P2PError('UNKNOWN_TRANSFER', 'FILE_CHUNK arrived for an unknown transf"
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 273,
+   "word": "P2P",
+   "snippet": "f (this.settledTransferIds.has(id)) return <NL>       this.reportError(new P2PError('UNKNOWN_TRANSFER', 'FILE_END arrived for an unknown transfer"
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 338,
+   "word": "P2P",
+   "snippet": "m?.(item) <NL>   } <NL>  <NL>   private failTransfer(transfer: ActiveTransfer, code: P2PErrorCode, message: string): void { <NL>     const id = transfer.start.i"
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 343,
+   "word": "P2P",
+   "snippet": "arkSettled(id) <NL>     this.sendAck(id, 'ERROR') <NL>     this.reportError(new P2PError(code, message)) <NL>   } <NL>  <NL>   /** Remembers a finished id with bound"
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 358,
+   "word": "P2P",
+   "snippet": "value) <NL>     } <NL>   } <NL>  <NL>   private rejectStart(start: FileStartPacket, code: P2PErrorCode, message: string): void { <NL>     // Settle first so trailing"
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 366,
+   "word": "P2P",
+   "snippet": "S, <NL>     ) <NL>     this.sendAck(start.id, 'ERROR') <NL>     this.reportError(new P2PError(code, message)) <NL>   } <NL>  <NL>   private sendAck(id: string, status: Fi"
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 375,
+   "word": "P2P",
+   "snippet": "   } catch (error) { <NL>       this.reportError( <NL>         error instanceof P2PError <NL>           ? error <NL>           : new P2PError('NO_OPEN_CHANNEL',"
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 377,
+   "word": "P2P",
+   "snippet": "( <NL>         error instanceof P2PError <NL>           ? error <NL>           : new P2PError('NO_OPEN_CHANNEL', 'Could not send FILE_ACK'), <NL>       ) <NL>     } <NL> "
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 415,
+   "word": "P2P",
+   "snippet": "turn transfer <NL>     } <NL>     return null <NL>   } <NL>  <NL>   private reportError(error: P2PError): void { <NL>     this.onError?.(error) <NL>   } <NL> } <NL> "
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 24,
+   "word": "TTL",
+   "snippet": "ory of transfer ids that already finished (or failed). */ <NL> const MAX_SETTLED_TRANSFER_IDS = 64 <NL>  <NL> /** <NL>  * A rejected FILE_START cannot cancel a "
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 351,
+   "word": "TTL",
+   "snippet": "dTransferIds.add(id) <NL>  <NL>     while (this.settledTransferIds.size > MAX_SETTLED_TRANSFER_IDS) { <NL>       const oldest = this.settledTransferIds.val"
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 64,
+   "word": "chunk",
+   "snippet": "ngth: number <NL> } <NL>  <NL> interface ActiveTransfer { <NL>   start: FileStartPacket <NL>   chunks: ArrayBuffer[] <NL>   bytesReceived: number <NL>   chunksReceived: number"
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 66,
+   "word": "chunk",
+   "snippet": "rt: FileStartPacket <NL>   chunks: ArrayBuffer[] <NL>   bytesReceived: number <NL>   chunksReceived: number <NL>   pending: PendingChunk | null <NL>   startedAt: num"
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 164,
+   "word": "chunk",
+   "snippet": " overflowed the declared file size') <NL>       return <NL>     } <NL>  <NL>     transfer.chunks.push(data) <NL>     transfer.bytesReceived += data.byteLength <NL>     tr"
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 166,
+   "word": "chunk",
+   "snippet": "push(data) <NL>     transfer.bytesReceived += data.byteLength <NL>     transfer.chunksReceived += 1 <NL>  <NL>     this.reportProgress(transfer) <NL>  <NL>     if (transf"
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 170,
+   "word": "chunk",
+   "snippet": "nksReceived += 1 <NL>  <NL>     this.reportProgress(transfer) <NL>  <NL>     if (transfer.chunksReceived === transfer.start.totalChunks) { <NL>       this.finishTran"
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 202,
+   "word": "chunk",
+   "snippet": "Chunks) { <NL>       this.rejectStart(start, 'PROTOCOL_ERROR', 'FILE_START chunk count does not match the size') <NL>       return <NL>     } <NL>  <NL>     if (this"
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 217,
+   "word": "chunk",
+   "snippet": "At = this.now() <NL>     this.transfers.set(start.id, { <NL>       start, <NL>       chunks: [], <NL>       bytesReceived: 0, <NL>       chunksReceived: 0, <NL>       pen"
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 219,
+   "word": "chunk",
+   "snippet": "rt.id, { <NL>       start, <NL>       chunks: [], <NL>       bytesReceived: 0, <NL>       chunksReceived: 0, <NL>       pending: null, <NL>       startedAt, <NL>       lastPro"
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 242,
+   "word": "chunk",
+   "snippet": "ding) { <NL>       this.failTransfer(transfer, 'PROTOCOL_ERROR', 'Previous chunk frame never arrived') <NL>       return <NL>     } <NL>  <NL>     if (header.index !"
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 246,
+   "word": "chunk",
+   "snippet": "never arrived') <NL>       return <NL>     } <NL>  <NL>     if (header.index !== transfer.chunksReceived) { <NL>       this.failTransfer(transfer, 'PROTOCOL_ERROR', "
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 269,
+   "word": "chunk",
+   "snippet": "sfer = this.transfers.get(id) <NL>  <NL>     if (!transfer) { <NL>       // The last chunk finishes the transfer before FILE_END arrives (and a <NL>       // ze"
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 282,
+   "word": "chunk",
+   "snippet": "d before the last binary frame') <NL>       return <NL>     } <NL>  <NL>     if (transfer.chunksReceived !== transfer.start.totalChunks) { <NL>       this.failTransf"
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 286,
+   "word": "chunk",
+   "snippet": "fer, <NL>         'PROTOCOL_ERROR', <NL>         'FILE_END arrived before every chunk was received', <NL>       ) <NL>       return <NL>     } <NL>  <NL>     if (transfer.byte"
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 296,
+   "word": "chunk",
+   "snippet": "h FILE_START') <NL>       return <NL>     } <NL>  <NL>     const blob = new Blob(transfer.chunks, { type: transfer.start.mime }) <NL>     if (blob.size !== transfer."
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 324,
+   "word": "chunk",
+   "snippet": "  bytesTransferred: item.size, <NL>         totalBytes: item.size, <NL>         chunksTransferred: item.totalChunks, <NL>         totalChunks: item.totalCh"
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 386,
+   "word": "chunk",
+   "snippet": "s) return <NL>  <NL>     const now = this.now() <NL>     const isComplete = transfer.chunksReceived === transfer.start.totalChunks <NL>     if (!isComplete && n"
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 396,
+   "word": "chunk",
+   "snippet": "    bytesTransferred: transfer.bytesReceived, <NL>       totalBytes, <NL>       chunksTransferred: transfer.chunksReceived, <NL>       totalChunks: transfe"
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 396,
+   "word": "chunk",
+   "snippet": "er.bytesReceived, <NL>       totalBytes, <NL>       chunksTransferred: transfer.chunksReceived, <NL>       totalChunks: transfer.start.totalChunks, <NL>       p"
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 3,
+   "word": "CHUNK",
+   "snippet": "/** <NL>  * Chunk receiver and reassembler. <NL>  * Accepts FILE_START, FILE_CHUNK header plus binary frame, and FILE_END, <NL>  * validates every frame"
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 10,
+   "word": "CHUNK",
+   "snippet": "ol-and-tech-spec.md section 3 and decisions.md D-011. <NL>  */ <NL>  <NL> import { <NL>   CHUNK_SIZE_BYTES, <NL>   MAX_CONCURRENT_TRANSFERS, <NL>   MAX_TOTAL_TRANSFER_BYT"
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 32,
+   "word": "CHUNK",
+   "snippet": " <NL> const MAX_STRAY_BINARY_FRAMES = Math.ceil(MAX_TOTAL_TRANSFER_BYTES / CHUNK_SIZE_BYTES) <NL>  <NL> export interface ReceivedFileItem { <NL>   id: string <NL>   "
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 116,
+   "word": "CHUNK",
+   "snippet": "       this.finishTransfer(packet.id) <NL>         return <NL>       case 'FILE_CHUNK': <NL>         this.acceptChunkHeader(packet) <NL>         return <NL>       ca"
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 127,
+   "word": "CHUNK",
+   "snippet": " return <NL>     } <NL>   } <NL>  <NL>   /** Handles the binary frame that follows a FILE_CHUNK header. */ <NL>   handleBinary(data: ArrayBuffer): void { <NL>     const t"
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 138,
+   "word": "CHUNK",
+   "snippet": "  new P2PError('PROTOCOL_ERROR', 'Binary frame arrived without a FILE_CHUNK header'), <NL>       ) <NL>       return <NL>     } <NL>  <NL>     const pending = transf"
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 151,
+   "word": "CHUNK",
+   "snippet": "  'PROTOCOL_ERROR', <NL>         'Chunk byte length did not match the FILE_CHUNK header', <NL>       ) <NL>       return <NL>     } <NL>     if (data.byteLength > CH"
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 155,
+   "word": "CHUNK",
+   "snippet": "E_CHUNK header', <NL>       ) <NL>       return <NL>     } <NL>     if (data.byteLength > CHUNK_SIZE_BYTES) { <NL>       this.failTransfer(transfer, 'PROTOCOL_ERROR'"
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 200,
+   "word": "CHUNK",
+   "snippet": " const expectedChunks = start.size === 0 ? 0 : Math.ceil(start.size / CHUNK_SIZE_BYTES) <NL>     if (start.totalChunks !== expectedChunks) { <NL>     "
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 236,
+   "word": "CHUNK",
+   "snippet": "     this.reportError( <NL>         new P2PError('UNKNOWN_TRANSFER', 'FILE_CHUNK arrived for an unknown transfer'), <NL>       ) <NL>       return <NL>     } <NL>  <NL>  "
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 251,
+   "word": "CHUNK",
+   "snippet": "rrived out of order') <NL>       return <NL>     } <NL>  <NL>     if (header.byteLength > CHUNK_SIZE_BYTES) { <NL>       this.failTransfer(transfer, 'PROTOCOL_ERROR'"
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 359,
+   "word": "CHUNK",
+   "snippet": "orCode, message: string): void { <NL>     // Settle first so trailing FILE_CHUNK headers and FILE_END stay silent. <NL>     this.markSettled(start.id)"
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 5,
+   "word": "ACK",
+   "snippet": "exact-size Blob <NL>  * with the declared MIME type, and answers with FILE_ACK. <NL>  * Source: docs/06-protocol-and-tech-spec.md section 3 and decisi"
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 47,
+   "word": "ACK",
+   "snippet": "kReceiverOptions { <NL>   /** Sends control packets back to the room (FILE_ACK). */ <NL>   send: (packet: WirePacket) => void <NL>   onItem?: (item: Receiv"
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 107,
+   "word": "ACK",
+   "snippet": "ved <NL>     return total <NL>   } <NL>  <NL>   /** Handles FILE_START, FILE_END and FILE_ACK control packets. */ <NL>   handlePacket(packet: WirePacket): void { <NL>    "
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 119,
+   "word": "ACK",
+   "snippet": "       this.acceptChunkHeader(packet) <NL>         return <NL>       case 'FILE_ACK': <NL>         // The sender owns ACK handling, the receiver never cons"
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 120,
+   "word": "ACK",
+   "snippet": "ket) <NL>         return <NL>       case 'FILE_ACK': <NL>         // The sender owns ACK handling, the receiver never consumes its own ACK. <NL>         return <NL> "
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 120,
+   "word": "ACK",
+   "snippet": " // The sender owns ACK handling, the receiver never consumes its own ACK. <NL>         return <NL>       default: <NL>         return <NL>     } <NL>   } <NL>  <NL>   /** Han"
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 370,
+   "word": "ACK",
+   "snippet": "acket['status']): void { <NL>     const ack: FileAckPacket = { type: 'FILE_ACK', id, status } <NL>     try { <NL>       this.send(ack) <NL>     } catch (error) "
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 377,
+   "word": "ACK",
+   "snippet": "rror <NL>           : new P2PError('NO_OPEN_CHANNEL', 'Could not send FILE_ACK'), <NL>       ) <NL>     } <NL>   } <NL>  <NL>   private reportProgress(transfer: ActiveTra"
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 156,
+   "word": "16KB",
+   "snippet": "    this.failTransfer(transfer, 'PROTOCOL_ERROR', 'Chunk exceeded the 16KB budget') <NL>       return <NL>     } <NL>     if (transfer.bytesReceived + data"
+  },
+  {
+   "file": "src/lib/p2p/chunkReceiver.ts",
+   "line": 252,
+   "word": "16KB",
+   "snippet": "s.failTransfer(transfer, 'PROTOCOL_ERROR', 'Chunk header exceeded the 16KB budget') <NL>       return <NL>     } <NL>  <NL>     const remaining = transfer.start"
+  },
+  {
+   "file": "src/lib/p2p/errors.ts",
+   "line": 6,
+   "word": "P2P",
+   "snippet": ". <NL>  * No emojis, no em dashes, no raw browser alerts. <NL>  */ <NL>  <NL> export type P2PErrorCode = <NL>   | 'ABORTED' <NL>   | 'ALREADY_CONNECTED' <NL>   | 'BACKPRESSURE"
+  },
+  {
+   "file": "src/lib/p2p/errors.ts",
+   "line": 23,
+   "word": "P2P",
+   "snippet": "NSFERS' <NL>   | 'TRANSFER_TOO_LARGE' <NL>   | 'UNKNOWN_TRANSFER' <NL>  <NL> export class P2PError extends Error { <NL>   readonly code: P2PErrorCode <NL>  <NL>   constructor("
+  },
+  {
+   "file": "src/lib/p2p/errors.ts",
+   "line": 24,
+   "word": "P2P",
+   "snippet": "OWN_TRANSFER' <NL>  <NL> export class P2PError extends Error { <NL>   readonly code: P2PErrorCode <NL>  <NL>   constructor(code: P2PErrorCode, message: string) { <NL>    "
+  },
+  {
+   "file": "src/lib/p2p/errors.ts",
+   "line": 26,
+   "word": "P2P",
+   "snippet": "or extends Error { <NL>   readonly code: P2PErrorCode <NL>  <NL>   constructor(code: P2PErrorCode, message: string) { <NL>     super(message) <NL>     this.name = 'P"
+  },
+  {
+   "file": "src/lib/p2p/errors.ts",
+   "line": 28,
+   "word": "P2P",
+   "snippet": " P2PErrorCode, message: string) { <NL>     super(message) <NL>     this.name = 'P2PError' <NL>     this.code = code <NL>   } <NL> } <NL>  <NL> export function isP2PError(value"
+  },
+  {
+   "file": "src/lib/p2p/errors.ts",
+   "line": 33,
+   "word": "P2P",
+   "snippet": " this.name = 'P2PError' <NL>     this.code = code <NL>   } <NL> } <NL>  <NL> export function isP2PError(value: unknown): value is P2PError { <NL>   return value instanceo"
+  },
+  {
+   "file": "src/lib/p2p/errors.ts",
+   "line": 33,
+   "word": "P2P",
+   "snippet": "de = code <NL>   } <NL> } <NL>  <NL> export function isP2PError(value: unknown): value is P2PError { <NL>   return value instanceof P2PError <NL> } <NL>  <NL> export function toP2P"
+  },
+  {
+   "file": "src/lib/p2p/errors.ts",
+   "line": 34,
+   "word": "P2P",
+   "snippet": "PError(value: unknown): value is P2PError { <NL>   return value instanceof P2PError <NL> } <NL>  <NL> export function toP2PError(value: unknown, fallback: P2PEr"
+  },
+  {
+   "file": "src/lib/p2p/errors.ts",
+   "line": 37,
+   "word": "P2P",
+   "snippet": "is P2PError { <NL>   return value instanceof P2PError <NL> } <NL>  <NL> export function toP2PError(value: unknown, fallback: P2PErrorCode): P2PError { <NL>   if (val"
+  },
+  {
+   "file": "src/lib/p2p/errors.ts",
+   "line": 37,
+   "word": "P2P",
+   "snippet": "ceof P2PError <NL> } <NL>  <NL> export function toP2PError(value: unknown, fallback: P2PErrorCode): P2PError { <NL>   if (value instanceof P2PError) return valu"
+  },
+  {
+   "file": "src/lib/p2p/errors.ts",
+   "line": 37,
+   "word": "P2P",
+   "snippet": " <NL>  <NL> export function toP2PError(value: unknown, fallback: P2PErrorCode): P2PError { <NL>   if (value instanceof P2PError) return value <NL>   if (value i"
+  },
+  {
+   "file": "src/lib/p2p/errors.ts",
+   "line": 38,
+   "word": "P2P",
+   "snippet": ": unknown, fallback: P2PErrorCode): P2PError { <NL>   if (value instanceof P2PError) return value <NL>   if (value instanceof Error) return new P2PErr"
+  },
+  {
+   "file": "src/lib/p2p/errors.ts",
+   "line": 39,
+   "word": "P2P",
+   "snippet": "nceof P2PError) return value <NL>   if (value instanceof Error) return new P2PError(fallback, value.message) <NL>   return new P2PError(fallback, 'Une"
+  },
+  {
+   "file": "src/lib/p2p/errors.ts",
+   "line": 40,
+   "word": "P2P",
+   "snippet": "ceof Error) return new P2PError(fallback, value.message) <NL>   return new P2PError(fallback, 'Unexpected transport failure') <NL> } <NL>  <NL> export function "
+  },
+  {
+   "file": "src/lib/p2p/errors.ts",
+   "line": 43,
+   "word": "P2P",
+   "snippet": "') <NL> } <NL>  <NL> export function createAbortError(message = 'Transfer aborted'): P2PError { <NL>   return new P2PError('ABORTED', message) <NL> } <NL> "
+  },
+  {
+   "file": "src/lib/p2p/errors.ts",
+   "line": 44,
+   "word": "P2P",
+   "snippet": "eateAbortError(message = 'Transfer aborted'): P2PError { <NL>   return new P2PError('ABORTED', message) <NL> } <NL> "
+  },
+  {
+   "file": "src/lib/p2p/errors.ts",
+   "line": 9,
+   "word": "ACK",
+   "snippet": "xport type P2PErrorCode = <NL>   | 'ABORTED' <NL>   | 'ALREADY_CONNECTED' <NL>   | 'BACKPRESSURE_TIMEOUT' <NL>   | 'CONNECT_TIMEOUT' <NL>   | 'DESTROYED' <NL>   | 'INVALI"
+  },
+  {
+   "file": "src/lib/p2p/fileStreamer.ts",
+   "line": 2,
+   "word": "RTCDataChannel",
+   "snippet": "/** <NL>  * 16KB chunk streamer with RTCDataChannel backpressure. <NL>  * Source: docs/06-protocol-and-tech-spec"
+  },
+  {
+   "file": "src/lib/p2p/fileStreamer.ts",
+   "line": 2,
+   "word": "DataChannel",
+   "snippet": "/** <NL>  * 16KB chunk streamer with RTCDataChannel backpressure. <NL>  * Source: docs/06-protocol-and-tech-spec.md"
+  },
+  {
+   "file": "src/lib/p2p/fileStreamer.ts",
+   "line": 16,
+   "word": "P2P",
+   "snippet": "nsferProgress, WirePacket } from '../../types/protocol' <NL> import type { P2PTransport } from './adapter' <NL> import { createAbortError, P2PError } "
+  },
+  {
+   "file": "src/lib/p2p/fileStreamer.ts",
+   "line": 17,
+   "word": "P2P",
+   "snippet": "ort type { P2PTransport } from './adapter' <NL> import { createAbortError, P2PError } from './errors' <NL>  <NL> const DEFAULT_DRAIN_TIMEOUT_MS = 15000 <NL>  <NL> ex"
+  },
+  {
+   "file": "src/lib/p2p/fileStreamer.ts",
+   "line": 27,
+   "word": "P2P",
+   "snippet": "eoutMs?: number <NL> } <NL>  <NL> export interface StreamFileOptions { <NL>   connection: P2PTransport <NL>   file: File | Blob <NL>   transferId: string <NL>   ttlMs: number "
+  },
+  {
+   "file": "src/lib/p2p/fileStreamer.ts",
+   "line": 73,
+   "word": "P2P",
+   "snippet": "nd abort handlers. <NL>  */ <NL> export function waitForBufferDrain( <NL>   channel: P2PTransport, <NL>   options: WaitForBufferDrainOptions = {}, <NL> ): Promise<vo"
+  },
+  {
+   "file": "src/lib/p2p/fileStreamer.ts",
+   "line": 82,
+   "word": "P2P",
+   "snippet": "LOW_THRESHOLD <NL>  <NL>   if (!channel.isOpen) { <NL>     return Promise.reject(new P2PError('NO_OPEN_CHANNEL', 'Channel is not open')) <NL>   } <NL>   if (signal?."
+  },
+  {
+   "file": "src/lib/p2p/fileStreamer.ts",
+   "line": 119,
+   "word": "P2P",
+   "snippet": "feredAmountLow(onLow) <NL>     timer = setTimeout(() => { <NL>       finish(new P2PError('BACKPRESSURE_TIMEOUT', 'Channel buffer did not drain in time"
+  },
+  {
+   "file": "src/lib/p2p/fileStreamer.ts",
+   "line": 154,
+   "word": "P2P",
+   "snippet": "al, onProgress } = options <NL>  <NL>   if (!connection.isOpen) { <NL>     throw new P2PError('NO_OPEN_CHANNEL', 'No open channel to stream the file') <NL>   } <NL> "
+  },
+  {
+   "file": "src/lib/p2p/fileStreamer.ts",
+   "line": 192,
+   "word": "P2P",
+   "snippet": "orted(signal) <NL>  <NL>       if (buffer.byteLength === 0) { <NL>         throw new P2PError('PROTOCOL_ERROR', 'File slice came back empty') <NL>       } <NL>      "
+  },
+  {
+   "file": "src/lib/p2p/fileStreamer.ts",
+   "line": 195,
+   "word": "P2P",
+   "snippet": "} <NL>       if (buffer.byteLength > CHUNK_SIZE_BYTES) { <NL>         throw new P2PError('PROTOCOL_ERROR', 'File slice exceeded the 16KB chunk budget'"
+  },
+  {
+   "file": "src/lib/p2p/fileStreamer.ts",
+   "line": 247,
+   "word": "P2P",
+   "snippet": "n abort. <NL>     buffer = null <NL>   } <NL> } <NL>  <NL> function sendPacketText(connection: P2PTransport, packet: WirePacket): void { <NL>   connection.sendText(serial"
+  },
+  {
+   "file": "src/lib/p2p/fileStreamer.ts",
+   "line": 2,
+   "word": "chunk",
+   "snippet": "/** <NL>  * 16KB chunk streamer with RTCDataChannel backpressure. <NL>  * Source: docs/06-pr"
+  },
+  {
+   "file": "src/lib/p2p/fileStreamer.ts",
+   "line": 5,
+   "word": "chunk",
+   "snippet": "otocol-and-tech-spec.md section 3 and decisions.md D-011. <NL>  * <NL>  * Every chunk is sliced lazily, sent as a FILE_CHUNK header plus exactly one <NL>  "
+  },
+  {
+   "file": "src/lib/p2p/fileStreamer.ts",
+   "line": 46,
+   "word": "chunk",
+   "snippet": " <NL>   name: string <NL>   mime: string <NL>   size: number <NL>   totalChunks: number <NL>   chunksSent: number <NL>   bytesSent: number <NL>   durationMs: number <NL>   averageB"
+  },
+  {
+   "file": "src/lib/p2p/fileStreamer.ts",
+   "line": 130,
+   "word": "chunk",
+   "snippet": "ess['direction'], <NL>   bytesTransferred: number, <NL>   totalBytes: number, <NL>   chunksTransferred: number, <NL>   totalChunks: number, <NL>   startedAt: number,"
+  },
+  {
+   "file": "src/lib/p2p/fileStreamer.ts",
+   "line": 141,
+   "word": "chunk",
+   "snippet": "rn { <NL>     id, <NL>     direction, <NL>     bytesTransferred, <NL>     totalBytes, <NL>     chunksTransferred, <NL>     totalChunks, <NL>     percent: totalBytes === 0 ? 10"
+  },
+  {
+   "file": "src/lib/p2p/fileStreamer.ts",
+   "line": 195,
+   "word": "chunk",
+   "snippet": "   throw new P2PError('PROTOCOL_ERROR', 'File slice exceeded the 16KB chunk budget') <NL>       } <NL>  <NL>       await waitForBufferDrain(connection, { s"
+  },
+  {
+   "file": "src/lib/p2p/fileStreamer.ts",
+   "line": 234,
+   "word": "chunk",
+   "snippet": "   name, <NL>       mime, <NL>       size: totalBytes, <NL>       totalChunks, <NL>       chunksSent: index, <NL>       bytesSent, <NL>       durationMs: finishedAt - sta"
+  },
+  {
+   "file": "src/lib/p2p/fileStreamer.ts",
+   "line": 5,
+   "word": "CHUNK",
+   "snippet": "ecisions.md D-011. <NL>  * <NL>  * Every chunk is sliced lazily, sent as a FILE_CHUNK header plus exactly one <NL>  * binary frame, and never held in memor"
+  },
+  {
+   "file": "src/lib/p2p/fileStreamer.ts",
+   "line": 11,
+   "word": "CHUNK",
+   "snippet": "y beyond the current slice. <NL>  */ <NL>  <NL> import { <NL>   BUFFERED_LOW_THRESHOLD, <NL>   CHUNK_SIZE_BYTES, <NL>   MAX_BUFFERED_AMOUNT, <NL>   serializeWirePacket, <NL> } from"
+  },
+  {
+   "file": "src/lib/p2p/fileStreamer.ts",
+   "line": 161,
+   "word": "CHUNK",
+   "snippet": "e <NL>   const totalChunks = totalBytes === 0 ? 0 : Math.ceil(totalBytes / CHUNK_SIZE_BYTES) <NL>   const startedAt = Date.now() <NL>  <NL>   const start: FileS"
+  },
+  {
+   "file": "src/lib/p2p/fileStreamer.ts",
+   "line": 187,
+   "word": "CHUNK",
+   "snippet": "ted(signal) <NL>  <NL>       const slice = file.slice(offset, Math.min(offset + CHUNK_SIZE_BYTES, totalBytes)) <NL>       buffer = await slice.arrayBuffer("
+  },
+  {
+   "file": "src/lib/p2p/fileStreamer.ts",
+   "line": 194,
+   "word": "CHUNK",
+   "snippet": ", 'File slice came back empty') <NL>       } <NL>       if (buffer.byteLength > CHUNK_SIZE_BYTES) { <NL>         throw new P2PError('PROTOCOL_ERROR', 'File"
+  },
+  {
+   "file": "src/lib/p2p/fileStreamer.ts",
+   "line": 201,
+   "word": "CHUNK",
+   "snippet": "ignal }) <NL>  <NL>       const header: FileChunkPacket = { <NL>         type: 'FILE_CHUNK', <NL>         id: transferId, <NL>         index, <NL>         byteLength: buf"
+  },
+  {
+   "file": "src/lib/p2p/fileStreamer.ts",
+   "line": 119,
+   "word": "ACK",
+   "snippet": "Low(onLow) <NL>     timer = setTimeout(() => { <NL>       finish(new P2PError('BACKPRESSURE_TIMEOUT', 'Channel buffer did not drain in time')) <NL>     }, "
+  },
+  {
+   "file": "src/lib/p2p/fileStreamer.ts",
+   "line": 2,
+   "word": "backpressure",
+   "snippet": "/** <NL>  * 16KB chunk streamer with RTCDataChannel backpressure. <NL>  * Source: docs/06-protocol-and-tech-spec.md section 3 a"
+  },
+  {
+   "file": "src/lib/p2p/fileStreamer.ts",
+   "line": 2,
+   "word": "16KB",
+   "snippet": "/** <NL>  * 16KB chunk streamer with RTCDataChannel backpressure. <NL>  * Source: docs/"
+  },
+  {
+   "file": "src/lib/p2p/fileStreamer.ts",
+   "line": 195,
+   "word": "16KB",
+   "snippet": "        throw new P2PError('PROTOCOL_ERROR', 'File slice exceeded the 16KB chunk budget') <NL>       } <NL>  <NL>       await waitForBufferDrain(connection"
+  },
+  {
+   "file": "src/lib/p2p/index.ts",
+   "line": 2,
+   "word": "P2P",
+   "snippet": "/** <NL>  * Public barrel for the GhostDrop P2P layer. <NL>  * UI code imports from here, never from peerjs directly. <NL>  "
+  },
+  {
+   "file": "src/lib/p2p/index.ts",
+   "line": 12,
+   "word": "chunk",
+   "snippet": "from './peerjsEngine' <NL> export * from './fileStreamer' <NL> export * from './chunkReceiver' <NL> export * from './janitor' <NL> "
+  },
+  {
+   "file": "src/lib/p2p/janitor.ts",
+   "line": 23,
+   "word": "P2P",
+   "snippet": "meralItemStatus, <NL>   NukeReason, <NL> } from '../../types/protocol' <NL> import { P2PError } from './errors' <NL>  <NL> /** Removal reasons are the wire nuke reas"
+  },
+  {
+   "file": "src/lib/p2p/janitor.ts",
+   "line": 397,
+   "word": "P2P",
+   "snippet": "id: string): void { <NL>     if (!this.items.has(id)) return <NL>     throw new P2PError('INVALID_ARGUMENT', `Ephemeral item id already in use: ${id}`"
+  },
+  {
+   "file": "src/lib/p2p/janitor.ts",
+   "line": 465,
+   "word": "P2P",
+   "snippet": "ivate assertActive(): void { <NL>     if (this.disposed) { <NL>       throw new P2PError('DESTROYED', 'Ephemeral store was disposed') <NL>     } <NL>   } <NL>  <NL>   pri"
+  },
+  {
+   "file": "src/lib/p2p/janitor.ts",
+   "line": 95,
+   "word": "TTL",
+   "snippet": "unction emptyRemovalCounts(): EphemeralRemovalCounts { <NL>   return { <NL>     TTL_EXPIRED: 0, <NL>     MANUAL_BURN: 0, <NL>     BURN_ON_COPY: 0, <NL>     CLEARED: "
+  },
+  {
+   "file": "src/lib/p2p/janitor.ts",
+   "line": 327,
+   "word": "TTL",
+   "snippet": "vokeUrl(item.blobUrl) <NL>       this.items.delete(id) <NL>       this.removals.TTL_EXPIRED += 1 <NL>     } <NL>  <NL>     this.commit() <NL>     return expired <NL>   } <NL>  <NL>   /*"
+  },
+  {
+   "file": "src/lib/p2p/janitor.ts",
+   "line": 453,
+   "word": "revokeObjectURL",
+   "snippet": "revokedUrls.add(url) <NL>     if (typeof URL !== 'undefined' && typeof URL.revokeObjectURL === 'function') { <NL>       try { <NL>         URL.revokeObject"
+  },
+  {
+   "file": "src/lib/p2p/janitor.ts",
+   "line": 455,
+   "word": "revokeObjectURL",
+   "snippet": " typeof URL.revokeObjectURL === 'function') { <NL>       try { <NL>         URL.revokeObjectURL(url) <NL>       } catch { <NL>         // Already revoked by the"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 126,
+   "word": "RTCDataChannel",
+   "snippet": " 'Binary frame exceeded the 16KB budget') <NL>   } <NL>   return null <NL> } <NL>  <NL> /** <NL>  * RTCDataChannel transport with a FIFO frame queue. <NL>  * Text frames sent "
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 126,
+   "word": "DataChannel",
+   "snippet": "inary frame exceeded the 16KB budget') <NL>   } <NL>   return null <NL> } <NL>  <NL> /** <NL>  * RTCDataChannel transport with a FIFO frame queue. <NL>  * Text frames sent bef"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 132,
+   "word": "DataChannel",
+   "snippet": " * against the 16384-byte D-011 budget before it is queued. <NL>  */ <NL> class DataChannelTransport implements P2PTransport { <NL>   readonly peerId: stri"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 277,
+   "word": "DataChannel",
+   "snippet": "ng, DataConnection>() <NL>   private readonly transports = new Map<string, DataChannelTransport>() <NL>   private readonly peerInfos = new Map<string,"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 543,
+   "word": "DataChannel",
+   "snippet": "(peerId, connection) <NL>     this.transports.set( <NL>       peerId, <NL>       new DataChannelTransport(connection, this.maxQueuedFrames, (error) => { <NL>   "
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 718,
+   "word": "DataChannel",
+   "snippet": " <NL>    */ <NL>   private enqueueRelayPair( <NL>     peerId: string, <NL>     transport: DataChannelTransport, <NL>     headerText: string, <NL>     data: ArrayBuffer, <NL>  "
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 737,
+   "word": "DataChannel",
+   "snippet": "te(peerId) <NL>     }) <NL>   } <NL>  <NL>   private async writeRelayPair( <NL>     transport: DataChannelTransport, <NL>     headerText: string, <NL>     data: ArrayBuffer, <NL>  "
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 872,
+   "word": "DataChannel",
+   "snippet": "Timer = null <NL>   } <NL>  <NL>   private resolveTargets(options?: P2PSendOptions): DataChannelTransport[] { <NL>     if (options?.to) { <NL>       const transport "
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 878,
+   "word": "DataChannel",
+   "snippet": "transport] : [] <NL>     } <NL>     if (options?.toMany) { <NL>       const targets: DataChannelTransport[] = [] <NL>       for (const peerId of options.toMany)"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 2,
+   "word": "PeerJS",
+   "snippet": "/** <NL>  * PeerJS signaling engine (0.peerjs.com by default). <NL>  * Source: docs/06-"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 66,
+   "word": "PeerJS",
+   "snippet": "rJsEngineOptions { <NL>   /** Injectable Peer factory, default is the real PeerJS client. */ <NL>   createPeer?: (id: string, options: PeerOptions) =>"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 713,
+   "word": "PeerJS",
+   "snippet": "ame target run one at a time, so a relaying <NL>    * host never grows the PeerJS buffer without bound and never pauses between <NL>    * a FILE_CHUNK"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 33,
+   "word": "P2P",
+   "snippet": "Progress, <NL>   WirePacket, <NL> } from '../../types/protocol' <NL> import type { <NL>   P2PConnectOptions, <NL>   P2PEventListener, <NL>   P2PEventMap, <NL>   P2PEventName, <NL> "
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 34,
+   "word": "P2P",
+   "snippet": "t, <NL> } from '../../types/protocol' <NL> import type { <NL>   P2PConnectOptions, <NL>   P2PEventListener, <NL>   P2PEventMap, <NL>   P2PEventName, <NL>   P2PSendOptions, <NL>   P"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 35,
+   "word": "P2P",
+   "snippet": "es/protocol' <NL> import type { <NL>   P2PConnectOptions, <NL>   P2PEventListener, <NL>   P2PEventMap, <NL>   P2PEventName, <NL>   P2PSendOptions, <NL>   P2PSignalingAdapter, <NL> "
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 36,
+   "word": "P2P",
+   "snippet": "port type { <NL>   P2PConnectOptions, <NL>   P2PEventListener, <NL>   P2PEventMap, <NL>   P2PEventName, <NL>   P2PSendOptions, <NL>   P2PSignalingAdapter, <NL>   P2PStatus, <NL>   "
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 37,
+   "word": "P2P",
+   "snippet": "PConnectOptions, <NL>   P2PEventListener, <NL>   P2PEventMap, <NL>   P2PEventName, <NL>   P2PSendOptions, <NL>   P2PSignalingAdapter, <NL>   P2PStatus, <NL>   P2PTransport, <NL>   "
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 38,
+   "word": "P2P",
+   "snippet": " P2PEventListener, <NL>   P2PEventMap, <NL>   P2PEventName, <NL>   P2PSendOptions, <NL>   P2PSignalingAdapter, <NL>   P2PStatus, <NL>   P2PTransport, <NL>   PeerInfo, <NL>   PeerRo"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 39,
+   "word": "P2P",
+   "snippet": "PEventMap, <NL>   P2PEventName, <NL>   P2PSendOptions, <NL>   P2PSignalingAdapter, <NL>   P2PStatus, <NL>   P2PTransport, <NL>   PeerInfo, <NL>   PeerRole, <NL> } from './adapter' <NL> "
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 40,
+   "word": "P2P",
+   "snippet": "P2PEventName, <NL>   P2PSendOptions, <NL>   P2PSignalingAdapter, <NL>   P2PStatus, <NL>   P2PTransport, <NL>   PeerInfo, <NL>   PeerRole, <NL> } from './adapter' <NL> import { <NL>   cr"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 46,
+   "word": "P2P",
+   "snippet": "erInfo, <NL>   PeerRole, <NL> } from './adapter' <NL> import { <NL>   createAbortError, <NL>   P2PError, <NL>   toP2PError, <NL>   type P2PErrorCode, <NL> } from './errors' <NL> import "
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 47,
+   "word": "P2P",
+   "snippet": "Role, <NL> } from './adapter' <NL> import { <NL>   createAbortError, <NL>   P2PError, <NL>   toP2PError, <NL>   type P2PErrorCode, <NL> } from './errors' <NL> import { isValidRoomC"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 48,
+   "word": "P2P",
+   "snippet": "dapter' <NL> import { <NL>   createAbortError, <NL>   P2PError, <NL>   toP2PError, <NL>   type P2PErrorCode, <NL> } from './errors' <NL> import { isValidRoomCode, normalizeRoo"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 115,
+   "word": "P2P",
+   "snippet": "can reject cleanly. <NL>  */ <NL> function frameBudgetError(data: ArrayBuffer): P2PError | null { <NL>   if (data.byteLength === 0) { <NL>     return new P2PErr"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 117,
+   "word": "P2P",
+   "snippet": "fer): P2PError | null { <NL>   if (data.byteLength === 0) { <NL>     return new P2PError('PROTOCOL_ERROR', 'Binary frame must not be empty') <NL>   } <NL>   if "
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 120,
+   "word": "P2P",
+   "snippet": "mpty') <NL>   } <NL>   if (data.byteLength > CHUNK_SIZE_BYTES) { <NL>     return new P2PError('PROTOCOL_ERROR', 'Binary frame exceeded the 16KB budget') <NL>   "
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 132,
+   "word": "P2P",
+   "snippet": "budget before it is queued. <NL>  */ <NL> class DataChannelTransport implements P2PTransport { <NL>   readonly peerId: string <NL>   private readonly connection"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 136,
+   "word": "P2P",
+   "snippet": " readonly maxQueuedFrames: number <NL>   private readonly onError: (error: P2PError) => void <NL>   private readonly pending: OutboundFrame[] = [] <NL>   p"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 145,
+   "word": "P2P",
+   "snippet": "on: DataConnection, <NL>     maxQueuedFrames: number, <NL>     onError: (error: P2PError) => void, <NL>   ) { <NL>     this.connection = connection <NL>     this.pee"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 172,
+   "word": "P2P",
+   "snippet": " <NL>   } <NL>  <NL>   sendText(text: string): void { <NL>     if (this.closed) throw new P2PError('NO_OPEN_CHANNEL', 'Channel is closed') <NL>     if (this.isOpen) "
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 176,
+   "word": "P2P",
+   "snippet": " unknown) => { <NL>         if (this.closed) return <NL>         this.onError(toP2PError(error, 'SIGNALING_ERROR')) <NL>       }) <NL>       return <NL>     } <NL>     if"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 181,
+   "word": "P2P",
+   "snippet": "   if (this.pending.length >= this.maxQueuedFrames) { <NL>       throw new P2PError('QUEUE_OVERFLOW', 'Outbound frame queue is full') <NL>     } <NL>     t"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 190,
+   "word": "P2P",
+   "snippet": "eject(budget) <NL>     if (!this.isOpen) { <NL>       return Promise.reject(new P2PError('NO_OPEN_CHANNEL', 'Channel is not open')) <NL>     } <NL>     return t"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 199,
+   "word": "P2P",
+   "snippet": "eject(budget) <NL>     if (!this.isOpen) { <NL>       return Promise.reject(new P2PError('NO_OPEN_CHANNEL', 'Channel is not open')) <NL>     } <NL>     return t"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 220,
+   "word": "P2P",
+   "snippet": " unknown) => { <NL>         if (this.closed) return <NL>         this.onError(toP2PError(error, 'SIGNALING_ERROR')) <NL>       }) <NL>     } <NL>   } <NL>  <NL>   close(): voi"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 244,
+   "word": "P2P",
+   "snippet": "rame: OutboundFrame): Promise<void> { <NL>     if (!this.isOpen) throw new P2PError('NO_OPEN_CHANNEL', 'Channel is not open') <NL>  <NL>     if (frame.kind"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 259,
+   "word": "P2P",
+   "snippet": "nnection.send(frame.data) <NL>   } <NL> } <NL>  <NL> export class PeerJsEngine implements P2PSignalingAdapter { <NL>   private readonly createPeer: (id: string, opti"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 274,
+   "word": "P2P",
+   "snippet": "vate deviceTypeValue: DeviceType = 'desktop' <NL>   private currentStatus: P2PStatus = 'idle' <NL>  <NL>   private readonly connections = new Map<string, D"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 280,
+   "word": "P2P",
+   "snippet": "p<string, Array<() => void>>() <NL>   private readonly listeners = new Map<P2PEventName, Set<Listener>>() <NL>   /** FILE_CHUNK header held until its "
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 312,
+   "word": "P2P",
+   "snippet": "PeerId(): string { <NL>     return this.currentPeerId <NL>   } <NL>  <NL>   get status(): P2PStatus { <NL>     return this.currentStatus <NL>   } <NL>  <NL>   get peers(): readonly"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 324,
+   "word": "P2P",
+   "snippet": "turn this.currentStatus === 'connected' <NL>   } <NL>  <NL>   async connect(options: P2PConnectOptions): Promise<void> { <NL>     if (this.destroyed) throw new "
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 325,
+   "word": "P2P",
+   "snippet": "P2PConnectOptions): Promise<void> { <NL>     if (this.destroyed) throw new P2PError('DESTROYED', 'Adapter already destroyed') <NL>     if ( <NL>       this"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 331,
+   "word": "P2P",
+   "snippet": "| <NL>       this.currentStatus === 'reconnecting' <NL>     ) { <NL>       throw new P2PError('ALREADY_CONNECTED', 'A signaling session is already active')"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 336,
+   "word": "P2P",
+   "snippet": "e(options.roomCode) <NL>     if (!isValidRoomCode(code)) { <NL>       throw new P2PError('INVALID_ROOM_CODE', 'Room code must be 6 valid characters') <NL> "
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 376,
+   "word": "P2P",
+   "snippet": ".setStatus('disconnected', 'Connection attempt failed') <NL>       throw toP2PError(error, 'SIGNALING_ERROR') <NL>     } <NL>   } <NL>  <NL>   disconnect(): void { <NL>  "
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 399,
+   "word": "P2P",
+   "snippet": " <NL>     this.listeners.clear() <NL>   } <NL>  <NL>   send(packet: WirePacket, options?: P2PSendOptions): void { <NL>     if (!isWirePacket(packet)) { <NL>       this.em"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 401,
+   "word": "P2P",
+   "snippet": "ns): void { <NL>     if (!isWirePacket(packet)) { <NL>       this.emitError(new P2PError('PROTOCOL_ERROR', 'Refused to send an invalid packet')) <NL>      "
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 409,
+   "word": "P2P",
+   "snippet": "nsport.sendText(raw) <NL>       } catch (error) { <NL>         this.emitError(toP2PError(error, 'QUEUE_OVERFLOW')) <NL>       } <NL>     } <NL>   } <NL>  <NL>   broadcast(pack"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 418,
+   "word": "P2P",
+   "snippet": "his.send(packet) <NL>   } <NL>  <NL>   async sendBinary(data: ArrayBuffer, options?: P2PSendOptions): Promise<void> { <NL>     const budget = frameBudgetError(d"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 424,
+   "word": "P2P",
+   "snippet": "solveTargets(options) <NL>     if (targets.length === 0) { <NL>       throw new P2PError('NO_OPEN_CHANNEL', 'No open channel for a binary frame') <NL>     "
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 432,
+   "word": "P2P",
+   "snippet": "d') <NL>     if (failure && failure.status === 'rejected') { <NL>       throw toP2PError(failure.reason, 'NO_OPEN_CHANNEL') <NL>     } <NL>   } <NL>  <NL>   getTransport("
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 436,
+   "word": "P2P",
+   "snippet": "reason, 'NO_OPEN_CHANNEL') <NL>     } <NL>   } <NL>  <NL>   getTransport(peerId: string): P2PTransport | null { <NL>     return this.transports.get(peerId) ?? null <NL>  "
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 444,
+   "word": "P2P",
+   "snippet": "id { <NL>     this.emit('transfer:progress', progress) <NL>   } <NL>  <NL>   on<K extends P2PEventName>(event: K, listener: P2PEventListener<K>): () => void { <NL>  "
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 444,
+   "word": "P2P",
+   "snippet": "ess', progress) <NL>   } <NL>  <NL>   on<K extends P2PEventName>(event: K, listener: P2PEventListener<K>): () => void { <NL>     const set = this.listeners.get("
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 451,
+   "word": "P2P",
+   "snippet": " set) <NL>     return () => this.off(event, listener) <NL>   } <NL>  <NL>   off<K extends P2PEventName>(event: K, listener: P2PEventListener<K>): void { <NL>     con"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 451,
+   "word": "P2P",
+   "snippet": "ent, listener) <NL>   } <NL>  <NL>   off<K extends P2PEventName>(event: K, listener: P2PEventListener<K>): void { <NL>     const set = this.listeners.get(event)"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 467,
+   "word": "P2P",
+   "snippet": "tion(connection).catch((error: unknown) => { <NL>         this.emitError(toP2PError(error, 'SIGNALING_ERROR')) <NL>       }) <NL>     } <NL>     const onError ="
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 471,
+   "word": "P2P",
+   "snippet": "   } <NL>     const onError = (error: unknown) => { <NL>       this.emitError(toP2PError(error, 'SIGNALING_ERROR')) <NL>     } <NL>     const onDisconnected = ("
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 511,
+   "word": "P2P",
+   "snippet": "finish() <NL>       const onError = (error: unknown) => { <NL>         finish(toP2PError(error, 'SIGNALING_ERROR')) <NL>       } <NL>       const onClose = () ="
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 514,
+   "word": "P2P",
+   "snippet": "ING_ERROR')) <NL>       } <NL>       const onClose = () => { <NL>         finish(new P2PError('SIGNALING_ERROR', 'Signaling closed before it opened')) <NL>     "
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 519,
+   "word": "P2P",
+   "snippet": "aborted')) <NL>  <NL>       const timer = setTimeout(() => { <NL>         finish(new P2PError('CONNECT_TIMEOUT', 'Signaling did not open in time')) <NL>       }"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 552,
+   "word": "P2P",
+   "snippet": "d, 'closed') <NL>     const onError = (error: unknown) => this.emitError(toP2PError(error, 'PROTOCOL_ERROR')) <NL>  <NL>     connection.on('open', onOpen) <NL> "
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 585,
+   "word": "P2P",
+   "snippet": "= () => finish() <NL>       const handleClose = () => { <NL>         finish(new P2PError('SIGNALING_ERROR', 'Peer channel closed before it opened')) <NL>  "
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 588,
+   "word": "P2P",
+   "snippet": "   } <NL>       const handleError = (error: unknown) => { <NL>         finish(toP2PError(error, 'SIGNALING_ERROR')) <NL>       } <NL>       const handleAbort = "
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 593,
+   "word": "P2P",
+   "snippet": "aborted')) <NL>  <NL>       const timer = setTimeout(() => { <NL>         finish(new P2PError('CONNECT_TIMEOUT', 'Peer channel did not open in time')) <NL>     "
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 630,
+   "word": "P2P",
+   "snippet": "ializeWirePacket(hello)) <NL>     } catch (error) { <NL>       this.emitError(toP2PError(error, 'QUEUE_OVERFLOW')) <NL>     } <NL>   } <NL>  <NL>   private handleData(fro"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 638,
+   "word": "P2P",
+   "snippet": "parseWirePacket(data) <NL>       if (!packet) { <NL>         this.emitError(new P2PError('PROTOCOL_ERROR', 'Malformed packet dropped')) <NL>         return"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 647,
+   "word": "P2P",
+   "snippet": "rame = toBinaryFrame(data) <NL>     if (!frame) { <NL>       this.emitError(new P2PError('PROTOCOL_ERROR', 'Unsupported binary frame dropped')) <NL>       "
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 682,
+   "word": "P2P",
+   "snippet": "nsport.sendText(raw) <NL>       } catch (error) { <NL>         this.emitError(toP2PError(error, 'QUEUE_OVERFLOW')) <NL>       } <NL>     } <NL>   } <NL>  <NL>   private handle"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 697,
+   "word": "P2P",
+   "snippet": "ze <= 1) return <NL>  <NL>     if (!header) { <NL>       this.emitError( <NL>         new P2PError('PROTOCOL_ERROR', 'Binary frame arrived without a FILE_CHUNK "
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 727,
+   "word": "P2P",
+   "snippet": "nown) => { <NL>       if (!transport.isOpen) return <NL>       this.emitError(toP2PError(error, 'NO_OPEN_CHANNEL')) <NL>     }) <NL>  <NL>     this.relayChains.set(p"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 860,
+   "word": "P2P",
+   "snippet": "    peer.reconnect() <NL>       } catch (error) { <NL>         this.emitError(toP2PError(error, 'SIGNALING_ERROR')) <NL>         this.scheduleReconnect() <NL>  "
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 872,
+   "word": "P2P",
+   "snippet": "   this.reconnectTimer = null <NL>   } <NL>  <NL>   private resolveTargets(options?: P2PSendOptions): DataChannelTransport[] { <NL>     if (options?.to) { <NL>      "
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 888,
+   "word": "P2P",
+   "snippet": "return [...this.transports.values()] <NL>   } <NL>  <NL>   private setStatus(status: P2PStatus, detail?: string): void { <NL>     this.currentStatus = status <NL>   "
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 893,
+   "word": "P2P",
+   "snippet": "ed ? { status } : { status, detail }) <NL>   } <NL>  <NL>   private emitError(error: P2PError): void { <NL>     const payload: { code: P2PErrorCode; message: st"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 894,
+   "word": "P2P",
+   "snippet": "private emitError(error: P2PError): void { <NL>     const payload: { code: P2PErrorCode; message: string } = { <NL>       code: error.code, <NL>       mess"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 901,
+   "word": "P2P",
+   "snippet": ", <NL>     } <NL>     this.emit('error', payload) <NL>   } <NL>  <NL>   private emit<K extends P2PEventName>(event: K, payload: P2PEventMap[K]): void { <NL>     const set"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 901,
+   "word": "P2P",
+   "snippet": "yload) <NL>   } <NL>  <NL>   private emit<K extends P2PEventName>(event: K, payload: P2PEventMap[K]): void { <NL>     const set = this.listeners.get(event) <NL>     "
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 16,
+   "word": "CHUNK",
+   "snippet": "on, PeerOptions } from 'peerjs' <NL>  <NL> import { <NL>   BUFFERED_LOW_THRESHOLD, <NL>   CHUNK_SIZE_BYTES, <NL>   isDeviceType, <NL>   isWirePacket, <NL>   parseWirePacket, <NL>  "
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 119,
+   "word": "CHUNK",
+   "snippet": "ERROR', 'Binary frame must not be empty') <NL>   } <NL>   if (data.byteLength > CHUNK_SIZE_BYTES) { <NL>     return new P2PError('PROTOCOL_ERROR', 'Binary "
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 281,
+   "word": "CHUNK",
+   "snippet": "eadonly listeners = new Map<P2PEventName, Set<Listener>>() <NL>   /** FILE_CHUNK header held until its binary frame lands, keyed by source peer. "
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 669,
+   "word": "CHUNK",
+   "snippet": " (packet.type === 'HELLO_PEER') return <NL>  <NL>     if (packet.type === 'FILE_CHUNK') { <NL>       // Hold the header until its binary frame arrives so t"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 697,
+   "word": "CHUNK",
+   "snippet": "  new P2PError('PROTOCOL_ERROR', 'Binary frame arrived without a FILE_CHUNK header'), <NL>       ) <NL>       return <NL>     } <NL>  <NL>     const headerText = ser"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 714,
+   "word": "CHUNK",
+   "snippet": " the PeerJS buffer without bound and never pauses between <NL>    * a FILE_CHUNK header and its binary frame. <NL>    */ <NL>   private enqueueRelayPair( <NL>  "
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 75,
+   "word": "payload",
+   "snippet": "axReconnectAttempts?: number <NL>   now?: () => number <NL> } <NL>  <NL> type Listener = (payload: unknown) => void <NL>  <NL> type OutboundFrame = <NL>   | { kind: 'text'; te"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 894,
+   "word": "payload",
+   "snippet": "detail }) <NL>   } <NL>  <NL>   private emitError(error: P2PError): void { <NL>     const payload: { code: P2PErrorCode; message: string } = { <NL>       code: error"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 898,
+   "word": "payload",
+   "snippet": "rror.code, <NL>       message: error.message, <NL>     } <NL>     this.emit('error', payload) <NL>   } <NL>  <NL>   private emit<K extends P2PEventName>(event: K, payload"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 901,
+   "word": "payload",
+   "snippet": "rror', payload) <NL>   } <NL>  <NL>   private emit<K extends P2PEventName>(event: K, payload: P2PEventMap[K]): void { <NL>     const set = this.listeners.get(ev"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 904,
+   "word": "payload",
+   "snippet": "t) <NL>     if (!set) return <NL>     for (const listener of [...set]) listener(payload) <NL>   } <NL> } <NL>  <NL> export function isHostId(peerId: string): boolean { <NL>   "
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 129,
+   "word": "backpressure",
+   "snippet": "inary frames reject instead of buffering <NL>  * because the streamer owns backpressure, and every binary frame is checked <NL>  * against the 16384-b"
+  },
+  {
+   "file": "src/lib/p2p/peerjsEngine.ts",
+   "line": 120,
+   "word": "16KB",
+   "snippet": " <NL>     return new P2PError('PROTOCOL_ERROR', 'Binary frame exceeded the 16KB budget') <NL>   } <NL>   return null <NL> } <NL>  <NL> /** <NL>  * RTCDataChannel transport wit"
+  },
+  {
+   "file": "src/lib/p2p/roomCode.ts",
+   "line": 12,
+   "word": "P2P",
+   "snippet": "OM_CODE_LENGTH, <NL>   ROOM_PREFIX, <NL> } from '../../types/protocol' <NL> import { P2PError } from './errors' <NL>  <NL> const ALPHABET_LENGTH = ROOM_CODE_ALPHABET"
+  },
+  {
+   "file": "src/lib/p2p/roomCode.ts",
+   "line": 18,
+   "word": "P2P",
+   "snippet": "ned' || typeof crypto.getRandomValues !== 'function') { <NL>     throw new P2PError( <NL>       'ROOM_CODE_UNAVAILABLE', <NL>       'This browser cannot ge"
+  },
+  {
+   "file": "src/lib/p2p/roomCode.ts",
+   "line": 33,
+   "word": "P2P",
+   "snippet": "mber.isInteger(length) || length <= 0 || length > 32) { <NL>     throw new P2PError('INVALID_ARGUMENT', 'Room code length must be between 1 and 3"
+  },
+  {
+   "file": "src/lib/p2p/roomCode.ts",
+   "line": 17,
+   "word": "crypto",
+   "snippet": "ngth <NL>  <NL> function randomBytes(length: number): Uint8Array { <NL>   if (typeof crypto === 'undefined' || typeof crypto.getRandomValues !== 'function'"
+  },
+  {
+   "file": "src/lib/p2p/roomCode.ts",
+   "line": 17,
+   "word": "crypto",
+   "snippet": ": number): Uint8Array { <NL>   if (typeof crypto === 'undefined' || typeof crypto.getRandomValues !== 'function') { <NL>     throw new P2PError( <NL>      "
+  },
+  {
+   "file": "src/lib/p2p/roomCode.ts",
+   "line": 23,
+   "word": "crypto",
+   "snippet": "'This browser cannot generate a secure room code', <NL>     ) <NL>   } <NL>   return crypto.getRandomValues(new Uint8Array(length)) <NL> } <NL>  <NL> /** <NL>  * Generates an "
+  },
+  {
+   "file": "src/lib/p2p/roomCode.ts",
+   "line": 72,
+   "word": "crypto",
+   "snippet": "rt function peerPeerId(): string { <NL>   const hasRandomUuid = <NL>     typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function' <NL>  <NL>   i"
+  },
+  {
+   "file": "src/lib/p2p/roomCode.ts",
+   "line": 72,
+   "word": "crypto",
+   "snippet": "{ <NL>   const hasRandomUuid = <NL>     typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function' <NL>  <NL>   if (hasRandomUuid) { <NL>     return `$"
+  },
+  {
+   "file": "src/lib/p2p/roomCode.ts",
+   "line": 75,
+   "word": "crypto",
+   "snippet": "ID === 'function' <NL>  <NL>   if (hasRandomUuid) { <NL>     return `${PEER_PREFIX}${crypto.randomUUID().slice(0, 8).toLowerCase()}` <NL>   } <NL>  <NL>   const bytes = r"
+  },
+  {
+   "file": "src/lib/shareHandoff.ts",
+   "line": 16,
+   "word": "TTL",
+   "snippet": "ort const SHARE_HANDOFF_STORE = 'payloads' <NL> export const SHARE_HANDOFF_TTL_MS = 5 * 60 * 1000 <NL> export const SHARE_HANDOFF_MAX_BYTES = 100 * 10"
+  },
+  {
+   "file": "src/lib/shareHandoff.ts",
+   "line": 161,
+   "word": "TTL",
+   "snippet": "   totalBytes, <NL>     createdAt: now, <NL>     expiresAt: now + SHARE_HANDOFF_TTL_MS, <NL>   } <NL>  <NL>   const db = await openShareDatabase() <NL>   if (!db) return "
+  },
+  {
+   "file": "src/lib/shareHandoff.ts",
+   "line": 4,
+   "word": "payload",
+   "snippet": "hare Target handoff. <NL>  * <NL>  * The service worker receives OS share sheet payloads on `POST /share-target` <NL>  * and parks them in a short lived In"
+  },
+  {
+   "file": "src/lib/shareHandoff.ts",
+   "line": 6,
+   "word": "payload",
+   "snippet": "them in a short lived IndexedDB slot (`ghostdrop-share-handoff` / <NL>  * `payloads`). The app claims the slot once, then the record is gone. Not"
+  },
+  {
+   "file": "src/lib/shareHandoff.ts",
+   "line": 15,
+   "word": "payload",
+   "snippet": "FF_DB = 'ghostdrop-share-handoff' <NL> export const SHARE_HANDOFF_STORE = 'payloads' <NL> export const SHARE_HANDOFF_TTL_MS = 5 * 60 * 1000 <NL> export con"
+  },
+  {
+   "file": "src/lib/shareHandoff.ts",
+   "line": 136,
+   "word": "payload",
+   "snippet": "fied: file.lastModified, <NL>     blob: file, <NL>   } <NL> } <NL>  <NL> /** <NL>  * Stores a share payload and resolves the saved record, or `null` when the <NL>  * payload i"
+  },
+  {
+   "file": "src/lib/shareHandoff.ts",
+   "line": 137,
+   "word": "payload",
+   "snippet": " a share payload and resolves the saved record, or `null` when the <NL>  * payload is empty, over the cap, or storage is unavailable. <NL>  */ <NL> export "
+  },
+  {
+   "file": "src/lib/shareHandoff.ts",
+   "line": 153,
+   "word": "payload",
+   "snippet": "HARE_HANDOFF_MAX_BYTES) return null <NL>  <NL>   const now = Date.now() <NL>   const payload: ShareHandoffPayload = { <NL>     id: LATEST_KEY, <NL>     files: files."
+  },
+  {
+   "file": "src/lib/shareHandoff.ts",
+   "line": 181,
+   "word": "payload",
+   "snippet": "inish(false) <NL>         transaction.objectStore(SHARE_HANDOFF_STORE).put(payload) <NL>       } catch { <NL>         finish(false) <NL>       } <NL>     }) <NL>  <NL>     ret"
+  },
+  {
+   "file": "src/lib/shareHandoff.ts",
+   "line": 187,
+   "word": "payload",
+   "snippet": "   } catch { <NL>         finish(false) <NL>       } <NL>     }) <NL>  <NL>     return saved ? payload : null <NL>   } catch { <NL>     return null <NL>   } finally { <NL>     db.close("
+  },
+  {
+   "file": "src/lib/shareHandoff.ts",
+   "line": 197,
+   "word": "payload",
+   "snippet": "dwrite <NL>  * transaction, so two callers can never both receive the same payload. <NL>  */ <NL> export async function takeSharePayload(): Promise<ShareHa"
+  },
+  {
+   "file": "src/lib/shareHandoff.ts",
+   "line": 206,
+   "word": "payload",
+   "snippet": " null>((resolve) => { <NL>       let settled = false <NL>       const finish = (payload: ShareHandoffPayload | null): void => { <NL>         if (settled) r"
+  },
+  {
+   "file": "src/lib/shareHandoff.ts",
+   "line": 209,
+   "word": "payload",
+   "snippet": " { <NL>         if (settled) return <NL>         settled = true <NL>         resolve(payload) <NL>       } <NL>  <NL>       try { <NL>         const transaction = db.transacti"
+  },
+  {
+   "file": "src/lib/shareHandoff.ts",
+   "line": 249,
+   "word": "payload",
+   "snippet": " null>((resolve) => { <NL>       let settled = false <NL>       const finish = (payload: ShareHandoffPayload | null): void => { <NL>         if (settled) r"
+  },
+  {
+   "file": "src/lib/shareHandoff.ts",
+   "line": 252,
+   "word": "payload",
+   "snippet": " { <NL>         if (settled) return <NL>         settled = true <NL>         resolve(payload) <NL>       } <NL>  <NL>       try { <NL>         const transaction = db.transacti"
+  },
+  {
+   "file": "src/lib/shareHandoff.ts",
+   "line": 306,
+   "word": "payload",
+   "snippet": " return false <NL>   } finally { <NL>     db.close() <NL>   } <NL> } <NL>  <NL> /** Turns a claimed payload back into `File` objects for the room sender. */ <NL> export functi"
+  },
+  {
+   "file": "src/lib/shareHandoff.ts",
+   "line": 307,
+   "word": "payload",
+   "snippet": "` objects for the room sender. */ <NL> export function sharePayloadToFiles(payload: ShareHandoffPayload): File[] { <NL>   return payload.files.map((fi"
+  },
+  {
+   "file": "src/lib/shareHandoff.ts",
+   "line": 308,
+   "word": "payload",
+   "snippet": " sharePayloadToFiles(payload: ShareHandoffPayload): File[] { <NL>   return payload.files.map((file) => new File([file.blob], file.name, { <NL>     typ"
+  },
+  {
+   "file": "src/lib/shareHandoff.ts",
+   "line": 32,
+   "word": "Payload",
+   "snippet": "g <NL>   lastModified: number <NL>   blob: Blob <NL> } <NL>  <NL> export interface ShareHandoffPayload { <NL>   id: string <NL>   files: ShareHandoffFile[] <NL>   text: string | nu"
+  },
+  {
+   "file": "src/lib/shareHandoff.ts",
+   "line": 68,
+   "word": "Payload",
+   "snippet": "mber' && <NL>     value.blob instanceof Blob <NL>   ) <NL> } <NL>  <NL> function isShareHandoffPayload(value: unknown): value is ShareHandoffPayload { <NL>   return ( <NL>    "
+  },
+  {
+   "file": "src/lib/shareHandoff.ts",
+   "line": 68,
+   "word": "Payload",
+   "snippet": " <NL> function isShareHandoffPayload(value: unknown): value is ShareHandoffPayload { <NL>   return ( <NL>     isRecord(value) && <NL>     typeof value.id === 's"
+  },
+  {
+   "file": "src/lib/shareHandoff.ts",
+   "line": 139,
+   "word": "Payload",
+   "snippet": "he cap, or storage is unavailable. <NL>  */ <NL> export async function saveSharePayload( <NL>   input: ShareHandoffInput, <NL> ): Promise<ShareHandoffPayload | "
+  },
+  {
+   "file": "src/lib/shareHandoff.ts",
+   "line": 141,
+   "word": "Payload",
+   "snippet": " saveSharePayload( <NL>   input: ShareHandoffInput, <NL> ): Promise<ShareHandoffPayload | null> { <NL>   const files = input.files.filter((file) => file.si"
+  },
+  {
+   "file": "src/lib/shareHandoff.ts",
+   "line": 153,
+   "word": "Payload",
+   "snippet": "S) return null <NL>  <NL>   const now = Date.now() <NL>   const payload: ShareHandoffPayload = { <NL>     id: LATEST_KEY, <NL>     files: files.map(toHandoffFile), <NL>  "
+  },
+  {
+   "file": "src/lib/shareHandoff.ts",
+   "line": 199,
+   "word": "Payload",
+   "snippet": "ver both receive the same payload. <NL>  */ <NL> export async function takeSharePayload(): Promise<ShareHandoffPayload | null> { <NL>   const db = await op"
+  },
+  {
+   "file": "src/lib/shareHandoff.ts",
+   "line": 199,
+   "word": "Payload",
+   "snippet": "ad. <NL>  */ <NL> export async function takeSharePayload(): Promise<ShareHandoffPayload | null> { <NL>   const db = await openShareDatabase() <NL>   if (!db) re"
+  },
+  {
+   "file": "src/lib/shareHandoff.ts",
+   "line": 204,
+   "word": "Payload",
+   "snippet": "f (!db) return null <NL>  <NL>   try { <NL>     return await new Promise<ShareHandoffPayload | null>((resolve) => { <NL>       let settled = false <NL>       const f"
+  },
+  {
+   "file": "src/lib/shareHandoff.ts",
+   "line": 206,
+   "word": "Payload",
+   "snippet": " <NL>       let settled = false <NL>       const finish = (payload: ShareHandoffPayload | null): void => { <NL>         if (settled) return <NL>         settled"
+  },
+  {
+   "file": "src/lib/shareHandoff.ts",
+   "line": 215,
+   "word": "Payload",
+   "snippet": "ion.objectStore(SHARE_HANDOFF_STORE) <NL>         let claimed: ShareHandoffPayload | null = null <NL>  <NL>         const request = store.get(LATEST_KEY) <NL>  "
+  },
+  {
+   "file": "src/lib/shareHandoff.ts",
+   "line": 220,
+   "word": "Payload",
+   "snippet": "      const raw: unknown = request.result <NL>           if (isShareHandoffPayload(raw) && raw.expiresAt > Date.now()) { <NL>             claimed = ra"
+  },
+  {
+   "file": "src/lib/shareHandoff.ts",
+   "line": 242,
+   "word": "Payload",
+   "snippet": "iming it, so the UI can preview it. */ <NL> export async function peekSharePayload(): Promise<ShareHandoffPayload | null> { <NL>   const db = await op"
+  },
+  {
+   "file": "src/lib/shareHandoff.ts",
+   "line": 242,
+   "word": "Payload",
+   "snippet": " it. */ <NL> export async function peekSharePayload(): Promise<ShareHandoffPayload | null> { <NL>   const db = await openShareDatabase() <NL>   if (!db) re"
+  },
+  {
+   "file": "src/lib/shareHandoff.ts",
+   "line": 247,
+   "word": "Payload",
+   "snippet": "f (!db) return null <NL>  <NL>   try { <NL>     return await new Promise<ShareHandoffPayload | null>((resolve) => { <NL>       let settled = false <NL>       const f"
+  },
+  {
+   "file": "src/lib/shareHandoff.ts",
+   "line": 249,
+   "word": "Payload",
+   "snippet": " <NL>       let settled = false <NL>       const finish = (payload: ShareHandoffPayload | null): void => { <NL>         if (settled) return <NL>         settled"
+  },
+  {
+   "file": "src/lib/shareHandoff.ts",
+   "line": 260,
+   "word": "Payload",
+   "snippet": "   const raw: unknown = request.result <NL>           finish(isShareHandoffPayload(raw) && raw.expiresAt > Date.now() ? raw : null) <NL>         } <NL>    "
+  },
+  {
+   "file": "src/lib/shareHandoff.ts",
+   "line": 307,
+   "word": "Payload",
+   "snippet": "back into `File` objects for the room sender. */ <NL> export function sharePayloadToFiles(payload: ShareHandoffPayload): File[] { <NL>   return payloa"
+  },
+  {
+   "file": "src/lib/shareHandoff.ts",
+   "line": 307,
+   "word": "Payload",
+   "snippet": "m sender. */ <NL> export function sharePayloadToFiles(payload: ShareHandoffPayload): File[] { <NL>   return payload.files.map((file) => new File([file"
+  },
+  {
+   "file": "src/pages/HowItWorks.tsx",
+   "line": 85,
+   "word": "TTL",
+   "snippet": "me: 'Your photo' }), icon: CheckCircle2 }, <NL>   { ...buildFeedback('INFO_TTL_EXPIRED', { preset: '50m', itemName: 'this photo' }), icon: Sparkl"
+  },
+  {
+   "file": "src/sw.ts",
+   "line": 60,
+   "word": "payload",
+   "snippet": "AX_BYTES) { <NL>       console.warn('[ghostdrop-sw] share target rejected: payload over the size cap') <NL>       return redirectTo(SHARE_HANDOFF_ERRO"
+  },
+  {
+   "file": "src/sw.ts",
+   "line": 78,
+   "word": "payload",
+   "snippet": " console.warn('[ghostdrop-sw] share target rejected: unreadable share payload') <NL>     return redirectTo(SHARE_HANDOFF_ERROR_PATH) <NL>   } <NL> } <NL>  <NL> async"
+  },
+  {
+   "file": "src/sw.ts",
+   "line": 9,
+   "word": "Payload",
+   "snippet": "_BYTES, <NL>   SHARE_HANDOFF_SUCCESS_PATH, <NL>   SHARE_TARGET_PATH, <NL>   saveSharePayload, <NL> } from './lib/shareHandoff' <NL>  <NL> interface PrecacheManifestEntry "
+  },
+  {
+   "file": "src/sw.ts",
+   "line": 70,
+   "word": "Payload",
+   "snippet": "nst url = readFormText(form, 'url') <NL>  <NL>     const saved = await saveSharePayload({ files, text, title, url }) <NL>     if (!saved) { <NL>       console.w"
+  },
+  {
+   "file": "src/types/protocol.ts",
+   "line": 206,
+   "word": "RTCDataChannel",
+   "snippet": " <NL>  * Structural runtime guard. Used on every inbound packet because <NL>  * RTCDataChannel payloads are untrusted input. <NL>  */ <NL> export function isWir"
+  },
+  {
+   "file": "src/types/protocol.ts",
+   "line": 206,
+   "word": "DataChannel",
+   "snippet": " Structural runtime guard. Used on every inbound packet because <NL>  * RTCDataChannel payloads are untrusted input. <NL>  */ <NL> export function isWirePa"
+  },
+  {
+   "file": "src/types/protocol.ts",
+   "line": 2,
+   "word": "P2P",
+   "snippet": "/** <NL>  * Shared P2P wire protocol contract (Phase 1 Web and PWA, Phase 2 Android ready"
+  },
+  {
+   "file": "src/types/protocol.ts",
+   "line": 20,
+   "word": "TTL",
+   "snippet": "viceType = 'desktop' | 'mobile' | 'tablet' <NL>  <NL> export type NukeReason = 'TTL_EXPIRED' | 'MANUAL_BURN' | 'BURN_ON_COPY' <NL>  <NL> export type AckStatus ="
+  },
+  {
+   "file": "src/types/protocol.ts",
+   "line": 98,
+   "word": "TTL",
+   "snippet": "B_CLOSE is null because it never expires on a timer. <NL>  */ <NL> export const TTL_PRESET_MS: Readonly<Record<TtlPreset, number | null>> = { <NL>   BURN_O"
+  },
+  {
+   "file": "src/types/protocol.ts",
+   "line": 107,
+   "word": "TTL",
+   "snippet": "t function ttlPresetToMs(preset: TtlPreset): number | null { <NL>   return TTL_PRESET_MS[preset] <NL> } <NL>  <NL> export function isTtlPreset(value: unknown): "
+  },
+  {
+   "file": "src/types/protocol.ts",
+   "line": 143,
+   "word": "TTL",
+   "snippet": "_ACK <NL>  * ready: usable by the UI (copy, download, forward) <NL>  * expired: TTL hit or drop-and-nuke already ran, the object URL is revoked <NL>  * err"
+  },
+  {
+   "file": "src/types/protocol.ts",
+   "line": 197,
+   "word": "TTL",
+   "snippet": "NukeReason(value: unknown): value is NukeReason { <NL>   return value === 'TTL_EXPIRED' || value === 'MANUAL_BURN' || value === 'BURN_ON_COPY' <NL> } <NL> "
+  },
+  {
+   "file": "src/types/protocol.ts",
+   "line": 2,
+   "word": "PWA",
+   "snippet": "/** <NL>  * Shared P2P wire protocol contract (Phase 1 Web and PWA, Phase 2 Android ready). <NL>  * Source of truth: docs/06-protocol-and-"
+  },
+  {
+   "file": "src/types/protocol.ts",
+   "line": 54,
+   "word": "chunk",
+   "snippet": "iately followed by exactly one ArrayBuffer frame <NL>  * holding only that chunk, never larger than CHUNK_SIZE_BYTES. <NL>  */ <NL> export interface FileCh"
+  },
+  {
+   "file": "src/types/protocol.ts",
+   "line": 127,
+   "word": "chunk",
+   "snippet": ": TransferDirection <NL>   bytesTransferred: number <NL>   totalBytes: number <NL>   chunksTransferred: number <NL>   totalChunks: number <NL>   percent: number <NL>   by"
+  },
+  {
+   "file": "src/types/protocol.ts",
+   "line": 6,
+   "word": "CHUNK",
+   "snippet": "-and-tech-spec.md section 3 and decisions.md D-011. <NL>  */ <NL>  <NL> export const CHUNK_SIZE_BYTES = 16384 <NL> export const BUFFERED_LOW_THRESHOLD = 65536 <NL> e"
+  },
+  {
+   "file": "src/types/protocol.ts",
+   "line": 54,
+   "word": "CHUNK",
+   "snippet": "y one ArrayBuffer frame <NL>  * holding only that chunk, never larger than CHUNK_SIZE_BYTES. <NL>  */ <NL> export interface FileChunkPacket { <NL>   type: 'FILE"
+  },
+  {
+   "file": "src/types/protocol.ts",
+   "line": 57,
+   "word": "CHUNK",
+   "snippet": "HUNK_SIZE_BYTES. <NL>  */ <NL> export interface FileChunkPacket { <NL>   type: 'FILE_CHUNK' <NL>   id: string <NL>   index: number <NL>   byteLength: number <NL> } <NL>  <NL> export int"
+  },
+  {
+   "file": "src/types/protocol.ts",
+   "line": 236,
+   "word": "CHUNK",
+   "snippet": "ned || typeof value.dropAndNuke === 'boolean') <NL>       ) <NL>     case 'FILE_CHUNK': <NL>       return ( <NL>         isNonEmptyString(value.id) && <NL>         i"
+  },
+  {
+   "file": "src/types/protocol.ts",
+   "line": 242,
+   "word": "CHUNK",
+   "snippet": "ength) && <NL>         value.byteLength > 0 && <NL>         value.byteLength <= CHUNK_SIZE_BYTES <NL>       ) <NL>     case 'FILE_END': <NL>       return isNonEmptyS"
+  },
+  {
+   "file": "src/types/protocol.ts",
+   "line": 69,
+   "word": "ACK",
+   "snippet": "E_END' <NL>   id: string <NL> } <NL>  <NL> export interface FileAckPacket { <NL>   type: 'FILE_ACK' <NL>   id: string <NL>   status: AckStatus <NL> } <NL>  <NL> export interface ItemNukePack"
+  },
+  {
+   "file": "src/types/protocol.ts",
+   "line": 141,
+   "word": "ACK",
+   "snippet": "or an in-memory drop. <NL>  * sending: transfer in flight or awaiting FILE_ACK <NL>  * ready: usable by the UI (copy, download, forward) <NL>  * expired: T"
+  },
+  {
+   "file": "src/types/protocol.ts",
+   "line": 246,
+   "word": "ACK",
+   "snippet": "se 'FILE_END': <NL>       return isNonEmptyString(value.id) <NL>     case 'FILE_ACK': <NL>       return isNonEmptyString(value.id) && isAckStatus(value.sta"
+  },
+  {
+   "file": "src/types/protocol.ts",
+   "line": 206,
+   "word": "payload",
+   "snippet": "runtime guard. Used on every inbound packet because <NL>  * RTCDataChannel payloads are untrusted input. <NL>  */ <NL> export function isWirePacket(value: "
+  }
+ ]
+}

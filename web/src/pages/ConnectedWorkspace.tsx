@@ -1,0 +1,185 @@
+import { useCallback, useEffect, useRef } from 'react'
+import { Ghost, Unplug } from 'lucide-react'
+import { SquiggleCardBg } from '../components/brand/SquiggleCardBg'
+import { ConnectionBridge } from '../components/room/ConnectionBridge'
+import { DropOverlay } from '../components/room/DropOverlay'
+import { DropZone } from '../components/room/DropZone'
+import { RoomToast } from '../components/room/RoomToast'
+import { TextComposer } from '../components/room/TextComposer'
+import { TransferFeed } from '../components/room/TransferFeed'
+import { TtlPicker } from '../components/room/TtlPicker'
+import { useGhostRoomContext } from '../components/shell/GhostRoomProvider'
+import { useShell } from '../components/shell/ShellProvider'
+import { FeedbackCard } from '../components/ui/FeedbackCard'
+import { useClipboardPaste } from '../hooks/useClipboardPaste'
+import { useFileDropTarget } from '../hooks/useFileDropTarget'
+import { buildFeedback } from '../lib/copyDeck'
+import { peerDisplayName } from '../lib/device'
+import { takePendingDrop } from '../lib/pendingDrop'
+
+/**
+ * Screen 2: the connected workspace.
+ * Layout reference: docs/design/ghostdrop_connected_workspace_grandma_friendly.
+ *
+ * The room lives in the app level provider, so arriving here from the hub never
+ * rebuilds the engine and the other screen stays linked. Reconnect rebuilds the
+ * engine in place and keeps every item already on screen.
+ */
+export function ConnectedWorkspace() {
+  const room = useGhostRoomContext()
+  const {
+    peers,
+    items,
+    progress,
+    remainingMs,
+    sendFiles,
+    sendText,
+    copyItem,
+    shareItem,
+    saveItem,
+    dismissFeedback,
+    feedback,
+    connectionError,
+    status,
+    reconnect,
+    sessionCode: code,
+    localDeviceType,
+    localDeviceName,
+  } = room
+
+  const isLinked = peers.length > 0
+  const firstPeer = peers[0]
+  const peerLabel = firstPeer
+    ? peerDisplayName(firstPeer.deviceType, localDeviceType)
+    : 'your other screen'
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const { publishPresence } = useShell()
+
+  // Keeps the compact mobile header pill in step with this room.
+  useEffect(() => {
+    if (!code) return
+    publishPresence({
+      code,
+      status: isLinked
+        ? 'linked'
+        : status === 'error'
+          ? 'error'
+          : status === 'connecting' || status === 'reconnecting'
+            ? 'connecting'
+            : 'waiting',
+      peerName: firstPeer ? peerDisplayName(firstPeer.deviceType, localDeviceType) : null,
+    })
+    return () => publishPresence(null)
+  }, [publishPresence, code, isLinked, firstPeer, localDeviceType, status])
+
+  // A drop picked on the hub before the link existed rides along in memory.
+  useEffect(() => {
+    if (!isLinked) return
+    const pending = takePendingDrop()
+    if (!pending) return
+    if (pending.files.length > 0) void sendFiles(pending.files)
+    if (pending.text) void sendText(pending.text)
+  }, [isLinked, sendFiles, sendText])
+
+  const handleFiles = useCallback(
+    (files: File[]) => {
+      if (files.length === 0) return
+      void sendFiles(files)
+    },
+    [sendFiles],
+  )
+
+  const handleNote = useCallback((text: string) => sendText(text), [sendText])
+
+  const isDragging = useFileDropTarget({ onFiles: handleFiles })
+  useClipboardPaste({ onFiles: handleFiles, onText: (text) => void handleNote(text) })
+
+  // The rejoin is still running, so the bridge says Reconnecting instead of a
+  // blocking dead end card.
+  const failure =
+    connectionError && status !== 'reconnecting'
+      ? buildFeedback(connectionError, { roomCode: code ?? undefined })
+      : null
+  const failureIcon = connectionError === 'ERR_ROOM_NOT_FOUND' ? Ghost : Unplug
+
+  return (
+    <div className="flex flex-col gap-5 md:gap-6">
+      <ConnectionBridge
+        code={code}
+        status={status}
+        peers={peers}
+        localDeviceType={localDeviceType}
+        localDeviceName={localDeviceName}
+      />
+
+      {failure ? (
+        <FeedbackCard
+          tone="error"
+          icon={failureIcon}
+          title={failure.title}
+          body={failure.body}
+          actionLabel={failure.actionLabel}
+          headingLevel="h2"
+          onAction={() => reconnect()}
+        />
+      ) : null}
+
+      <div className="grid items-start gap-5 md:grid-cols-12 md:gap-6">
+        <section
+          aria-labelledby="room-send-title"
+          className="relative flex flex-col gap-5 overflow-hidden rounded-[32px] bg-brand-cobalt p-6 text-white shadow-pop-cobalt md:col-span-5 md:p-7"
+        >
+          <SquiggleCardBg tone="lime" variant="single-loop" opacity={0.18} />
+
+          <div className="relative flex flex-col gap-2">
+            <h2 id="room-send-title" className="type-h2">
+              Pick what to send
+            </h2>
+            <p className="text-sm font-semibold text-white/85">
+              Anything you send lands on {peerLabel}.
+            </p>
+          </div>
+
+          <DropZone
+            inputRef={fileInputRef}
+            onFiles={handleFiles}
+            helper="Or drag files right here"
+            className="relative"
+          />
+
+          <TextComposer
+            inputId="room-note"
+            onSend={handleNote}
+            className="relative"
+          />
+
+          <div className="relative flex flex-col gap-2">
+            <p className="text-xs font-bold uppercase tracking-[0.1em] text-white/85">
+              Cleans up after
+            </p>
+            <TtlPicker value={room.ttlPreset} onChange={room.setTtlPreset} />
+          </div>
+        </section>
+
+        <TransferFeed
+          className="md:col-span-7"
+          items={items}
+          peerLabel={peerLabel}
+          progress={progress}
+          remainingMs={remainingMs}
+          onCopy={(id) => {
+            void copyItem(id)
+          }}
+          onShare={(id) => {
+            void shareItem(id)
+          }}
+          onSave={(id) => saveItem(id)}
+          onChooseFile={() => fileInputRef.current?.click()}
+        />
+      </div>
+
+      <DropOverlay visible={isDragging} />
+      <RoomToast feedback={feedback} onDismiss={dismissFeedback} />
+    </div>
+  )
+}
