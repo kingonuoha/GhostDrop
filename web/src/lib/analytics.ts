@@ -255,6 +255,40 @@ export function trackEvent(
  * Tracks when a new room is created.
  * Logs only the creation mode (cloud vs offline_direct). Zero room codes.
  */
+/**
+ * Sanitizes a URL path to prevent room codes from leaking into web analytics.
+ * E.g., "/room/GHST48" -> "/room"
+ */
+function sanitizePathForAnalytics(pathname: string): string {
+  if (pathname.startsWith('/room/')) {
+    return '/room'
+  }
+  return pathname
+}
+
+/**
+ * Tracks a privacy-safe $pageview event.
+ * Strips room codes, query params, and hashes.
+ * Ensures PostHog Website Metrics (Daily visitors, Sessions, Pageviews) light up.
+ */
+export function trackPageView(rawPath?: string): void {
+  try {
+    if (typeof window === 'undefined') return
+
+    const pathname = sanitizePathForAnalytics(rawPath || window.location.pathname)
+    const origin = window.location.origin
+    const cleanUrl = `${origin}${pathname}`
+
+    trackEvent('$pageview', {
+      $current_url: cleanUrl,
+      $pathname: pathname,
+      $host: window.location.host,
+    })
+  } catch {
+    // Zero crash guarantee
+  }
+}
+
 export function trackRoomCreated(mode: AnalyticsRoomMode): void {
   trackEvent('room_created', {
     mode,

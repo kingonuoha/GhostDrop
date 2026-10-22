@@ -1,11 +1,12 @@
 import type { ReactNode } from 'react'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { GhostRoomProvider } from './components/shell/GhostRoomProvider'
 import type { RoomSession } from './components/shell/GhostRoomProvider'
 import { AppShell } from './components/shell/AppShell'
 import { useLaunchGate } from './hooks/useLaunchGate'
 import { generateRoomCode, isValidRoomCode, normalizeRoomCode } from './lib/p2p'
 import { matchRoomPath, useRoute } from './lib/router'
+import { trackPageView } from './lib/analytics'
 import { ComingSoon } from './pages/ComingSoon'
 import { ConnectedWorkspace } from './pages/ConnectedWorkspace'
 import { HomeHub } from './pages/HomeHub'
@@ -64,6 +65,10 @@ function GhostDropApp() {
   const { path, query } = useRoute()
   const normalizedPath = path.length > 1 ? path.replace(/\/+$/, '') : path
 
+  useEffect(() => {
+    trackPageView(normalizedPath)
+  }, [normalizedPath])
+
   const [initialHubCode] = useState(createHubCode)
   /** A host that opened a room link carries that same code back to the hub. */
   const hubCodeRef = useRef<string | null>(initialHubCode)
@@ -113,6 +118,12 @@ function GhostDropApp() {
  */
 export default function App() {
   const { unlocked, unlock } = useLaunchGate()
+
+  useEffect(() => {
+    if (!unlocked) {
+      trackPageView('/')
+    }
+  }, [unlocked])
 
   if (!unlocked) return <ComingSoon onUnlock={unlock} />
 
