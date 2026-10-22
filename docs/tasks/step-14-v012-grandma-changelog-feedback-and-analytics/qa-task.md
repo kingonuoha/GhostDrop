@@ -20,7 +20,7 @@ Execute complete 6-gate QA verification and write `qa-report.md`:
    - Confirm zero mentions of `WebRTC`, `SDP`, `ICE`, `STUN`, `DataChannel`, `mDNS`, `blobUrl`, `IndexedDB`, `ServiceWorker`, `PeerJS`, or developer code functions.
    - Confirm every version card displays its exact date-time marker (e.g. `22 Oct 2026, 21:00`).
 2. **Gate 2 - Zero Em-Dashes and Zero Emojis (P0):**
-   - Grep entire repository for em dashes (`—`), en dashes (`–`), and emoji characters in new files (`changelog.ts`, `WhatsNew.tsx`, `FeedbackModal.tsx`, `analytics.ts`, `feedback.ts`).
+   - Grep entire repository for em dashes (U+2014), en dashes (U+2013), and emoji characters in new files (`changelog.ts`, `WhatsNew.tsx`, `FeedbackModal.tsx`, `analytics.ts`, `feedback.ts`).
 3. **Gate 3 - Feedback Submission & Fallback Flow:**
    - Test submitting feedback from desktop and mobile viewports.
    - Verify modal closes and displays playful success toast.

@@ -21,7 +21,7 @@ Every entry in `web/src/lib/changelog.ts` must follow these rules:
 2. **Grandma 2-Second Rule:** Use short words. Explain what the user can do, not how code works.
    - Banned: `WebRTC`, `SDP`, `ICE`, `STUN`, `DataChannel`, `mDNS`, `blobUrl`, `IndexedDB`, `ServiceWorker`, `PeerJS`, or any function names.
    - Required: "Works without internet", "Send pictures faster", "Clearer countdown timer".
-3. **P0 Guardrails:** Zero em dashes (`—` or `–`) and zero emojis anywhere in copy or UI. Use `lucide-react` SVG icons inside circular badges.
+3. **P0 Guardrails:** Zero em dashes (U+2014), zero en dashes (U+2013), and zero emojis anywhere in copy or UI. Use `lucide-react` SVG icons inside circular badges.
 
 ### Backdated Changelog Baseline
 

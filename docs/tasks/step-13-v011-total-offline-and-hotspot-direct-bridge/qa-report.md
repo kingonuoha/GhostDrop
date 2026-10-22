@@ -1,10 +1,10 @@
 # Step 13 QA Report: v0.11 Total Offline and Hotspot Direct WebRTC Bridge
-**Device stamp:** `ASUS-LAPTOP-DNLA241D` - created - 2026-10-22
+**Device stamp:** `ASUS-LAPTOP-DNLA241D` - created - 2026-10-22 · `ASUS-LAPTOP-DNLA241D` - re-audit - 2026-10-22
 
 **Auditor:** `@ghostdrop-qa` (read-only)
 **Scope:** `web/` and `docs/` at version `0.11`
 **Contract:** `docs/08-qa-checklist.md` 6 gates plus `qa-task.md` section 1 (1.1 to 1.5)
-**Verdict:** **FAIL** (2 P2 findings remain, 0 P0, 0 P1)
+**Verdict:** **PASS** (0 P0, 0 P1, 0 P2. Both P2 findings were fixed and re-verified in section 19)
 
 ---
 
@@ -14,17 +14,19 @@
 | :--- | :--- | :--- |
 | P0 | 0 | Blocking breach of a locked decision, brand rule, or wire protocol |
 | P1 | 0 | Broken primary user flow |
-| P2 | 2 | Functional gap in a P0 feature path, fix before release |
-| P3 | 5 | Documentation drift, dead option, or edge-case density note |
-| **Total** | **7** | |
+| P2 | 0 | Functional gap in a P0 feature path, fix before release |
+| P3 | 5 | 2 closed, 1 accepted by the orchestrator, 2 documented deviations |
+| **Total** | **5** | |
 
-Step 13 checks: 5 of 5 pass (1.1, 1.2, 1.3, 1.4, 1.5 pass as gates, with the P2 findings below attached to 1.3 and 1.5).
+Step 13 checks: 5 of 5 pass (1.1, 1.2, 1.3, 1.4, 1.5). The two P2 findings originally attached to 1.3 and 1.5 are closed and re-verified in section 19.
 Full 6-gate regression: all 6 gates pass.
 
 ### Blocking list (verdict is driven by these only)
 
-1. **P2-1** `unmaskLocalIceIps()` writes its 60 second cache timestamp even when `getUserMedia` failed, so one failed pulse silently disables hotspot IPv4 unmasking for a minute. Owner `@ghostdrop-backend`.
-2. **P2-2** A host that has failed over to Offline Direct never auto-recovers to online signaling, because the network listener returns early whenever `offlineStep` is not `idle`. Owner `@ghostdrop-web`.
+Empty. Both P2 findings were fixed by their owners and re-verified in section 19.
+
+1. **P2-1 CLOSED.** The 60 second cache timestamp is now written only when a camera stream was really acquired, so a failed, denied, busy, aborted, or timed out pulse stays retryable. Owner `@ghostdrop-backend`.
+2. **P2-2 CLOSED.** A host in the offline waiting step now retries online signaling in place, without losing its direct link codes and without displacing a live direct link. Owner `@ghostdrop-web`.
 
 ---
 
@@ -168,7 +170,7 @@ Note on the 20 ms figure in D-016 item 2: the measured 37 to 47 ms includes the 
 
 ## 5. Check 1.3: Hotspot IP Unmasking and Fast Failover
 
-**VERDICT: PASS on the timing budget, one behavioural defect (P2-1)**
+**VERDICT: PASS on the timing budget. The behavioural defect P2-1 is CLOSED, see section 19.**
 
 ### `unmaskLocalIceIps()` behaviour (executed with stubbed permission and media APIs)
 
@@ -185,9 +187,9 @@ Note on the 20 ms figure in D-016 item 2: the measured 37 to 47 ms includes the 
 | A camera that never opens is bounded by the timeout | PASS (62 ms for a 50 ms budget) |
 | A stream that resolves after the timeout is still stopped | PASS (both tracks stopped) |
 | Missing `navigator` (worker or SSR context) never throws | PASS |
-| A rejected pulse leaves no pulse cached | **FAIL** (timestamp `1792700885470` written after the rejection) |
+| A rejected pulse leaves no pulse cached | **PASS at re-audit** (was FAIL. Now `pulseAt` stays 0 and the next call retries, see section 19) |
 
-**P2-1:** `web/src/lib/p2p/iceUnmask.ts:151-153` writes `lastPulseAt = Date.now()` after `await run` even when no stream was ever acquired, because `pulseCamera` swallows its own failure. `getIceUnmaskPulseAt()` documents itself as the timestamp of the last completed pulse (line 39), so the failure path also makes that accessor report a pulse that never happened.
+**P2-1 (CLOSED):** the original defect was `web/src/lib/p2p/iceUnmask.ts:151-153` writing `lastPulseAt = Date.now()` after `await run` even when no stream was ever acquired, because `pulseCamera` swallowed its own failure. The re-audit at section 19 confirms the cache is now written only on real acquisition, so this detail is retained as history.
 
 ### Failover budget (executed against the real `PeerJsEngine.connect` code path)
 
@@ -238,7 +240,7 @@ The 3200 ms cap only applies when the last tier is the cloud tier, which is what
 
 ## 7. Check 1.5: Network Auto-Recovery
 
-**VERDICT: PASS for the listener contract, one behavioural gap (P2-2)**
+**VERDICT: PASS. The behavioural gap P2-2 is CLOSED, see section 19.**
 
 | Assertion | Evidence |
 | :--- | :--- |
