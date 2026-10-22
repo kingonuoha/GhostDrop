@@ -250,9 +250,9 @@ The 3200 ms cap only applies when the last tier is the cloud tier, which is what
 | No reconnect storm | 5000 ms cooldown at `:375` and `:1382-1384` |
 | Does not disturb a live offline handshake | `:1380` |
 | Auto-reconnects when errored or after a failover, while idle | `:1377` and `:1385` |
-| Auto-reconnects on a host that failed over | **FAIL** (see P2-2) |
+| Auto-reconnects on a host that failed over | **PASS at re-audit** (was FAIL. Host waiting step admitted at `:1493-1499`, see section 19) |
 
-**P2-2:** `useGhostRoom.ts:1380` returns early when `isOfflineDirectRef.current` is true and `offlineStepRef.current` is not `idle`. `failoverToOffline` sets the host step to `host-waiting-for-reply` at `:1108-1110`, so from that moment every `online` and `change` event is discarded on the host and the room never returns to online signaling. The plan section 3 Layer 3 (line 89) requires the retry while the room is in an `error` or waiting state, and `web-task.md` item 1.3 asks for it whenever peers are zero. A guest still recovers because its step stays `idle` after a failover.
+**P2-2 (CLOSED):** the original defect was `useGhostRoom.ts:1380` returning early when `isOfflineDirectRef.current` was true and `offlineStepRef.current` was not `idle`. `failoverToOffline` sets the host step to `host-waiting-for-reply`, so every `online` and `change` event was discarded on the host. The re-audit at section 19 confirms the waiting step is now admitted and retried in place. Line numbers in this table refer to the pre-fix tree.
 
 ---
 
@@ -380,7 +380,7 @@ Static review only for the four viewport widths: no headless browser is installe
 ### P0 (blocking release): none
 ### P1 (broken primary flow): none
 
-### P2-1: A failed camera pulse poisons the 60 second unmask cache
+### P2-1 (CLOSED at re-audit): A failed camera pulse poisoned the 60 second unmask cache
 
 - **Severity:** P2
 - **Owner:** `@ghostdrop-backend`
@@ -389,7 +389,7 @@ Static review only for the four viewport widths: no headless browser is installe
 - **Impact:** the hotspot IPv4 unmasking path, which D-016 item 3 depends on, silently no-ops after a single bad camera moment. Realistic trigger: another app holds the camera, or the scanner is still holding the device when `acceptOfflineToken` starts the handshake, because `QrScannerModal` keeps its stream live until after the accept resolves.
 - **Fix:** have `pulseCamera` return whether a stream was acquired, and only set `lastPulseAt` on success (or when the permission state is `granted` and the stream opened). Keep the `inFlight` join and the `finally` track stop exactly as they are.
 
-### P2-2: A host that failed over to Offline Direct never auto-recovers to online signaling
+### P2-2 (CLOSED at re-audit): A host that failed over to Offline Direct never auto-recovered to online signaling
 
 - **Severity:** P2
 - **Owner:** `@ghostdrop-web`
