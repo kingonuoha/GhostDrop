@@ -1,5 +1,5 @@
 # Step 13: v0.11 Total Offline and Hotspot Direct WebRTC Bridge Brief
-**Device stamp:** `ASUS-LAPTOP-DNLA241D` - created - 2026-10-22
+**Device stamp:** `ASUS-LAPTOP-DNLA241D` - created - 2026-10-22 · `ASUS-LAPTOP-DNLA241D` - orchestrator-signed-off - 2026-10-22
 
 ## 1. Executive Summary and Root-Cause Analysis
 
@@ -55,3 +55,60 @@ When a user opens the installed or cached GhostDrop PWA tomorrow completely offl
    - Do not install any new package in `web/package.json`. Bump version from `0.10` to `0.11`.
 6. **Windows PowerShell Safe File Operations:**
    - Always use file Write and Edit tools; never use bash heredocs (`cat << 'EOF'`).
+
+---
+
+## 4. Orchestrator Completion Notes (Signed off)
+
+**Status:** PASS. QA report at `qa-report.md` records 0 P0, 0 P1, 0 P2, 5 P3 at version `0.11`.
+
+### 4.1 Execution order and outcome
+
+| Phase | Owner | Outcome |
+| :--- | :--- | :--- |
+| 1 | `@ghostdrop-backend` | Created `compactSdp.ts` (811 lines), `iceUnmask.ts`, `offlineDirectEngine.ts` (1032 lines), updated `peerjsEngine.ts` and the `index.ts` barrel. Tier timeout `3500 ms` to `2200 ms`, cloud tier capped at `3200 ms` with explicit overrides still winning. |
+| 2 | `@ghostdrop-ui-polish` | Added `INFO_OFFLINE_READY`, `INFO_OFFLINE_REPLY_READY`, `ERR_OFFLINE_CODE_INVALID` plus nine `OFFLINE_*` constants to `copyDeck.ts` and `docs/02-brand-persona-and-copy.md`. Built `OfflineLinkCard.tsx` with draw-only `SquiggleCardBg`, token classes only, `min-h-[44px]` targets, and a clipboard fallback for plain HTTP origins. |
+| 3 | `@ghostdrop-web` | Hybrid `PeerJsEngine` plus `OfflineDirectEngine` orchestration in `useGhostRoom.ts`, shared `ChunkReceiver` and packet handlers across both transports, `activeEngine()` routing for send, copy, save and burn, 2-way `QrScannerModal` with `'join'` and `'reply'` modes, `#gd=` hash consumption on mount and `hashchange`, and the `0.10` to `0.11` version bump in three files. |
+| 4 | `@ghostdrop-qa` | First audit returned 0 P0, 0 P1, 2 P2, 5 P3 with verdict FAIL. Both P2 findings were dispatched to their owners, fixed, and re-verified. Closure verdict PASS. |
+
+### 4.2 Orchestrator directed fixes beyond the task files
+
+1. **BroadcastChannel late join replay.** The same-device multi-tab shortcut only worked when the guest tab was already listening before the host posted its offer, which is the reverse of the real order. Directed `@ghostdrop-backend` to add a `want-offer` request and single re-post with a 500 ms per requester cooldown and idle, connected and in flight guards. Measured 37 ms and 47 ms to a live link, one peer connection, duplicate offers ignored.
+2. **Hub QR density.** Appending `#gd=` to the hub join URL pushed the primary QR to 77 modules at `2.18 px` pitch, breaking the Grandma 2-Second Rule on the fast path. Directed `@ghostdrop-web` to switch the direct link case to `level="L"` in a `216 px` content box while leaving the plain online case byte identical at `168` and `level="M"`. Measured result 61 to 73 modules at `3.54 px` down to `2.96 px`.
+3. **Reply QR size.** Phase 1 measured tokens of 299 to 348 characters against a plan estimate of 110 to 180. Directed `@ghostdrop-ui-polish` to render the guest reply QR at `232 px` rather than `184 px` so module pitch stays at or above `3 px`.
+
+### 4.3 Findings carried, not blocking
+
+| ID | Severity | Status | Note |
+| :--- | :--- | :--- | :--- |
+| P3-1 | P3 | Accepted deviation | Token is 231 chars at zero candidates and 405 at the eight candidate cap, above the plan estimate and above the `220` named in `backend-task.md`. The codec is correct, the estimate was wrong. If density ever needs to drop, cap the QR payload at four candidates rather than changing the D-016 schema, which would break Phase 2 compatibility. |
+| P3-4 | P3 | Accepted by orchestrator | The `forceIfPrompted` unmask option has no product caller and is deliberately kept as a documented escape hatch. |
+| P3-5 | P3 | Documented deviation | The plain `GD1.` fallback doubles QR density to `2.43 px` on engines without `CompressionStream`. Every current target browser ships it. |
+
+### 4.4 Out-of-scope repairs recorded
+
+| File | Reason | Label |
+| :--- | :--- | :--- |
+| `web/src/components/room/FeedbackNotice.tsx` | The icon map is `Record<RoomFeedbackKey, LucideIcon>`, so three new feedback keys required entries or `type-check` fails | Minimal, five lines, no logic change |
+| `web/src/components/nav/DesktopTopPillBar.tsx` | `openScanner` gained an optional mode argument and was no longer assignable to `MouseEventHandler` | `onClick={() => openScanner()}`, no visual change |
+| `docs/tasks/step-14-v012-grandma-changelog-feedback-and-analytics/brief.md` and `qa-task.md` | Each carried one U+2014 and one U+2013 inside a sentence forbidding them | Rewritten to `U+2014` and `U+2013` notation, orchestrator hygiene |
+
+### 4.5 Verification at closeout
+
+| Command | Exit | Note |
+| :--- | :--- | :--- |
+| `npm run type-check` | `0` | 3 TypeScript projects |
+| `npm run lint` | `0` | `eslint .` |
+| `npm run build` | `0` | Precaches 13 entries, 692.68 KiB, writes `dist/sw.js` |
+| Code point sweep, 78 files in `web/src` | clean | 0 em dash, 0 en dash, 0 emoji |
+| Code point sweep, step 13 task folder | clean | 0 violations |
+| Jargon sweep over rendered copy | clean | 0 hits for the nine banned protocol words |
+| Version sync | `0.11` | `constants.ts`, `package.json`, `package-lock.json` root and `packages[""]`. The tree has since advanced to `0.12` under Step 14 |
+| Dependency delta | zero | No package added, removed, or upgraded at Step 13 |
+
+### 4.6 Handover notes
+
+1. Live device testing was not possible in this environment, because the headless browser gathers zero ICE candidates. The direct link was proven with an injected fake peer connection pair, not with two physical devices on one hotspot. A manual pass on a real phone hotspot remains worth doing before any public push.
+2. `docs/07-build-order.md` Step 11 remains DEFERRED and still runs after this step.
+3. Step 13 shipped at `0.11`. The repository has since advanced to `0.12` under Step 14 (grandma changelog, Google Sheets feedback, PostHog analytics), which is already committed. Any push of `web/` from this point must satisfy the `AGENTS.md` section 5 gate against `0.12`, not `0.11`.
+4. `AGENTS.md` section 5 still names `0.7` as the baseline, and `docs/07-build-order.md` has no Step 14 entry even though Step 14 code is committed. Both are stale and sit outside this step's file ownership. Recommended for the next orchestrator pass.

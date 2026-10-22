@@ -39,3 +39,4 @@
    - Build `compactSdp.ts`, `iceUnmask.ts`, and `offlineDirectEngine.ts` (`P2PSignalingAdapter` over native `RTCPeerConnection` + `RTCDataChannel` + `BroadcastChannel` shortcut) so two cached PWAs on the same Wi-Fi or phone hotspot connect with zero internet and zero server via a 2-step QR or copyable Offline Code (`GD1...` / `#gd=...`) handshake.
    - Fix `navigator.onLine` false positives on offline Wi-Fi/hotspots with fast `2,500ms` signaling failover and unmask RFC1918 hotspot IPv4 `host` candidates when mobile data is ON or OFF. Recorded as D-016.
    - Version `0.10` to `0.11` (zero new dependencies).
+   - **Status: Signed off PASS.** QA report `docs/tasks/step-13-v011-total-offline-and-hotspot-direct-bridge/qa-report.md` records 0 P0, 0 P1, 0 P2, 5 P3 at version `0.11`. `type-check`, `lint`, and `build` all exit `0`. Token length exceeds the plan estimate (P3-1, measured 231 to 405 chars) but shipped QR pitch stays at or above `2.96 px`.

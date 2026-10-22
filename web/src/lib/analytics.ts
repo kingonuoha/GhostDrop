@@ -14,6 +14,7 @@
  */
 
 import type { DeviceType } from '../types/protocol'
+import { detectDeviceType } from './device'
 
 export type AnalyticsRoomMode = 'cloud' | 'offline_direct'
 
@@ -36,6 +37,9 @@ declare global {
 }
 
 const STORAGE_DISTINCT_ID_KEY = 'ghostdrop.analytics.distinct_id'
+const STORAGE_SESSION_ID_KEY = 'ghostdrop.analytics.session_id'
+const STORAGE_SESSION_TIME_KEY = 'ghostdrop.analytics.session_last_active'
+const SESSION_TIMEOUT_MS = 30 * 60 * 1000 // 30 minutes
 const DEFAULT_POSTHOG_HOST = 'https://us.i.posthog.com'
 
 /**
@@ -113,6 +117,41 @@ function getOrCreateAnonymousId(): string {
  * Sanitizes property values to prevent accidental privacy leaks.
  * Strips forbidden keys, room codes, and potential payload contents.
  */
+
+/**
+ * Generates or retrieves an active session ID stored in sessionStorage.
+ * Automatically refreshes if inactive for more than 30 minutes.
+ * Required by PostHog Web Analytics to populate Sessions, Duration, and Bounce Rate cards.
+ */
+function getOrCreateSessionId(): string {
+  if (typeof window === 'undefined') return 'serverless_session'
+
+  try {
+    const now = Date.now()
+    const lastActive = parseInt(
+      window.sessionStorage.getItem(STORAGE_SESSION_TIME_KEY) || '0',
+      10,
+    )
+    const currentSession = window.sessionStorage.getItem(STORAGE_SESSION_ID_KEY)
+
+    if (currentSession && now - lastActive < SESSION_TIMEOUT_MS) {
+      window.sessionStorage.setItem(STORAGE_SESSION_TIME_KEY, now.toString())
+      return currentSession
+    }
+
+    const newSession =
+      typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+        ? crypto.randomUUID()
+        : 'sess_' + Math.random().toString(36).slice(2) + now.toString(36)
+
+    window.sessionStorage.setItem(STORAGE_SESSION_ID_KEY, newSession)
+    window.sessionStorage.setItem(STORAGE_SESSION_TIME_KEY, now.toString())
+    return newSession
+  } catch {
+    return 'ephemeral_session'
+  }
+}
+
 function sanitizeProperties(
   properties?: Record<string, unknown>,
 ): Record<string, unknown> {
@@ -201,6 +240,23 @@ export function trackEvent(
       import.meta.env.VITE_POSTHOG_HOST || DEFAULT_POSTHOG_HOST
     ).trim()
     const distinctId = getOrCreateAnonymousId()
+    const sessionId = getOrCreateSessionId()
+    const deviceType = typeof window !== 'undefined' ? detectDeviceType() : 'desktop'
+
+    const sessionProps: Record<string, unknown> = {
+      $session_id: sessionId,
+      $window_id: sessionId,
+      $device_type: deviceType === 'desktop' ? 'Desktop' : deviceType === 'mobile' ? 'Mobile' : 'Tablet',
+    }
+
+    if (typeof window !== 'undefined') {
+      if (window.screen) {
+        sessionProps.$screen_width = window.screen.width
+        sessionProps.$screen_height = window.screen.height
+      }
+      sessionProps.$viewport_width = window.innerWidth
+      sessionProps.$viewport_height = window.innerHeight
+    }
 
     // 1. Check if window.posthog is loaded and initialized
     if (
@@ -210,6 +266,7 @@ export function trackEvent(
     ) {
       window.posthog.capture(eventName, {
         $ip: false,
+        ...sessionProps,
         ...sanitized,
       })
       return
@@ -224,6 +281,7 @@ export function trackEvent(
         properties: {
           distinct_id: distinctId,
           $ip: false,
+          ...sessionProps,
           ...sanitized,
         },
         timestamp: new Date().toISOString(),

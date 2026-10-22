@@ -477,7 +477,7 @@ Every probe lived in the OS temp directory (`%TEMP%/opencode/gdqa13`), never ins
 | `worst.mjs` | Eight candidate QR density measurement |
 | `scan.mjs`, `repo-scan.mjs` | Em dash, en dash and emoji sweep |
 
-Total executed assertions: 150. Failures: 1, the P2-1 cache defect. All harness files and the compiled build directory are deleted after this report is written.
+Total executed assertions in the first audit: 150. Failures: 1, the P2-1 cache defect. The closure re-audit in section 19 adds 12 assertions with 0 failures, all in the OS temp directory. All harness files and compiled build directories are deleted after this report is written.
 
 ---
 
@@ -487,9 +487,9 @@ Total executed assertions: 150. Failures: 1, the P2-1 cache defect. All harness 
 | :--- | :--- |
 | 1.1 Compact SDP round trip and token size | PASS (deviation logged as P3-1) |
 | 1.2 OfflineDirectEngine end to end | PASS |
-| 1.3 Hotspot unmasking and fast failover | PASS on the budget, P2-1 open |
+| 1.3 Hotspot unmasking and fast failover | PASS. P2-1 CLOSED |
 | 1.4 Two step QR and offline code parity | PASS |
-| 1.5 Network auto-recovery | PASS for the listener contract, P2-2 open |
+| 1.5 Network auto-recovery | PASS. P2-2 CLOSED |
 | Gate 1 Brand, tokens, Laroka, squiggle draw only | PASS |
 | Gate 2 Copy, zero em dash, zero emoji | PASS |
 | Gate 3 Wire protocol and 16KB backpressure | PASS |
@@ -497,12 +497,117 @@ Total executed assertions: 150. Failures: 1, the P2-1 cache defect. All harness 
 | Gate 5 PWA and offline app shell | PASS |
 | Gate 6 Viewports, reduced motion, build | PASS |
 
-**FAIL**
+**PASS**
 
-Blocking list:
+Blocking list: **empty**. P0 0, P1 0, P2 0.
 
-1. P2-1 `web/src/lib/p2p/iceUnmask.ts:149-156` writes the 60 second cache timestamp after a failed `getUserMedia`, silently disabling hotspot IPv4 unmasking for a minute. Owner `@ghostdrop-backend`.
-2. P2-2 `web/src/hooks/useGhostRoom.ts:1380` blocks network auto-recovery on a host that failed over to Offline Direct, so the room never returns to online signaling without a reload. Owner `@ghostdrop-web`.
+The two P2 findings raised by the first audit were fixed by their owning specialists and re-verified in section 19:
 
-Everything else in this step is signed off, including the zero em dash, zero en dash and zero emoji sweep, the build at version `0.11`, and the Step 12 launch gate regression.
+1. P2-1 CLOSED. The 60 second cache is now written only after a real camera acquisition, so a failed, denied, busy, aborted, or timed out pulse stays retryable. Owner `@ghostdrop-backend`.
+2. P2-2 CLOSED. A host in the offline waiting step now retries online signaling in place, keeping both direct link codes and never displacing a live direct link. Owner `@ghostdrop-web`.
+
+Signed off for release at version `0.11`, including the zero em dash, zero en dash and zero emoji sweep, the 16KB chunk budget on both engines, the TTL revoke paths, the offline app shell, and the Step 12 launch gate regression.
+
+---
+
+## 19. Closure Re-Audit (supersedes the open status above)
+
+Re-audit performed after the two P2 fixes landed. Method: read the current source, execute a fresh P2-1 harness, and re-run the build and the brand sweeps. No repository file was modified except `qa-report.md` and the `qa-task.md` checkboxes.
+
+### 19.1 P2-1 closure evidence, executed
+
+Harness: a temporary probe in `%TEMP%/opencode` importing the current `web/src/lib/p2p/iceUnmask.ts` through Node 22.18 with `--experimental-strip-types`, with `navigator.permissions` and `navigator.mediaDevices.getUserMedia` stubbed. No source edit, and the probe is deleted after the run.
+
+| # | Assertion | Result | Measured |
+| :--- | :--- | :--- | :--- |
+| 1 | A rejected pulse leaves the cache cold | PASS | `pulseAt=0` |
+| 2 | The rejected pulse did reach the hardware layer | PASS | `gum=1` |
+| 3 | The next call after a rejection reopens hardware instead of short circuiting | PASS | `gum=2` |
+| 4 | A successful pulse warms the cache | PASS | `pulseAt=1792709607865` |
+| 5 | The successful pulse stopped its track | PASS | `stopped=1` |
+| 6 | A call inside the window skips hardware | PASS | `gum=2` |
+| 7 | A timed out pulse leaves the cache cold | PASS | `pulseAt=0` |
+| 8 | A timed out pulse still requested hardware once | PASS | `gum=1` |
+| 9 | Permission `prompt` does not pulse by default | PASS | `gum=0` |
+| 10 | The explicit opt in pulses while undecided | PASS | `gum=1` |
+| 11 | Two concurrent callers share one pulse | PASS | `gum=1` |
+| 12 | A missing `mediaDevices` never throws | PASS | `threw=false` |
+
+Result: **12 of 12 passed, exit 0.**
+
+Code evidence:
+
+| Claim | Location |
+| :--- | :--- |
+| `pulseCamera` reports real acquisition | `iceUnmask.ts:99` returns `Promise<boolean>`, acquisition computed at `:128`, returned at `:132` |
+| Cache written only on a real pulse | `iceUnmask.ts:176-178`, `const pulsed = await attempt` then `if (pulsed) lastPulseAt = Date.now()` |
+| Never throws | Outer `try/catch` at `:152-184`, plus the pulse catch at `:122-124` |
+| Tracks stopped including a late stream | Late handler at `:110-115`, `finally` at `:125-130` |
+| Permission gate inside the shared attempt | Attempt built at `:169-174`, assigned to `inFlight` before the caller awaits, late callers join at `:157-160` |
+| Cache read honoured | `:156` |
+| `forceIfPrompted` retained as accepted in P3-4 | `:28-35`, `:83`, `:170` |
+| Call sites unchanged, still no arguments | `offlineDirectEngine.ts:432` and `:486`, `peerjsEngine.ts:586` |
+
+### 19.2 P2-2 closure evidence
+
+The gate that previously discarded the host now admits it. Current `useGhostRoom.ts`:
+
+| Element | Line | Content |
+| :--- | :--- | :--- |
+| Cooldown constant | `:380` | `NETWORK_RECOVERY_COOLDOWN_MS = 5000` |
+| In place retry | `:1177` | `const retryOnlineInPlace = () => {` |
+| In place retry published to a ref | `:1215` | `onlineRetryRef.current = retryOnlineInPlace` |
+| In flight build guard | `:1182` and `:1480` | `if (offlineBuildRef.current) return` |
+| Waiting step detection | `:1483-1485` | `waitingOnOfflineCode = isOfflineDirectRef.current && (step === 'host-waiting-for-reply' \|\| step === 'guest-showing-reply')` |
+| Recovery gate | `:1489-1495` | retries when `statusRef.current === 'error'`, or `networkFailoverRef.current`, or `waitingOnOfflineCode` |
+| Connected direct link is never replaced | `:1497` | `if (isOfflineDirectRef.current && step === 'connected') return` |
+| Cooldown enforced | `:1500-1501` | `if (at - lastAttempt < NETWORK_RECOVERY_COOLDOWN_MS) return`, then `lastAttempt = at` |
+| Dispatch | `:1505-1510` | an offline room with a live retry callback retries in place, anything else calls `reconnect()` |
+| Stale callback cannot outlive the effect | `:1369` | `onlineRetryRef.current = null` in teardown |
+
+Preservation argument. `retryOnlineInPlace` calls only `engine.connect(...)`. It never calls `ensureOfflineEngine`, `offline.destroy()`, `offline.connect`, `applyOfflineInvite`, `applyOfflineReply`, or `applyOfflineStep`. Therefore `offlineInviteToken`, `offlineReplyToken`, `offlineStep`, the `OfflineDirectEngine` instance, and its `BroadcastChannel` all survive a failed retry untouched, and the guest reply card stays on screen.
+
+Frequency bound. 5000 ms cooldown caps the listener at 12 attempts per minute. A second event that arrives while a private LAN attempt chain is still running is rejected by the engine `ALREADY_CONNECTED` guard and swallowed by the empty catch, so live signaling attempts never exceed one at a time.
+
+### 19.3 P3 items at re-audit
+
+| ID | Status | Note |
+| :--- | :--- | :--- |
+| P3-1 | Open, accepted deviation | Token length is 231 at zero candidates and up to 405 at the eight candidate cap, above the plan estimate and above the `220` in `backend-task.md`. Shipped QR pitch stays 2.96 to 4.07 px, so this is an estimate error, not a scannability defect. |
+| P3-2 | CLOSED | `OfflineLinkCard.tsx` comment corrected to the measured module counts and pitch. |
+| P3-3 | CLOSED | `RoomCodeCard.tsx` comment corrected to the measured module counts and pitch, including the eight candidate caveat. |
+| P3-4 | Accepted by the orchestrator | The `forceIfPrompted` opt in is deliberately kept as a documented escape hatch with no product caller. |
+| P3-5 | Open, documented deviation | The plain `GD1.` fallback doubles QR density on engines without `CompressionStream`. Every current target browser ships it. |
+
+### 19.4 Independent sweeps at re-audit
+
+| Sweep | Command basis | Result |
+| :--- | :--- | :--- |
+| Em dash, en dash, emoji across `web/src` | Code point walk over 78 files | 0, 0, 0 |
+| Em dash, en dash, emoji across the step 13 task folder | Code point walk over 6 files | 0 |
+| Technical jargon in rendered copy | `grep -E` over `components`, `pages`, `copyDeck.ts` | 0 hits |
+| Browser alert dialogs | `grep -E "window\\.(alert\|confirm\|prompt)"` over `web/src` | 0 hits |
+| Raw hex outside comments | `grep` over `web/src` `.ts` and `.tsx` | 0 hits |
+| `protocol.ts`, `index.css`, `janitor.ts`, `useTtlJanitor.ts` | `git status --porcelain` | unmodified, 0 entries |
+| Version sync | three sources | `0.11` in all three |
+| `npm run type-check` | `web/` | exit 0 |
+| `npm run lint` | `web/` | exit 0 |
+| `npm run build` | `web/` | exit 0, precache 13 entries (692.68 KiB) |
+
+### 19.5 Out of scope note, fixed by the orchestrator
+
+`docs/tasks/step-14-v012-grandma-changelog-feedback-and-analytics/brief.md:24` and `qa-task.md:23` each carried one U+2014 and one U+2013 inside a sentence that forbids them. Both were plain text examples of the banned characters, and both were rewritten to the `U+2014` and `U+2013` notation so the P0 rule holds while the instructions stay readable. This is outside the Step 13 measurement surface and is recorded here for traceability only.
+
+### 19.6 Closure verdict
+
+| Gate | Re-audit result |
+| :--- | :--- |
+| 1.1 Compact SDP round trip and token size | PASS (P3-1 deviation) |
+| 1.2 OfflineDirectEngine end to end | PASS |
+| 1.3 Hotspot unmasking and fast failover | PASS, P2-1 CLOSED by execution |
+| 1.4 Two step QR and offline code parity | PASS |
+| 1.5 Network auto-recovery | PASS, P2-2 CLOSED by citation |
+| Gates 1 to 6 | PASS |
+
+**FINAL VERDICT: PASS.** 0 P0, 0 P1, 0 P2. Five P3 items carried, two closed, one accepted, two documented deviations.
 
