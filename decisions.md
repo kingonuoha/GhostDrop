@@ -174,3 +174,60 @@
   9. **Legibility scrim is mandatory.** A Warm Stone scrim sits between the slabs and the content so headline contrast is measured against the scrim, never against a moving Cobalt field.
 - **Rationale:** Explicit prelaunch request from Kingsley with a hard global launch instant of 23 October 2026 at 17:00 WAT (16:00 UTC), the need to keep testing the real app on both PC and phone without exposing it publicly, and a deliberate self-unveiling so no visitor is ever stuck behind a wall after launch.
 
+---
+
+## D-016: Total Offline Direct WebRTC Bridge (Compact SDP QR + Code Handshake), Hotspot IP Unmasking, and Fast Reachability Failover
+- **Date:** 2026-10-22
+- **Status:** LOCKED
+- **Scope:** `web/src/lib/p2p/`, `web/src/hooks/useGhostRoom.ts`, `web/src/components/qr/QrScannerModal.tsx`, `web/src/components/room/`, `web/src/pages/`, `web/src/lib/copyDeck.ts`, `docs/02-brand-persona-and-copy.md`, `docs/07-build-order.md`
+- **Context:** When a user opens the installed/cached production PWA tomorrow completely offline on the same Wi-Fi or phone hotspot (mobile data off or on), `window.location.hostname` is the public static host, not a local Vite `/peerjs` server, and `0.peerjs.com` is unreachable. Furthermore, `navigator.onLine` stays `true` on Wi-Fi routers without internet and on phone hotspots with mobile data off, causing `PeerJsEngine` to stall on cloud signaling and STUN DNS lookups, while mDNS `.local` candidate obfuscation and cellular Symmetric CG-NAT block hotspot connections even when mobile data is on.
+- **Decision:**
+  1. **Serverless Offline Direct Engine (`OfflineDirectEngine` + `compactSdp.ts`):** Implement a zero-server `P2PSignalingAdapter` over native `RTCPeerConnection({ iceServers: [] })` and `RTCDataChannel('ghostdrop')`. Compress the essential SDP Offer/Answer fields (`ufrag`, `pwd`, raw 32-byte `sha-256` fingerprint, and LAN/hotspot `host` IP:port candidates) into a compact `GD1...` / `GD1Z...` token (`~110-180` chars) embedded in the QR URL fragment (`#gd=...`) and copyable as an offline pairing code.
+  2. **Two-Step QR + Offline Code Handshake:** When internet signaling is unreachable (or when a guest scans an `#gd=...` QR), Host displays its Invite QR/Code (`Step 1`), Guest scans/pastes it and immediately renders a high-contrast Acid Lime Reply QR/Code (`Step 2`), and Host scans/pastes the Reply to open the direct LAN/Hotspot `RTCDataChannel` with zero internet and zero server. Also include a `BroadcastChannel` shortcut so same-device offline tabs link in `< 20ms` without scanning.
+  3. **Hotspot Local IPv4 Unmasking (`iceUnmask.ts`):** When camera permission is already `'granted'` on the origin (or right after `QrScannerModal` runs), execute a brief `< 50ms` media track warmup before ICE gathering so browsers emit raw RFC1918 LAN/hotspot IPv4 (`192.168.x.x` / `172.20.10.x` / `10.x.x.x`) `host` candidates instead of `.local` mDNS hostnames that phone hotspots drop.
+  4. **Fast Reachability Timeout & Auto-Failover:** Never trust `navigator.onLine === true` as proof of internet reachability. Cap per-tier signaling timeouts (`<= 2,500ms`) so Wi-Fi without internet or a hotspot with mobile data off fails over automatically to `OfflineDirectEngine` in `< 3s` instead of hanging for `18.5s`.
+  5. **Version `0.11`:** Bump `web/package.json`, `web/package-lock.json`, and `APP_VERSION` in `web/src/lib/constants.ts` from `0.10` to `0.11` (zero new dependencies).
+- **Rationale:** Total offline and hotspot compatibility is a P0 requirement before GhostDrop can be considered complete.
+
+---
+
+## D-017: Privacy-First PostHog Analytics and Public Stats Counter API
+- **Date:** 2026-10-22
+- **Status:** LOCKED
+- **Scope:** `web/src/lib/analytics.ts`, `web/api/stats.ts`, `web/src/hooks/useGhostRoom.ts`, `web/src/components/brand/TeleportCounterBadge.tsx`
+- **Decision:**
+  1. Use PostHog Cloud (free tier: 1M events/month) for aggregate product analytics.
+  2. Enforce strict privacy guardrails: `autocapture: false`, `disable_session_recording: true`, `ip: false`.
+  3. Never log file names, note content, room codes, or IP addresses. Only log aggregate counts: `room_created`, `peer_connected`, `file_teleported` (with `file_count` and `size_bucket_mb`).
+  4. Query total teleports via serverless `/api/stats` endpoint with `Cache-Control: s-maxage=600` so client browsers never see private PostHog read keys, powering a public celebratory counter badge ("500+ files teleported safely").
+- **Rationale:** Kingsley requested high-level aggregate usage metrics and public milestone pride without running a database or invading user privacy.
+
+---
+
+## D-018: In-App Feedback and Feature Request Intake via Google Sheets
+- **Date:** 2026-10-22
+- **Status:** LOCKED
+- **Scope:** `web/src/components/feedback/FeedbackModal.tsx`, `web/src/lib/feedback.ts`, `scripts/google-apps-script-feedback.js`
+- **Decision:**
+  1. Users submit feedback and feature requests via a native in-app modal with category toggle ("I want a new feature" vs "General thought or bug") and message text area.
+  2. Submissions post directly to a Google Apps Script web app endpoint that writes a row into a private Google Sheet (`Timestamp`, `Category`, `Message`, `Version`, `Device`).
+  3. Discord, Tally, GitHub, and email intake are strictly excluded per explicit user directive.
+  4. Success triggers a joyful toast; network errors trigger a reassuring notice without app crash.
+- **Rationale:** Zero database infrastructure, zero email clutter, and effortless spreadsheet review on mobile.
+
+---
+
+## D-019: Grandma-Friendly What is New Page with Small Date-Time Markers
+- **Date:** 2026-10-22
+- **Status:** LOCKED
+- **Scope:** `web/src/lib/changelog.ts`, `web/src/pages/WhatsNew.tsx`, `web/src/components/nav/DesktopTopPillBar.tsx`, `web/src/components/nav/MobileStatusHeader.tsx`
+- **Decision:**
+  1. Create a dedicated `/whats-new` route displaying chronological release cards backdated from `v0.6` to present.
+  2. **Grandma 2-Second Rule:** Zero developer jargon permitted. No mentions of WebRTC, SDP, ICE, STUN, buffers, sockets, or function names. Copy must describe simple human outcomes only.
+  3. **Small Date-Time Marker:** Every release card must prominently feature a compact date-time badge formatted as `DD MMM YYYY, HH:MM` (e.g. `22 Oct 2026, 21:45`).
+  4. **Navigation Integration:** The version badge (`v0.11`) in desktop and mobile headers links directly to `/whats-new`, with an unread Acid Lime dot indicator that clears when visited (persisted via `localStorage`).
+  5. Zero em dashes and zero emojis anywhere in copy or UI.
+- **Rationale:** Clear user visibility into new features using lay language and exact timestamps.
+
+
+

@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react'
 import { QrScannerModal } from '../qr/QrScannerModal'
+import { InstallNudgeModal } from '../pwa/InstallNudgeModal'
+import { FeedbackModal } from '../feedback/FeedbackModal'
 import { DesktopTopPillBar } from '../nav/DesktopTopPillBar'
 import { MobileBottomDock } from '../nav/MobileBottomDock'
 import { MobileStatusHeader } from '../nav/MobileStatusHeader'
@@ -10,7 +12,13 @@ type AppShellProps = {
 }
 
 function ShellChrome({ children }: AppShellProps) {
-  const { scannerOpen, closeScanner } = useShell()
+  const {
+    scannerOpen,
+    scannerMode,
+    closeScanner,
+    feedbackOpen,
+    closeFeedback,
+  } = useShell()
 
   return (
     <div className="min-h-dvh bg-brand-canvas text-brand-ink">
@@ -36,7 +44,11 @@ function ShellChrome({ children }: AppShellProps) {
 
       <MobileBottomDock />
 
-      {scannerOpen ? <QrScannerModal onClose={closeScanner} /> : null}
+      <InstallNudgeModal />
+
+      <FeedbackModal isOpen={feedbackOpen} onClose={closeFeedback} />
+
+      {scannerOpen ? <QrScannerModal mode={scannerMode} onClose={closeScanner} /> : null}
     </div>
   )
 }

@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useRef } from 'react'
-import { Ghost, Unplug } from 'lucide-react'
+import { Ghost, Unplug, Wifi } from 'lucide-react'
 import { SquiggleCardBg } from '../components/brand/SquiggleCardBg'
 import { ConnectionBridge } from '../components/room/ConnectionBridge'
 import { DropOverlay } from '../components/room/DropOverlay'
 import { DropZone } from '../components/room/DropZone'
+import { OfflineLinkCard } from '../components/room/OfflineLinkCard'
 import { RoomToast } from '../components/room/RoomToast'
 import { TextComposer } from '../components/room/TextComposer'
 import { TransferFeed } from '../components/room/TransferFeed'
@@ -53,7 +54,7 @@ export function ConnectedWorkspace() {
     ? peerDisplayName(firstPeer.deviceType, localDeviceType)
     : 'your other screen'
   const fileInputRef = useRef<HTMLInputElement>(null)
-  const { publishPresence } = useShell()
+  const { publishPresence, openScanner } = useShell()
 
   // Keeps the compact mobile header pill in step with this room.
   useEffect(() => {
@@ -95,9 +96,14 @@ export function ConnectedWorkspace() {
   useClipboardPaste({ onFiles: handleFiles, onText: (text) => void handleNote(text) })
 
   // The rejoin is still running, so the bridge says Reconnecting instead of a
-  // blocking dead end card.
+  // blocking dead end card. An offline handshake in progress also owns the
+  // screen, so no red card covers the reply code.
+  const offlineHandshaking =
+    room.isOfflineDirect &&
+    (room.offlineStep === 'host-waiting-for-reply' ||
+      room.offlineStep === 'guest-showing-reply')
   const failure =
-    connectionError && status !== 'reconnecting'
+    connectionError && status !== 'reconnecting' && !offlineHandshaking
       ? buildFeedback(connectionError, { roomCode: code ?? undefined })
       : null
   const failureIcon = connectionError === 'ERR_ROOM_NOT_FOUND' ? Ghost : Unplug
@@ -113,6 +119,23 @@ export function ConnectedWorkspace() {
         localDeviceName={localDeviceName}
       />
 
+      {!isLinked && room.offlineStep === 'guest-showing-reply' ? (
+        <OfflineLinkCard
+          mode="guest-reply"
+          token={room.offlineReplyToken}
+          onCopyFeedback={room.announceFeedback}
+        />
+      ) : null}
+
+      {!isLinked && room.isOfflineDirect && room.role === 'host' ? (
+        <OfflineLinkCard
+          mode="host-waiting"
+          token={room.offlineInviteToken}
+          onOpenReplyScanner={() => openScanner('reply')}
+          onCopyFeedback={room.announceFeedback}
+        />
+      ) : null}
+
       {failure ? (
         <FeedbackCard
           tone="error"
@@ -123,6 +146,20 @@ export function ConnectedWorkspace() {
           headingLevel="h2"
           onAction={() => reconnect()}
         />
+      ) : null}
+
+      {!isLinked && (failure || room.isOfflineDirect) ? (
+        <button
+          type="button"
+          onClick={() => {
+            void room.activateOfflineDirect()
+            openScanner('join')
+          }}
+          className="inline-flex min-h-[44px] items-center justify-center gap-2 self-start rounded-full bg-brand-stone px-4 text-sm font-semibold text-brand-ink transition-colors hover:bg-brand-line"
+        >
+          <Wifi size={16} strokeWidth={2} aria-hidden="true" />
+          <span>Link Offline (QR or Code)</span>
+        </button>
       ) : null}
 
       <div className="grid items-start gap-5 md:grid-cols-12 md:gap-6">

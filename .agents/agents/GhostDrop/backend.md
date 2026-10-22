@@ -44,3 +44,11 @@ Before implementing any P2P transport, signaling, or service worker module, you 
    - Automatically invoke `URL.revokeObjectURL(url)` and zero out `Uint8Array` chunk buffers when an item's TTL expires, when `burnOnRead` triggers, when manually nuked, or when `window` fires `beforeunload`/`pagehide`.
 6. **PWA Web Share Target Service Worker (`src/sw.ts` and `src/lib/shareTarget.ts`):**
    - Intercept `POST /share-target` (`multipart/form-data`) in the Service Worker, store shared files/text in a temporary IndexedDB/Cache handoff bucket, redirect `303` to `/?shared=1`, and purge the temporary bucket immediately after the client claims the payload.
+7. **Privacy-First PostHog Analytics & Public Stats API (`src/lib/analytics.ts` & `api/stats.ts`):**
+   - Configure PostHog with `autocapture: false`, `disable_session_recording: true`, `ip: false`.
+   - Never log file names, note text, IP addresses, or room codes.
+   - Aggregate event schema: `room_created`, `peer_connected`, `file_teleported` (count and size bucket).
+   - Implement cached `/api/stats` endpoint (`s-maxage=600`) so public counter badge never exposes private read keys.
+8. **Google Sheets Feedback Intake Pipeline (`scripts/google-apps-script-feedback.js` & `src/lib/feedback.ts`):**
+   - Maintain standalone Google Apps Script web app endpoint that receives JSON `POST` payloads and appends rows to a private spreadsheet.
+   - Ensure clean client error handling and fallback so submission failures never crash the UI.

@@ -23,6 +23,7 @@ import { NestedPillButton } from '../components/brand/NestedPillButton'
 import { OrbBadge } from '../components/brand/OrbBadge'
 import { SquiggleCardBg } from '../components/brand/SquiggleCardBg'
 import type { SquiggleTone } from '../components/brand/SquiggleCardBg'
+import { TeleportCounterBadge } from '../components/brand/TeleportCounterBadge'
 import { FeedbackCard } from '../components/ui/FeedbackCard'
 import { buildFeedback } from '../lib/copyDeck'
 import { cn } from '../lib/cn'
@@ -120,6 +121,8 @@ export function HowItWorks() {
   return (
     <div className="flex flex-col gap-8 md:gap-10">
       <header className="flex flex-col items-center gap-3 text-center">
+        <TeleportCounterBadge />
+
         <span className="inline-flex items-center gap-2 rounded-full bg-brand-lime px-4 py-1.5 text-xs font-bold text-brand-ink">
           <Sparkles size={14} strokeWidth={2} aria-hidden="true" />
           <span>Simple for everyone</span>

@@ -18,7 +18,7 @@ const NAV_ITEMS: readonly NavItem[] = [
 
 export function DesktopTopPillBar() {
   const { path } = useRoute()
-  const { openScanner, ttlPreset } = useShell()
+  const { openScanner, ttlPreset, openFeedback } = useShell()
 
   return (
     <div className="sticky top-4 z-40 mx-auto hidden w-full max-w-[1120px] px-6 md:block">
@@ -65,6 +65,14 @@ export function DesktopTopPillBar() {
               </a>
             )
           })}
+
+          <button
+            type="button"
+            onClick={openFeedback}
+            className="inline-flex min-h-[44px] items-center rounded-full px-2.5 text-sm font-semibold text-brand-ink-muted transition-colors hover:bg-brand-stone hover:text-brand-ink lg:px-3"
+          >
+            Feedback
+          </button>
         </div>
 
         {/* The timer pill stays on screen from 768 up, short label first. */}
@@ -76,7 +84,7 @@ export function DesktopTopPillBar() {
           <span className="whitespace-nowrap lg:hidden">{TTL_SHORT_LABELS[ttlPreset]}</span>
         </div>
 
-        <NestedPillButton size="sm" icon={Plus} onClick={openScanner}>
+        <NestedPillButton size="sm" icon={Plus} onClick={() => openScanner()}>
           Enter a Code
         </NestedPillButton>
       </nav>

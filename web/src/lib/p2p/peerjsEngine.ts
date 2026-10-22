@@ -49,6 +49,7 @@ import {
 } from './errors'
 import { isValidRoomCode, normalizeRoomCode, peerPeerId, roomPeerId } from './roomCode'
 import { waitForBufferDrain } from './fileStreamer'
+import { unmaskLocalIceIps } from './iceUnmask'
 
 const DEFAULT_CONNECT_TIMEOUT_MS = 15000
 const DEFAULT_MAX_QUEUED_FRAMES = 128
@@ -57,10 +58,20 @@ const RECONNECT_BASE_DELAY_MS = 1000
 const RECONNECT_MAX_DELAY_MS = 15000
 /**
  * Per tier signaling budget. Every tier except the last gets this short window
- * so an unreachable endpoint cannot hold the room hostage, while the final tier
- * keeps the full `connectTimeoutMs` (decisions.md D-014 item 2).
+ * so an unreachable endpoint cannot hold the room hostage (decisions.md D-014
+ * item 2, tightened to 2200 ms by D-016 item 4).
  */
-const SIGNALING_TIER_TIMEOUT_MS = 3500
+const SIGNALING_TIER_TIMEOUT_MS = 2200
+/**
+ * Final tier cap when the caller passed no explicit `connectTimeoutMs`.
+ *
+ * `navigator.onLine` is `true` on a Wi-Fi router with no internet and on a
+ * phone hotspot with mobile data off, so the cloud tier is still tried. Capping
+ * it at 3200 ms lets a room fail over to the Offline Direct engine in about
+ * three seconds instead of freezing for 18.5 s (decisions.md D-016 item 4).
+ * An explicit `connectTimeoutMs` from a caller or a unit test always wins.
+ */
+const CLOUD_SIGNALING_TIMEOUT_MS = 3200
 
 const DEFAULT_STUN_URLS: readonly string[] = [
   'stun:stun.l.google.com:19302',
@@ -474,6 +485,7 @@ export class PeerJsEngine implements P2PSignalingAdapter {
   private readonly iceServers: readonly RTCIceServer[]
   private readonly serverOptions: PeerServerOptions | null
   private readonly connectTimeoutMs: number
+  private readonly hasExplicitConnectTimeout: boolean
   private readonly maxQueuedFrames: number
   private readonly maxReconnectAttempts: number
   private readonly now: () => number
@@ -513,6 +525,7 @@ export class PeerJsEngine implements P2PSignalingAdapter {
     this.iceServers = options.iceServers ?? buildIceServers()
     this.serverOptions = options.serverOptions ?? null
     this.connectTimeoutMs = options.connectTimeoutMs ?? DEFAULT_CONNECT_TIMEOUT_MS
+    this.hasExplicitConnectTimeout = options.connectTimeoutMs !== undefined
     this.maxQueuedFrames = options.maxQueuedFrames ?? DEFAULT_MAX_QUEUED_FRAMES
     this.maxReconnectAttempts = options.maxReconnectAttempts ?? DEFAULT_MAX_RECONNECT_ATTEMPTS
     this.now = options.now ?? (() => Date.now())
@@ -567,6 +580,11 @@ export class PeerJsEngine implements P2PSignalingAdapter {
     this.currentPeerId = options.role === 'host' ? roomPeerId(code) : peerPeerId()
     this.setStatus('connecting')
 
+    // Reveal raw RFC1918 hotspot and LAN IPv4 candidates before ICE gathering
+    // starts, so a phone hotspot never depends on `.local` mDNS hostnames that
+    // it drops. Never throws and never prompts on its own (decisions.md D-016).
+    await unmaskLocalIceIps()
+
     const candidates = this.serverOptions ? [this.serverOptions] : buildPeerServerCandidates()
     let openedPeer: Peer | null = null
     let lastError: unknown = null
@@ -590,11 +608,7 @@ export class PeerJsEngine implements P2PSignalingAdapter {
       this.suppressPeerErrors = !isLast
 
       try {
-        await this.waitForSignaling(
-          peer,
-          options.signal,
-          isLast ? this.connectTimeoutMs : SIGNALING_TIER_TIMEOUT_MS,
-        )
+        await this.waitForSignaling(peer, options.signal, this.tierTimeoutMs(isLast))
         openedPeer = peer
         break
       } catch (error) {
@@ -710,6 +724,21 @@ export class PeerJsEngine implements P2PSignalingAdapter {
     if (!set) return
     set.delete(listener as Listener)
     if (set.size === 0) this.listeners.delete(event)
+  }
+
+  /**
+   * Per tier signaling budget.
+   *
+   * Non final tiers always use the short window. The final tier keeps an
+   * explicit `connectTimeoutMs` so a caller or a unit test stays in control,
+   * and otherwise drops to the cloud cap so an unreachable signaling server
+   * fails over to the Offline Direct engine in about three seconds
+   * (decisions.md D-016 item 4).
+   */
+  private tierTimeoutMs(isLast: boolean): number {
+    if (!isLast) return SIGNALING_TIER_TIMEOUT_MS
+    if (this.hasExplicitConnectTimeout) return this.connectTimeoutMs
+    return Math.min(this.connectTimeoutMs, CLOUD_SIGNALING_TIMEOUT_MS)
   }
 
   private attachPeer(peer: Peer): void {

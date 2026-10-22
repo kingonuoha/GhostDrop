@@ -7,12 +7,14 @@ import {
   Clock,
   Download,
   Ghost,
+  QrCode,
   RefreshCw,
   SaveCheck,
   Send,
   Share2,
   Sparkles,
   Unplug,
+  Wifi,
   Zap,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
@@ -41,6 +43,9 @@ const ICONS: Record<RoomFeedbackKey, LucideIcon> = {
   ERR_CHUNK_INTERRUPTED: RefreshCw,
   WARN_TTL_EXPIRING_SOON: Clock,
   INFO_TTL_EXPIRED: Sparkles,
+  INFO_OFFLINE_READY: Wifi,
+  INFO_OFFLINE_REPLY_READY: QrCode,
+  ERR_OFFLINE_CODE_INVALID: RefreshCw,
 }
 
 type FeedbackNoticeProps = {

@@ -4,7 +4,7 @@
 
 ---
 
-## Step-by-Step Build Sequence (9 Gates)
+## Step-by-Step Build Sequence (13 Gates)
 
 1. **Step 1: Stage UI Design Import and Audit (`ghostdrop-orchestrator`)**
    - Verify Stage/Stitch design exports are placed in `design/` or `docs/design/`.
@@ -29,10 +29,13 @@
 10. **Step 10: v0.7 Offline, Hotspot, Camera, TTL and UX Fixes (`ghostdrop-backend` -> `ghostdrop-web` -> `ghostdrop-ui-polish` -> `ghostdrop-qa`)**
    - Same-port `/peerjs` signaling, `/__ghostdrop/lan-info`, offline ICE, `burnOnRead` protocol, dynamic device identity, QR camera fallback, `BURN_ON_COPY` sync, clipboard and share actions. Signed off PASS.
 11. **Step 11: Improvements (`docs/tasks/step-11-improvements/`)**
-   - DEFERRED. Not executed. Runs after Step 12.
-12. **Step 12: v0.8 Coming Soon Wall and Teaser Animation (`ghostdrop-web` -> `ghostdrop-ui-polish` -> `ghostdrop-qa`)**
+   - DEFERRED. Not executed. Runs after Step 13.
+12. **Step 12: v0.8 Coming Soon Wall and Teaser Animation (`ghostdrop-ui-polish` -> `ghostdrop-web` -> `ghostdrop-qa`)**
    - Gate every route behind a public teaser rendered above `GhostRoomProvider` so no signaling or room state is consumed while locked.
    - Hidden unlock gestures only: `Ctrl+Alt+C` on desktop and tapping the GhostDrop logo 3 times fast on any device, persisted in `localStorage`.
    - Live countdown to 23 October 2026 17:00 local with a live state at zero and no auto-launch.
-   - Full-bleed brand colour slabs drifting up, right, down, and left on 18s to 30s loops, `translate3d` only, with a mandatory reduced-motion override and a Warm Stone legibility scrim. Recorded as D-015.
-   - Version `0.7` to `0.8` (no new dependency).
+   - Full-bleed brand colour slabs drifting up, right, down, and left on 18s to 30s loops, `translate3d` only, with a mandatory reduced-motion override and a Warm Stone legibility scrim. Recorded as D-015. Signed off PASS.
+13. **Step 13: v0.11 Total Offline and Hotspot Direct WebRTC Bridge (`ghostdrop-backend` -> `ghostdrop-ui-polish` -> `ghostdrop-web` -> `ghostdrop-qa`)**
+   - Build `compactSdp.ts`, `iceUnmask.ts`, and `offlineDirectEngine.ts` (`P2PSignalingAdapter` over native `RTCPeerConnection` + `RTCDataChannel` + `BroadcastChannel` shortcut) so two cached PWAs on the same Wi-Fi or phone hotspot connect with zero internet and zero server via a 2-step QR or copyable Offline Code (`GD1...` / `#gd=...`) handshake.
+   - Fix `navigator.onLine` false positives on offline Wi-Fi/hotspots with fast `2,500ms` signaling failover and unmask RFC1918 hotspot IPv4 `host` candidates when mobile data is ON or OFF. Recorded as D-016.
+   - Version `0.10` to `0.11` (zero new dependencies).

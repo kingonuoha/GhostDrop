@@ -45,3 +45,15 @@ Before touching any page or component, you MUST read:
 7. **Ephemeral Memory Hygiene:**
    - Never persist user-dropped text or files in `localStorage`.
    - Ensure every downloadable file `Blob` URL is revoked via `URL.revokeObjectURL` when its TTL expires, when manually burned, or on `beforeunload`.
+8. **Grandma-Friendly "What is New" Page (`/whats-new`):**
+   - Maintain `/whats-new` using `web/src/lib/changelog.ts`.
+   - Strictly zero technical jargon (no WebRTC, SDP, ICE, buffers, sockets, or function names). Explain outcomes in simple human terms ("Works without internet", "Copy photos instantly").
+   - Every release card MUST include a small date-time marker (`DD MMM YYYY, HH:MM`, e.g. `22 Oct 2026, 21:45`).
+   - Make the version badge in the desktop navbar and mobile status header clickable to `/whats-new`, with an unread Acid Lime dot stored in `localStorage`.
+9. **In-App Feedback and Feature Request Intake (Google Sheets):**
+   - Provide a native modal for user feedback and feature requests without email, Discord, or GitHub friction.
+   - Form submissions post to the configured Google Apps Script endpoint to append spreadsheet rows.
+10. **PostHog Analytics and Public Stats Counter:**
+    - Instrument only aggregate usage events (`room_created`, `peer_connected`, `file_teleported`).
+    - Strictly zero file names, content, IP addresses, or room codes logged.
+    - Render the public teleport counter badge on `HomeHub.tsx` consuming cached `/api/stats`.

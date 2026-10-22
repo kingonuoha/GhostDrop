@@ -12,6 +12,7 @@ import { HomeHub } from './pages/HomeHub'
 import { HowItWorks } from './pages/HowItWorks'
 import { MobileJoin } from './pages/MobileJoin'
 import { NotFound } from './pages/NotFound'
+import { WhatsNew } from './pages/WhatsNew'
 
 /**
  * The hub code is generated once per browser session. Without crypto it stays
@@ -92,6 +93,8 @@ function GhostDropApp() {
     page = <MobileJoin roomCode={query.get('room')} />
   } else if (normalizedPath === '/how-it-works') {
     page = <HowItWorks />
+  } else if (normalizedPath === '/whats-new') {
+    page = <WhatsNew />
   } else {
     page = <NotFound />
   }

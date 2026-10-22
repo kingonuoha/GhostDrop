@@ -1,13 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { QRCodeSVG } from 'qrcode.react'
-import { Check, Copy } from 'lucide-react'
+import { Check, Copy, Wifi } from 'lucide-react'
 import type { DeviceType } from '../../lib/p2p'
 import { cn } from '../../lib/cn'
 import type { RoomFeedbackKey } from '../../lib/copyDeck'
+import { OFFLINE_SWITCH_CTA } from '../../lib/copyDeck'
 import { scanCardHelper, scanCardTitle } from '../../lib/device'
 import type { LanCandidate } from '../../lib/lanInfo'
 import { OrbBadge } from '../brand/OrbBadge'
 import { SquiggleCardBg } from '../brand/SquiggleCardBg'
+import { OfflineLinkCard } from './OfflineLinkCard'
 
 /** Single line, letter spaced room code that can never wrap. */
 function spacedCode(code: string): string {
@@ -41,6 +43,14 @@ type RoomCodeCardProps = {
   className?: string
   /** Raises the copy deck toast through the page feedback plumbing. */
   onCopyFeedback?: (key: RoomFeedbackKey) => void
+  /** True while the room is on the serverless direct link. */
+  isOfflineDirect?: boolean
+  /** The host invite code shown in offline mode. */
+  offlineInviteToken?: string | null
+  /** Opens the camera modal ready to read the guest reply code. */
+  onOpenReplyScanner?: () => void
+  /** Switches this room to the direct link without waiting for a timeout. */
+  onActivateOffline?: () => void
 }
 
 /**
@@ -56,6 +66,10 @@ export function RoomCodeCard({
   onSelectLan,
   className,
   onCopyFeedback,
+  isOfflineDirect = false,
+  offlineInviteToken = null,
+  onOpenReplyScanner,
+  onActivateOffline,
 }: RoomCodeCardProps) {
   const [copied, setCopied] = useState(false)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -65,6 +79,19 @@ export function RoomCodeCard({
       if (timerRef.current !== null) clearTimeout(timerRef.current)
     }
   }, [])
+
+  /**
+   * The hub link can carry a pre-generated direct link code after its hash.
+   * Measured: that code is 231 characters with no network choices and 405 at
+   * the eight choice cap, so the scanned link grows from 280 to 454 characters.
+   * A link that long needs a denser symbol, so the direct link case only uses
+   * the lighter error level and a 216 px box. At that size the symbol is 61 to
+   * 73 dots wide, which is 3.54 px down to 2.96 px per dot. The 73 dot case at
+   * the eight choice cap is the only one under 3 px per dot, and it is the
+   * tightest this card gets, so the box is not shrunk any further. The plain
+   * online link keeps its own size and error level.
+   */
+  const hasDirectLinkCode = Boolean(offlineInviteToken)
 
   const handleCopy = useCallback(async () => {
     const ok = await copyToClipboard(code)
@@ -132,11 +159,16 @@ export function RoomCodeCard({
         </div>
       ) : null}
 
-      <div className="relative flex aspect-square w-full max-w-[212px] items-center justify-center rounded-[24px] bg-brand-surface p-3 shadow-soft">
+      <div
+        className={cn(
+          'relative flex aspect-square w-full items-center justify-center rounded-[24px] bg-brand-surface p-3 shadow-soft',
+          hasDirectLinkCode ? 'max-w-[240px]' : 'max-w-[212px]',
+        )}
+      >
         <QRCodeSVG
           value={joinUrl}
-          size={168}
-          level="M"
+          size={hasDirectLinkCode ? 216 : 168}
+          level={hasDirectLinkCode ? 'L' : 'M'}
           marginSize={0}
           bgColor="transparent"
           fgColor="currentColor"
@@ -179,6 +211,25 @@ export function RoomCodeCard({
       <p aria-live="polite" className="sr-only">
         {copied ? 'Code copied. Ready to paste.' : ''}
       </p>
+
+      {isOfflineDirect ? (
+        <OfflineLinkCard
+          mode="host-waiting"
+          token={offlineInviteToken}
+          onOpenReplyScanner={onOpenReplyScanner}
+          onCopyFeedback={onCopyFeedback}
+          className="relative w-full"
+        />
+      ) : (
+        <button
+          type="button"
+          onClick={onActivateOffline}
+          className="relative inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-full bg-brand-surface/80 px-4 text-[0.7rem] font-bold leading-tight text-brand-ink-muted transition-colors hover:bg-brand-surface hover:text-brand-ink"
+        >
+          <Wifi size={14} strokeWidth={2} aria-hidden="true" />
+          <span>{OFFLINE_SWITCH_CTA}</span>
+        </button>
+      )}
     </section>
   )
 }

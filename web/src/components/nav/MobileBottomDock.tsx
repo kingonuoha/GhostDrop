@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Check, Clock, ScanLine, Send, X } from 'lucide-react'
+import { Check, Clock, MessageSquare, ScanLine, Send, X } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { cn } from '../../lib/cn'
 import { TTL_LABELS, TTL_PRESET_ORDER, TTL_SHORT_LABELS } from '../../lib/constants'
@@ -22,7 +22,14 @@ type DockTab = {
  */
 export function MobileBottomDock() {
   const { path } = useRoute()
-  const { focusComposer, openScanner, scannerOpen, ttlPreset, selectTtlPreset } = useShell()
+  const {
+    focusComposer,
+    openScanner,
+    scannerOpen,
+    ttlPreset,
+    selectTtlPreset,
+    openFeedback,
+  } = useShell()
   const [timerOpen, setTimerOpen] = useState(false)
   const timerTabRef = useRef<HTMLButtonElement>(null)
   const timerPanelRef = useRef<HTMLDivElement>(null)
@@ -136,6 +143,20 @@ export function MobileBottomDock() {
               )
             })}
           </ul>
+
+          <div className="mt-3 border-t border-brand-line/60 pt-3">
+            <button
+              type="button"
+              onClick={() => {
+                closeTimer()
+                openFeedback()
+              }}
+              className="flex min-h-[44px] w-full items-center justify-center gap-2 rounded-full border border-brand-line bg-brand-stone/60 px-4 text-xs font-bold text-brand-ink transition-colors hover:bg-brand-stone"
+            >
+              <MessageSquare size={14} strokeWidth={2} aria-hidden="true" />
+              <span>Have an idea or feedback?</span>
+            </button>
+          </div>
         </div>
       ) : null}
 

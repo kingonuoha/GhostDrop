@@ -31,6 +31,9 @@ export type RoomFeedbackKey =
   | 'ERR_CHUNK_INTERRUPTED'
   | 'WARN_TTL_EXPIRING_SOON'
   | 'INFO_TTL_EXPIRED'
+  | 'INFO_OFFLINE_READY'
+  | 'INFO_OFFLINE_REPLY_READY'
+  | 'ERR_OFFLINE_CODE_INVALID'
 
 export type RoomFeedbackTone = 'success' | 'error' | 'warning' | 'info'
 
@@ -258,6 +261,32 @@ export function buildFeedback(
         itemName,
         preset: context.preset,
       }
+    case 'INFO_OFFLINE_READY':
+      // Offline direct step one. The words never name the transport.
+      return {
+        key,
+        tone: 'info',
+        title: 'Offline link ready!',
+        body: 'No internet needed. Scan the QR code, then scan the reply QR from your other screen.',
+        actionLabel: 'Got It',
+      }
+    case 'INFO_OFFLINE_REPLY_READY':
+      // Offline direct step two. The guest holds the screen the host reads.
+      return {
+        key,
+        tone: 'success',
+        title: 'Almost linked!',
+        body: 'Show this reply QR code to your other screen (or copy the reply code) to finish linking.',
+        actionLabel: 'Copy Reply Code',
+      }
+    case 'ERR_OFFLINE_CODE_INVALID':
+      return {
+        key,
+        tone: 'error',
+        title: 'Hmm, check that offline code',
+        body: 'That offline link code looks incomplete. Copy it again from your other screen!',
+        actionLabel: 'Try Again',
+      }
     default:
       return {
         key,
@@ -306,3 +335,22 @@ export const SOON_STEP_TWO = 'Drop it in'
 export const SOON_STEP_THREE = 'It poofs when you say'
 export const SOON_WELCOME = 'Welcome in. GhostDrop is live.'
 export const SOON_FOOTNOTE = 'No accounts. No uploads. Nothing left behind.'
+
+/*
+  Offline direct linking.
+  Source: docs/02-brand-persona-and-copy.md section 2.2, decisions.md D-016 item 2.
+
+  Two screens, one short code each, no internet in between. Every line here is
+  plain everyday English so a first time user never meets a network term.
+*/
+export const OFFLINE_BADGE_LABEL = 'Offline Wi-Fi / Hotspot Mode'
+export const OFFLINE_HOST_STEP_TITLE = 'Finish linking without internet'
+export const OFFLINE_HOST_STEP_BODY =
+  '1. Scan this QR on your other screen. 2. Tap Scan Reply below and point at your other screen.'
+export const OFFLINE_SCAN_REPLY_CTA = 'Scan or Paste Reply'
+export const OFFLINE_COPY_INVITE_CTA = 'Copy Offline Code'
+export const OFFLINE_GUEST_REPLY_TITLE = 'Show this reply to your other screen'
+export const OFFLINE_GUEST_REPLY_BODY =
+  'On your other screen, tap Scan or Paste Reply and point its camera right here.'
+export const OFFLINE_COPY_REPLY_CTA = 'Copy Reply Code'
+export const OFFLINE_SWITCH_CTA = 'No internet? Link directly on Wi-Fi or Hotspot'

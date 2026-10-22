@@ -1,6 +1,6 @@
 /**
- * Shell coordination for the mobile dock, the status header and the QR modal.
- * Source: docs/01-wireframe-and-pages.md sections 1 and 2, decisions.md D-008.
+ * Shell coordination for the mobile dock, the status header, QR modal, and feedback modal.
+ * Source: docs/01-wireframe-and-pages.md sections 1 and 2, decisions.md D-008, D-018.
  *
  * The dock is global chrome, so it cannot read a page's room directly. Pages
  * publish their live room state here and register two small actions: focusing
@@ -13,6 +13,9 @@ import { DEFAULT_TTL_PRESET } from '../../lib/constants'
 import type { TtlPreset } from '../../types/protocol'
 
 export type RoomPresenceStatus = 'connecting' | 'linked' | 'waiting' | 'error'
+
+/** Which handshake step the camera modal is serving. */
+export type ScannerMode = 'join' | 'reply'
 
 export type RoomPresence = {
   code: string
@@ -36,8 +39,13 @@ export type ShellContextValue = {
   focusComposer: () => boolean
   registerComposer: (handler: (() => void) | null) => Cleanup
   scannerOpen: boolean
-  openScanner: () => void
+  /** Step the open modal serves: the first scan, or the reply scan. */
+  scannerMode: ScannerMode
+  openScanner: (mode?: ScannerMode) => void
   closeScanner: () => void
+  feedbackOpen: boolean
+  openFeedback: () => void
+  closeFeedback: () => void
 }
 
 const ShellContext = createContext<ShellContextValue | null>(null)
@@ -50,6 +58,8 @@ export function ShellProvider({ children }: ShellProviderProps) {
   const [presence, setPresence] = useState<RoomPresence | null>(null)
   const [ttlPreset, setTtlPreset] = useState<TtlPreset>(DEFAULT_TTL_PRESET)
   const [scannerOpen, setScannerOpen] = useState(false)
+  const [scannerMode, setScannerMode] = useState<ScannerMode>('join')
+  const [feedbackOpen, setFeedbackOpen] = useState(false)
 
   const composerRef = useRef<(() => void) | null>(null)
   const ttlHandlerRef = useRef<((preset: TtlPreset) => void) | null>(null)
@@ -91,8 +101,14 @@ export function ShellProvider({ children }: ShellProviderProps) {
     return true
   }, [])
 
-  const openScanner = useCallback(() => setScannerOpen(true), [])
+  const openScanner = useCallback((mode: ScannerMode = 'join') => {
+    setScannerMode(mode)
+    setScannerOpen(true)
+  }, [])
   const closeScanner = useCallback(() => setScannerOpen(false), [])
+
+  const openFeedback = useCallback(() => setFeedbackOpen(true), [])
+  const closeFeedback = useCallback(() => setFeedbackOpen(false), [])
 
   const value = useMemo<ShellContextValue>(
     () => ({
@@ -105,8 +121,12 @@ export function ShellProvider({ children }: ShellProviderProps) {
       focusComposer,
       registerComposer,
       scannerOpen,
+      scannerMode,
       openScanner,
       closeScanner,
+      feedbackOpen,
+      openFeedback,
+      closeFeedback,
     }),
     [
       presence,
@@ -118,8 +138,12 @@ export function ShellProvider({ children }: ShellProviderProps) {
       focusComposer,
       registerComposer,
       scannerOpen,
+      scannerMode,
       openScanner,
       closeScanner,
+      feedbackOpen,
+      openFeedback,
+      closeFeedback,
     ],
   )
 

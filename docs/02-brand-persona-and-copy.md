@@ -62,6 +62,29 @@ Teaser rules:
 3. No string in this block, and nothing rendered on the teaser, may hint at how the wall unlocks. The gesture has no visible affordance at all.
 4. Zero em dashes, zero en dashes, zero emojis. Any accent is a crisp `lucide-react` SVG icon inside a brand badge.
 
+### 2.2 Offline Direct Linking (`<OfflineLinkCard />`)
+
+When the two screens share a Wi-Fi network or a phone hotspot but no internet, linking still works: each screen shows one short code, the other screen reads it. Source of truth in code: `web/src/lib/copyDeck.ts` (`OFFLINE_*` block) and `web/src/components/room/OfflineLinkCard.tsx`.
+
+| Key | Copy |
+| :--- | :--- |
+| `OFFLINE_BADGE_LABEL` | `Offline Wi-Fi / Hotspot Mode` |
+| `OFFLINE_HOST_STEP_TITLE` | `Finish linking without internet` |
+| `OFFLINE_HOST_STEP_BODY` | `1. Scan this QR on your other screen. 2. Tap Scan Reply below and point at your other screen.` |
+| `OFFLINE_SCAN_REPLY_CTA` | `Scan or Paste Reply` |
+| `OFFLINE_COPY_INVITE_CTA` | `Copy Offline Code` |
+| `OFFLINE_GUEST_REPLY_TITLE` | `Show this reply to your other screen` |
+| `OFFLINE_GUEST_REPLY_BODY` | `On your other screen, tap Scan or Paste Reply and point its camera right here.` |
+| `OFFLINE_COPY_REPLY_CTA` | `Copy Reply Code` |
+| `OFFLINE_SWITCH_CTA` | `No internet? Link directly on Wi-Fi or Hotspot` |
+
+Offline linking rules:
+1. **Two screens, two codes.** The Host shows the invite card, the Guest shows the reply card, and the Host reads the reply. No screen ever shows more than one code at a time.
+2. **Plain everyday words only.** No network or connection terms reach the screen. The code is called a code, the camera is called a camera, and the other device is always `your other screen`.
+3. **One obvious button per card.** The Guest card carries `Copy Reply Code` as its only action, because the other screen does the reading. The Host panel carries `Scan or Paste Reply` first and `Copy Offline Code` second, so a locked camera still has a way out.
+4. **A camera free path always exists.** Every offline step can be finished by copying and pasting a code instead of scanning, so a denied camera is never a dead end.
+5. **Zero em dashes, zero en dashes, zero emojis.** The badge accent is a `Wifi` SVG icon inside a `#CDF22B` pill, never a symbol character.
+
 ---
 
 ## 3. Playful Success Messages (Joyful Acid Lime `#CDF22B` Cards/Toasts + SVG Icons)
@@ -78,6 +101,8 @@ Teaser rules:
 | `SUCCESS_FILE_SENT` | `Check` | `All sent!` | `{fileName} is ready on your other screen.` | `Save` |
 | `SUCCESS_DROP_AND_NUKE` | `Sparkles` | `Sent and cleaned up!` | `{fileName} is safe on your computer and removed here.` | `Done` |
 | `SUCCESS_PWA_INSTALLED` | `Download` | `Added to your phone!` | `Next time, open GhostDrop right from your home screen.` | `Great!` |
+| `INFO_OFFLINE_READY` | `Wifi` | `Offline link ready!` | `No internet needed. Scan the QR code, then scan the reply QR from your other screen.` | `Got It` |
+| `INFO_OFFLINE_REPLY_READY` | `QrCode` | `Almost linked!` | `Show this reply QR code to your other screen (or copy the reply code) to finish linking.` | `Copy Reply Code` |
 
 ---
 
@@ -89,6 +114,7 @@ Teaser rules:
 | `ERR_PEER_DISCONNECTED` | `Unplug` | `Screen disconnected` | `Your other screen closed the page. Tap below to reconnect!` | `Reconnect` |
 | `ERR_CAMERA_DENIED` | `CameraOff` | `No camera? No problem!` | `Just type the 6-letter code shown on your other screen below.` | `Type Code` |
 | `ERR_CHUNK_INTERRUPTED` | `RefreshCw` | `Almost there! Tap to retry` | `The connection blinked while sending. Tap below to finish!` | `Send Again` |
+| `ERR_OFFLINE_CODE_INVALID` | `RefreshCw` | `Hmm, check that offline code` | `That offline link code looks incomplete. Copy it again from your other screen!` | `Try Again` |
 | `ERR_COPY_BLOCKED` | `RefreshCw` | `Almost there! Tap to retry` | `Your browser held on to the code. Tap copy once more!` | `Try Again` |
 | `ERR_CLIPBOARD_BLOCKED` | `ClipboardX` | `Almost there! Tap to retry` | `Your browser blocked that copy. Tap once more!` | `Try Again` |
 | `WARN_TTL_EXPIRING_SOON` | `Clock` | `Disappearing in 1 minute` | `Save {itemName} now if you still want to keep it!` | `Save Now` |

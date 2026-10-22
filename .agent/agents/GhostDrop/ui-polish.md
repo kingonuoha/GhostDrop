@@ -44,3 +44,10 @@ Before polishing any component or animation, you MUST read:
 6. **Accessibility and Reduced Motion (`prefers-reduced-motion`):**
    - When `prefers-reduced-motion: reduce` is active, `.squiggle-path-draw` must render immediately at `stroke-dashoffset: 0` without motion.
    - Verify WCAG AA contrast on all text/surface pairs and zero horizontal overflow across `360px`, `768px`, `1024px`, and `1440px`.
+7. **Grandma-Friendly Changelog & Date-Time Marker Craft (`/whats-new`):**
+   - Format release cards with `Laroka` headings and crisp date-time markers (`DD MMM YYYY, HH:MM`, e.g. `22 Oct 2026, 21:45`) using mono micro-pill typography.
+   - Category badges must use `lucide-react` SVG icons inside circular badges (`Sparkles`, `Zap`, `ShieldCheck`, `Wrench`).
+   - Zero technical jargon permitted on any changelog card or label.
+8. **In-App Feedback Modal & Public Teleport Counter Craft:**
+   - Style the feedback modal with `Laroka` headings, Acid Lime submit button, Warm Stone backdrop, zero emojis, and zero em dashes.
+   - Design the public teleport counter pill badge ("500+ files teleported safely") for the hero section using locked tokens.

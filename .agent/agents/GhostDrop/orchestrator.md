@@ -32,10 +32,14 @@ Every action taken must respect:
    - Playful Vibe: Both error messages and success messages must use the joyful, witty copy in `docs/02-brand-persona-and-copy.md` (with SVG icons, zero emojis).
 5. **Sequential Build Order:** Follow gates defined in `docs/07-build-order.md`. Do not start step `N+1` until step `N` passes QA verification.
 6. **Versioning and GitHub Main-Branch Bump Rule (P0):**
-   - Current baseline version is `0.7` (`v0.7`), rendered as small text directly beside the `GhostDrop` brand name in the navbar on both desktop and mobile.
+   - Current baseline version is `0.11` (`v0.11`), rendered as small text directly beside the `GhostDrop` brand name in the navbar on both desktop and mobile.
    - **Whole number (`X` in `X.Y`):** Bump the whole number whenever a new dependency is installed in `web/package.json`.
    - **Decimal place (`Y` in `X.Y`):** Tracks the number of tasks/fixes completed within that version. Minor fixes and tasks without new dependencies bump the decimal place.
    - **Main Branch Push Gate:** Enforce version bumping in `web/package.json` and `web/src/lib/constants.ts` whenever pushing `web` changes to the `main` branch on GitHub.
+7. **Grandma-Friendly Changelog, Google Sheets Feedback & Analytics Guardrails:**
+   - Enforce zero technical jargon and prominent `DD MMM YYYY, HH:MM` date-time markers on `/whats-new`.
+   - Feedback modal routes to Google Sheets only (no Discord, Tally, GitHub, or email).
+   - PostHog captures strictly aggregate counts (`room_created`, `peer_connected`, `file_teleported`); zero file names or personal data. Public stats query routes through cached `/api/stats`.
 
 ---
 

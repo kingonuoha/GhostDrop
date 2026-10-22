@@ -1,6 +1,8 @@
-import { useId } from 'react'
+import { useEffect, useId, useState } from 'react'
 import { APP_VERSION } from '../../lib/constants'
 import { cn } from '../../lib/cn'
+import { navigate } from '../../lib/router'
+import { hasUnreadUpdates } from '../../lib/changelog'
 
 type LogoProps = {
   size?: number
@@ -11,6 +13,18 @@ type LogoProps = {
 
 export function Logo({ size = 36, withWordmark = false, className, wordmarkClassName }: LogoProps) {
   const filterId = `gd-goo-${useId().replace(/[^a-zA-Z0-9_-]/g, '')}`
+  const [hasUnread, setHasUnread] = useState(false)
+
+  useEffect(() => {
+    setHasUnread(hasUnreadUpdates())
+    const checkUpdates = () => setHasUnread(hasUnreadUpdates())
+    window.addEventListener('storage', checkUpdates)
+    window.addEventListener('popstate', checkUpdates)
+    return () => {
+      window.removeEventListener('storage', checkUpdates)
+      window.removeEventListener('popstate', checkUpdates)
+    }
+  }, [])
 
   const mark = (
     <svg
@@ -69,11 +83,38 @@ export function Logo({ size = 36, withWordmark = false, className, wordmarkClass
         )}
       >
         GhostDrop
-        <span
-          aria-label={`Version ${APP_VERSION}`}
-          className="type-numeral inline-flex shrink-0 items-center rounded-full bg-brand-lime px-[0.5em] py-[0.22em] text-[0.5em] font-bold leading-none text-brand-ink"
-        >
-          v{APP_VERSION}
+        <span className="inline-flex items-center gap-[0.35em]">
+          <span
+            role="button"
+            tabIndex={0}
+            title="What is new in GhostDrop"
+            aria-label={`Version ${APP_VERSION}, view what is new`}
+            onClick={(event) => {
+              event.preventDefault()
+              event.stopPropagation()
+              navigate('/whats-new')
+            }}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault()
+                event.stopPropagation()
+                navigate('/whats-new')
+              }
+            }}
+            className="type-numeral inline-flex shrink-0 cursor-pointer items-center rounded-full bg-brand-lime px-[0.5em] py-[0.22em] text-[0.5em] font-bold leading-none text-brand-ink transition-transform hover:scale-105 active:scale-95"
+          >
+            v{APP_VERSION}
+          </span>
+          {hasUnread ? (
+            <span
+              title="New updates available"
+              aria-label="New updates available"
+              className="relative inline-flex h-2 w-2 shrink-0 self-center"
+            >
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-lime opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full border border-brand-ink/30 bg-brand-lime" />
+            </span>
+          ) : null}
         </span>
       </span>
     </span>

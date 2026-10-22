@@ -16,12 +16,13 @@
  */
 
 import { useCallback, useEffect, useId, useRef, useState } from 'react'
-import type { ChangeEvent, FormEvent, MouseEvent } from 'react'
+import type { ChangeEvent, ClipboardEvent, FormEvent, MouseEvent } from 'react'
 import jsQR from 'jsqr'
 import {
   ArrowRight,
   Camera,
   CameraOff,
+  ClipboardPaste,
   Flashlight,
   ScanLine,
   ShieldCheck,
@@ -31,20 +32,37 @@ import { cn } from '../../lib/cn'
 import { buildFeedback } from '../../lib/copyDeck'
 import { navigate } from '../../lib/router'
 import {
+  extractCompactTokenFromInput,
   isValidRoomCode,
   normalizeRoomCode,
 } from '../../lib/p2p'
 import { ROOM_CODE_LENGTH } from '../../types/protocol'
 import { NestedPillButton } from '../brand/NestedPillButton'
+import { useGhostRoomContext } from '../shell/GhostRoomProvider'
+import type { GhostRoomContextValue } from '../shell/GhostRoomProvider'
 
 const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
 
 const CAMERA_DENIED = buildFeedback('ERR_CAMERA_DENIED')
 const ROOM_NOT_FOUND = buildFeedback('ERR_ROOM_NOT_FOUND')
+const OFFLINE_CODE_INVALID_TITLE = buildFeedback('ERR_OFFLINE_CODE_INVALID').title
 
 const CAPTURE_MISS_MESSAGE = 'No QR code there. Type the 6 letters below.'
+const OFFLINE_MISS_MESSAGE = 'That code did not read. Try the copy button on your other screen.'
 const HTTP_CAMERA_HELP = 'Live preview is off here. Use your camera app below.'
+
+/**
+ * Which handshake step this modal serves. `join` is the first scan, `reply` is
+ * the host reading the guest answer back.
+ */
+export type QrScannerMode = 'join' | 'reply'
+
+/** One scanned or pasted payload, which may carry a room code, an offline code, or both. */
+interface ScannerPayload {
+  roomCode: string | null
+  offlineToken: string | null
+}
 
 /** Turns a scanned payload into a room code, or null when it is not ours. */
 function extractRoomCode(payload: string): string | null {
@@ -67,12 +85,27 @@ function extractRoomCode(payload: string): string | null {
 }
 
 /**
+ * Reads both shapes a GhostDrop code can arrive in: the plain 6 letter room
+ * code and the offline link code, which may be a bare `GD1...` value or sit in
+ * a `/join?room=XXXXXX#gd=...` link.
+ */
+function extractScannerPayload(raw: string): ScannerPayload {
+  const offlineToken = extractCompactTokenFromInput(raw)
+  return { roomCode: extractRoomCode(raw), offlineToken }
+}
+
+/** Quick shape test, so the 6 letter field can double as an offline code field. */
+function looksLikeOfflineCode(raw: string): boolean {
+  return /^\s*GD1/i.test(raw) || raw.includes('#gd=') || raw.includes('gd=GD1')
+}
+
+/**
  * Decodes one QR code out of a still photo.
  * Tries the full frame at 1200px first, then again at 600px, and asks `jsQR` to
  * attempt both polarities because a dark QR on a light screen can land either
  * way round depending on the phone camera.
  */
-function scanStillImage(source: CanvasImageSource, width: number, height: number): string | null {
+function scanStillImage(source: CanvasImageSource, width: number, height: number): ScannerPayload | null {
   if (width <= 0 || height <= 0) return null
   if (typeof document === 'undefined') return null
 
@@ -94,15 +127,15 @@ function scanStillImage(source: CanvasImageSource, width: number, height: number
     const found = jsQR(pixels.data, targetWidth, targetHeight, {
       inversionAttempts: 'attemptBoth',
     })
-    const code = found ? extractRoomCode(found.data) : null
-    if (code) return code
+    const payload = found ? extractScannerPayload(found.data) : null
+    if (payload && (payload.roomCode || payload.offlineToken)) return payload
   }
 
   return null
 }
 
 /** Decodes a captured or picked photo file. Never throws. */
-async function decodePhotoForRoomCode(file: Blob): Promise<string | null> {
+async function decodePhotoForPayload(file: Blob): Promise<ScannerPayload | null> {
   if (typeof createImageBitmap === 'function') {
     let bitmap: ImageBitmap | null = null
     try {
@@ -133,21 +166,50 @@ async function decodePhotoForRoomCode(file: Blob): Promise<string | null> {
   }
 }
 
+/**
+ * The room context is optional here: the modal is also rendered by the shell on
+ * pages that have no room yet. The hook call itself always runs, so hook order
+ * stays stable, and a missing provider simply falls back to the prop.
+ */
+function useOptionalRoom(): GhostRoomContextValue | null {
+  try {
+    return useGhostRoomContext()
+  } catch {
+    return null
+  }
+}
+
 type TorchCapabilities = MediaTrackCapabilities & { torch?: boolean }
 type TorchConstraintSet = MediaTrackConstraintSet & { torch?: boolean }
 
 type QrScannerModalProps = {
   onClose: () => void
+  /** Which handshake step this modal serves. Defaults to the first scan. */
+  mode?: QrScannerMode
+  /**
+   * Fallback for screens outside the room provider. Inside the app the room
+   * context is used, so the modal always reads the live handshake.
+   */
+  onAcceptOfflineToken?: (token: string) => Promise<boolean> | boolean
 }
 
-export function QrScannerModal({ onClose }: QrScannerModalProps) {
+export function QrScannerModal({
+  onClose,
+  mode = 'join',
+  onAcceptOfflineToken,
+}: QrScannerModalProps) {
   const titleId = `qr-title-${useId().replace(/[^a-zA-Z0-9_-]/g, '')}`
   const descriptionId = `qr-description-${useId().replace(/[^a-zA-Z0-9_-]/g, '')}`
   const errorId = `qr-error-${useId().replace(/[^a-zA-Z0-9_-]/g, '')}`
+  const replyErrorId = `qr-reply-error-${useId().replace(/[^a-zA-Z0-9_-]/g, '')}`
+
+  const room = useOptionalRoom()
+  const isReplyMode = mode === 'reply'
 
   const dialogRef = useRef<HTMLDivElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
   const codeInputRef = useRef<HTMLInputElement>(null)
+  const replyInputRef = useRef<HTMLInputElement>(null)
   const captureInputRef = useRef<HTMLInputElement>(null)
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const streamRef = useRef<MediaStream | null>(null)
@@ -157,9 +219,13 @@ export function QrScannerModal({ onClose }: QrScannerModalProps) {
   const readyRef = useRef(false)
   const mountedRef = useRef(true)
   const watchdogRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  /** Filled in once the camera helper exists, so a rejected code can retry. */
+  const restartCameraRef = useRef<() => void>(() => undefined)
 
   const [code, setCode] = useState('')
   const [codeError, setCodeError] = useState(false)
+  const [replyCode, setReplyCode] = useState('')
+  const [replyError, setReplyError] = useState(false)
   const [pageVisible, setPageVisible] = useState(
     () => typeof document === 'undefined' || document.visibilityState !== 'hidden',
   )
@@ -175,21 +241,68 @@ export function QrScannerModal({ onClose }: QrScannerModalProps) {
     typeof navigator.mediaDevices?.getUserMedia === 'function' &&
     (typeof window === 'undefined' || window.isSecureContext)
 
-  /** One accepted code per mount, so two frames cannot double navigate. */
-  const acceptCode = useCallback(
-    (next: string) => {
-      if (settledRef.current) return
+  /**
+   * Accepts one scanned or pasted payload. A room code navigates straight to the
+   * join page, and an offline code runs the two step handshake through the room
+   * before the modal closes. One payload per mount, so two camera frames can
+   * never start the same handshake twice.
+   */
+  const submitPayload = useCallback(
+    async (payload: ScannerPayload): Promise<boolean> => {
+      if (settledRef.current) return false
       settledRef.current = true
-      navigate(`/join?room=${next}`)
-      onClose()
+
+      if (payload.offlineToken) {
+        const accept = room?.acceptOfflineToken ?? onAcceptOfflineToken
+        if (!accept) {
+          settledRef.current = false
+          return false
+        }
+
+        let accepted = false
+        try {
+          accepted = await accept(payload.offlineToken)
+        } catch {
+          accepted = false
+        }
+
+        if (!accepted) {
+          // The scanner stays usable, so a misread code is one more try.
+          settledRef.current = false
+          if (mountedRef.current) {
+            if (isReplyMode) setReplyError(true)
+            else setCaptureStatus(OFFLINE_MISS_MESSAGE)
+          }
+          restartCameraRef.current()
+          return false
+        }
+
+        // The room hook moves the screen when an invite names another room, and
+        // this keeps the address honest for the same room case.
+        const currentRoom = room?.sessionCode ?? null
+        if (payload.roomCode && payload.roomCode !== currentRoom) {
+          navigate(`/join?room=${payload.roomCode}`)
+        }
+        onClose()
+        return true
+      }
+
+      if (payload.roomCode) {
+        navigate(`/join?room=${payload.roomCode}`)
+        onClose()
+        return true
+      }
+
+      settledRef.current = false
+      return false
     },
-    [onClose],
+    [isReplyMode, onAcceptOfflineToken, onClose, room],
   )
 
-  const acceptRef = useRef(acceptCode)
+  const acceptRef = useRef(submitPayload)
   useEffect(() => {
-    acceptRef.current = acceptCode
-  }, [acceptCode])
+    acceptRef.current = submitPayload
+  }, [submitPayload])
 
   useEffect(() => {
     mountedRef.current = true
@@ -359,11 +472,11 @@ export function QrScannerModal({ onClose }: QrScannerModalProps) {
           context.drawImage(element, 0, 0, width, height)
           const pixels = context.getImageData(0, 0, width, height)
           const found = jsQR(pixels.data, width, height, { inversionAttempts: 'dontInvert' })
-          const scanned = found ? extractRoomCode(found.data) : null
+          const scanned = found ? extractScannerPayload(found.data) : null
 
-          if (scanned) {
+          if (scanned && (scanned.offlineToken || scanned.roomCode)) {
             stopCamera()
-            acceptRef.current(scanned)
+            void acceptRef.current(scanned)
             return
           }
         }
@@ -387,6 +500,15 @@ export function QrScannerModal({ onClose }: QrScannerModalProps) {
       stopCamera()
     }
   }, [pageVisible, requestLiveCamera, stopCamera])
+
+  // A rejected code stops the preview before it is validated, so the retry is
+  // one restart of the same already granted camera.
+  useEffect(() => {
+    restartCameraRef.current = () => {
+      if (!mountedRef.current || settledRef.current) return
+      void requestLiveCamera()
+    }
+  }, [requestLiveCamera])
 
   /**
    * Focus trap, Escape, body scroll lock, focus restore and an inert page
@@ -423,7 +545,7 @@ export function QrScannerModal({ onClose }: QrScannerModalProps) {
         (element) => element.offsetParent !== null,
       )
 
-    const initial = codeInputRef.current ?? readFocusables()[0] ?? node
+    const initial = codeInputRef.current ?? replyInputRef.current ?? readFocusables()[0] ?? node
     initial.focus()
 
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -467,8 +589,9 @@ export function QrScannerModal({ onClose }: QrScannerModalProps) {
   }, [onClose])
 
   const focusCodeInput = useCallback(() => {
-    codeInputRef.current?.focus()
-  }, [])
+    const target = isReplyMode ? replyInputRef.current : codeInputRef.current
+    target?.focus()
+  }, [isReplyMode])
 
   const openNativeCamera = useCallback(() => {
     setCaptureStatus(null)
@@ -484,16 +607,16 @@ export function QrScannerModal({ onClose }: QrScannerModalProps) {
     if (!file) return
 
     setCaptureStatus('Reading that photo...')
-    const scanned = await decodePhotoForRoomCode(file)
+    const scanned = await decodePhotoForPayload(file)
 
     if (settledRef.current) return
     if (scanned) {
       setCaptureStatus(null)
-      acceptRef.current(scanned)
+      void acceptRef.current(scanned)
       return
     }
-    setCaptureStatus(CAPTURE_MISS_MESSAGE)
-  }, [])
+    setCaptureStatus(isReplyMode ? OFFLINE_MISS_MESSAGE : CAPTURE_MISS_MESSAGE)
+  }, [isReplyMode])
 
   const toggleTorch = async () => {
     const track = streamRef.current?.getVideoTracks()[0]
@@ -513,14 +636,85 @@ export function QrScannerModal({ onClose }: QrScannerModalProps) {
     if (event.target === event.currentTarget) onClose()
   }
 
+  /** Reads a pasted or typed offline code out of any text the user supplies. */
+  const submitOfflineCode = useCallback(
+    async (raw: string) => {
+      const token = extractCompactTokenFromInput(raw)
+      if (!token) {
+        if (isReplyMode) setReplyError(true)
+        else setCodeError(true)
+        return
+      }
+
+      if (isReplyMode) setReplyError(false)
+      else setCodeError(false)
+
+      await submitPayload({ roomCode: null, offlineToken: token })
+    },
+    [isReplyMode, submitPayload],
+  )
+
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+
+    // The 6 letter field doubles as an offline code field in both modes.
+    if (looksLikeOfflineCode(code)) {
+      void submitOfflineCode(code)
+      return
+    }
+
     const normalized = normalizeRoomCode(code)
     if (!isValidRoomCode(normalized)) {
       setCodeError(true)
       return
     }
-    acceptCode(normalized)
+    void submitPayload({ roomCode: normalized, offlineToken: null })
+  }
+
+  const handleReplySubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    void submitOfflineCode(replyCode)
+  }
+
+  /** Pulls a reply code straight from the clipboard, so no typing is needed. */
+  const pasteFromClipboard = useCallback(async () => {
+    if (typeof navigator === 'undefined' || typeof navigator.clipboard?.readText !== 'function') {
+      replyInputRef.current?.focus()
+      return
+    }
+
+    try {
+      const text = await navigator.clipboard.readText()
+      const trimmed = text.trim()
+      if (!trimmed) {
+        replyInputRef.current?.focus()
+        return
+      }
+      setReplyCode(trimmed)
+      await submitOfflineCode(trimmed)
+    } catch {
+      // A blocked clipboard still lets the code be pasted by hand.
+      replyInputRef.current?.focus()
+    }
+  }, [submitOfflineCode])
+
+  const handleCodeChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const raw = event.target.value
+    if (looksLikeOfflineCode(raw)) {
+      setCode('')
+      void submitOfflineCode(raw)
+      return
+    }
+    // Normalise before clamping so a pasted "gh st 48" keeps all 6 letters.
+    setCode(normalizeRoomCode(raw).slice(0, ROOM_CODE_LENGTH))
+    setCodeError(false)
+  }
+
+  const handleCodePaste = (event: ClipboardEvent<HTMLInputElement>) => {
+    const text = event.clipboardData.getData('text')
+    if (!looksLikeOfflineCode(text)) return
+    event.preventDefault()
+    void submitOfflineCode(text)
   }
 
   const characters = Array.from({ length: ROOM_CODE_LENGTH }, (_, index) => code[index] ?? '')
@@ -545,7 +739,7 @@ export function QrScannerModal({ onClose }: QrScannerModalProps) {
           <div className="min-w-0">
             <p className="type-eyebrow text-brand-ink-muted">Direct pairing</p>
             <h2 id={titleId} className="type-h2 mt-1 text-balance">
-              Connect to your screen
+              {isReplyMode ? 'Scan or paste reply' : 'Connect to your screen'}
             </h2>
           </div>
           <button
@@ -559,8 +753,9 @@ export function QrScannerModal({ onClose }: QrScannerModalProps) {
         </div>
 
         <p id={descriptionId} className="sr-only">
-          Point the camera at the QR code on your other screen, or type the 6 letter code
-          below.
+          {isReplyMode
+            ? 'Point the camera at the reply QR code on your other screen, or paste the reply code below.'
+            : 'Point the camera at the QR code on your other screen, or type the 6 letter code below.'}
         </p>
 
         {/* Always mounted, so a camera failure is announced instead of silently swapping. */}
@@ -753,94 +948,156 @@ export function QrScannerModal({ onClose }: QrScannerModalProps) {
         <div className="relative my-4 flex items-center justify-center">
           <span aria-hidden="true" className="h-px w-full bg-brand-line" />
           <span className="absolute bg-brand-surface px-3 text-[0.65rem] font-bold uppercase tracking-[0.12em] text-brand-ink-muted">
-            Or type the 6 letter code
+            {isReplyMode ? 'Or paste the reply code' : 'Or type the 6 letter code'}
           </span>
         </div>
 
-        <form onSubmit={handleSubmit} noValidate className="flex flex-col">
-          <div
-            className={cn(
-              'relative rounded-[20px] transition-shadow',
-              codeError ? 'ring-2 ring-brand-error' : 'focus-within:ring-2 focus-within:ring-brand-cobalt',
-            )}
-          >
-            <div aria-hidden="true" className="grid grid-cols-6 gap-1.5 sm:gap-2">
-              {characters.map((character, index) => {
-                const filled = character.length > 0
-                const isNext = code.length === index && !codeError
-                return (
-                  <span
-                    key={`slot-${index}`}
-                    className={cn(
-                      'flex aspect-square items-center justify-center rounded-[16px] transition-colors',
-                      filled
-                        ? 'bg-brand-stone text-brand-ink'
-                        : 'bg-brand-stone/60 text-brand-ink-muted',
-                      isNext ? 'bg-brand-surface ring-2 ring-brand-cobalt' : '',
-                    )}
-                  >
-                    <span className="type-display text-[1.4rem] leading-none sm:text-[1.6rem]">
-                      {character}
-                    </span>
-                  </span>
-                )
-              })}
-            </div>
-
-            <label htmlFor="qr-room-code" className="sr-only">
-              6 letter room code
+        {isReplyMode ? (
+          <form onSubmit={handleReplySubmit} noValidate className="flex flex-col">
+            <label htmlFor="qr-reply-code" className="sr-only">
+              Reply code
             </label>
             <input
-              id="qr-room-code"
-              ref={codeInputRef}
-              name="roomCode"
+              id="qr-reply-code"
+              ref={replyInputRef}
+              name="replyCode"
               type="text"
-              value={code}
-              autoFocus
+              value={replyCode}
               onChange={(event) => {
-                // Normalise before clamping so a pasted "gh st 48" keeps all 6 letters.
-                const next = normalizeRoomCode(event.target.value).slice(0, ROOM_CODE_LENGTH)
-                setCode(next)
-                setCodeError(false)
+                setReplyCode(event.target.value)
+                setReplyError(false)
               }}
               autoComplete="off"
               autoCorrect="off"
-              autoCapitalize="characters"
+              autoCapitalize="off"
               spellCheck={false}
-              inputMode="text"
-              aria-invalid={codeError}
-              aria-describedby={codeError ? errorId : undefined}
-              className="absolute inset-0 h-full w-full cursor-text rounded-[20px] bg-transparent text-[1rem] uppercase tracking-[0.4em] text-transparent caret-transparent outline-none"
+              aria-invalid={replyError}
+              aria-describedby={replyError ? replyErrorId : undefined}
+              placeholder="Reply code from your other screen"
+              className={cn(
+                'min-h-[52px] w-full rounded-[20px] bg-brand-stone px-4 text-sm font-semibold text-brand-ink outline-none transition-shadow placeholder:text-brand-ink-muted',
+                replyError
+                  ? 'ring-2 ring-brand-error'
+                  : 'focus-visible:ring-2 focus-visible:ring-brand-cobalt',
+              )}
             />
-          </div>
 
-          <div className="mt-2 min-h-[1.25rem] px-1">
-            {codeError ? (
-              <p
-                id={errorId}
-                role="alert"
-                className="text-sm font-semibold text-brand-ink"
-              >
-                {ROOM_NOT_FOUND.title}
-              </p>
-            ) : (
-              <p id={errorId} className="sr-only">
-                Type the 6 letters shown on your other screen.
-              </p>
-            )}
-          </div>
+            <div className="mt-2 min-h-[1.25rem] px-1">
+              {replyError ? (
+                <p id={replyErrorId} role="alert" className="text-sm font-semibold text-brand-ink">
+                  {OFFLINE_CODE_INVALID_TITLE}
+                </p>
+              ) : (
+                <p id={replyErrorId} className="sr-only">
+                  Paste the reply code shown on your other screen.
+                </p>
+              )}
+            </div>
 
-          <NestedPillButton
-            type="submit"
-            size="lg"
-            variant="lime-on-cobalt"
-            icon={ArrowRight}
-            disabled={!isComplete}
-            className="mt-3 w-full justify-between"
-          >
-            Connect Now
-          </NestedPillButton>
-        </form>
+            <button
+              type="button"
+              onClick={() => {
+                void pasteFromClipboard()
+              }}
+              className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full bg-brand-stone px-4 text-sm font-semibold text-brand-ink transition-colors hover:bg-brand-line"
+            >
+              <ClipboardPaste size={16} strokeWidth={2} aria-hidden="true" />
+              <span>Paste from Clipboard</span>
+            </button>
+
+            <NestedPillButton
+              type="submit"
+              size="lg"
+              variant="lime-on-cobalt"
+              icon={ArrowRight}
+              disabled={replyCode.trim().length === 0}
+              className="mt-3 w-full justify-between"
+            >
+              Link These Screens
+            </NestedPillButton>
+          </form>
+        ) : (
+          <form onSubmit={handleSubmit} noValidate className="flex flex-col">
+            <div
+              className={cn(
+                'relative rounded-[20px] transition-shadow',
+                codeError ? 'ring-2 ring-brand-error' : 'focus-within:ring-2 focus-within:ring-brand-cobalt',
+              )}
+            >
+              <div aria-hidden="true" className="grid grid-cols-6 gap-1.5 sm:gap-2">
+                {characters.map((character, index) => {
+                  const filled = character.length > 0
+                  const isNext = code.length === index && !codeError
+                  return (
+                    <span
+                      key={`slot-${index}`}
+                      className={cn(
+                        'flex aspect-square items-center justify-center rounded-[16px] transition-colors',
+                        filled
+                          ? 'bg-brand-stone text-brand-ink'
+                          : 'bg-brand-stone/60 text-brand-ink-muted',
+                        isNext ? 'bg-brand-surface ring-2 ring-brand-cobalt' : '',
+                      )}
+                    >
+                      <span className="type-display text-[1.4rem] leading-none sm:text-[1.6rem]">
+                        {character}
+                      </span>
+                    </span>
+                  )
+                })}
+              </div>
+
+              <label htmlFor="qr-room-code" className="sr-only">
+                6 letter room code or offline link code
+              </label>
+              <input
+                id="qr-room-code"
+                ref={codeInputRef}
+                name="roomCode"
+                type="text"
+                value={code}
+                autoFocus
+                onChange={handleCodeChange}
+                onPaste={handleCodePaste}
+                autoComplete="off"
+                autoCorrect="off"
+                autoCapitalize="characters"
+                spellCheck={false}
+                inputMode="text"
+                aria-invalid={codeError}
+                aria-describedby={codeError ? errorId : undefined}
+                className="absolute inset-0 h-full w-full cursor-text rounded-[20px] bg-transparent text-[1rem] uppercase tracking-[0.4em] text-transparent caret-transparent outline-none"
+              />
+            </div>
+
+            <div className="mt-2 min-h-[1.25rem] px-1">
+              {codeError ? (
+                <p
+                  id={errorId}
+                  role="alert"
+                  className="text-sm font-semibold text-brand-ink"
+                >
+                  {ROOM_NOT_FOUND.title}
+                </p>
+              ) : (
+                <p id={errorId} className="sr-only">
+                  Type the 6 letters shown on your other screen.
+                </p>
+              )}
+            </div>
+
+            <NestedPillButton
+              type="submit"
+              size="lg"
+              variant="lime-on-cobalt"
+              icon={ArrowRight}
+              disabled={!isComplete}
+              className="mt-3 w-full justify-between"
+            >
+              Connect Now
+            </NestedPillButton>
+          </form>
+        )}
 
         <p className="mt-4 flex items-center justify-center gap-2 text-center text-xs font-semibold text-brand-ink-muted">
           <ShieldCheck size={15} strokeWidth={2} aria-hidden="true" className="shrink-0 text-brand-forest" />

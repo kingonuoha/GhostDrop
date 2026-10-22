@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { OrbBadge } from '../components/brand/OrbBadge'
 import { SquiggleCardBg } from '../components/brand/SquiggleCardBg'
+import { TeleportCounterBadge } from '../components/brand/TeleportCounterBadge'
 import { InstallCard } from '../components/pwa/InstallCard'
 import { DropOverlay } from '../components/room/DropOverlay'
 import { DropZone } from '../components/room/DropZone'
@@ -9,6 +10,7 @@ import { RoomToast } from '../components/room/RoomToast'
 import { TextComposer } from '../components/room/TextComposer'
 import { TtlPicker } from '../components/room/TtlPicker'
 import { useGhostRoomContext } from '../components/shell/GhostRoomProvider'
+import { useShell } from '../components/shell/ShellProvider'
 import { useClipboardPaste } from '../hooks/useClipboardPaste'
 import { useFileDropTarget } from '../hooks/useFileDropTarget'
 import { useShareIntake } from '../hooks/useShareIntake'
@@ -28,6 +30,7 @@ import { navigate } from '../lib/router'
  */
 export function HomeHub() {
   const room = useGhostRoomContext()
+  const { openScanner } = useShell()
   const { sendFiles, sendText, dismissFeedback, feedback, peers } = room
   const roomCode = room.roomCode
   const isLinked = peers.length > 0
@@ -116,14 +119,22 @@ export function HomeHub() {
     const origin = typeof window === 'undefined' ? '' : window.location.origin
     const hostname = typeof window === 'undefined' ? undefined : window.location.hostname
     const base = resolveJoinOrigin(origin, hostname, lanCandidates, activeLanUrl)
-    return `${base}/join?room=${roomCode ?? ''}`
-  }, [activeLanUrl, lanCandidates, roomCode])
+    const baseJoinUrl = `${base}/join?room=${roomCode ?? ''}`
+    // The direct link code rides along in the fragment, so a phone camera app
+    // that opens this link finishes the offline handshake with no second scan.
+    return room.offlineInviteToken
+      ? `${baseJoinUrl}#gd=${room.offlineInviteToken}`
+      : baseJoinUrl
+  }, [activeLanUrl, lanCandidates, room.offlineInviteToken, roomCode])
 
   return (
     <section aria-labelledby="hub-title" className="flex flex-col gap-6 md:gap-8">
-      <h1 id="hub-title" className="type-h1 hub-title mx-auto text-center text-balance">
-        Send photos and text between your screens.
-      </h1>
+      <div className="flex flex-col items-center gap-3.5 text-center">
+        <TeleportCounterBadge />
+        <h1 id="hub-title" className="type-h1 hub-title mx-auto text-balance">
+          Send photos and text between your screens.
+        </h1>
+      </div>
 
       <div className="grid items-stretch gap-5 md:grid-cols-12 md:gap-6">
         <RoomCodeCard
@@ -134,6 +145,12 @@ export function HomeHub() {
           activeLanUrl={activeLanUrl}
           onSelectLan={setActiveLanUrl}
           onCopyFeedback={room.announceFeedback}
+          isOfflineDirect={room.isOfflineDirect}
+          offlineInviteToken={room.offlineInviteToken}
+          onOpenReplyScanner={() => openScanner('reply')}
+          onActivateOffline={() => {
+            void room.activateOfflineDirect()
+          }}
           className="md:col-span-5"
         />
 

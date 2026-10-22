@@ -489,8 +489,29 @@ export function resolveLocalHttps(
 /* Vite plugin                                                         */
 /* ------------------------------------------------------------------ */
 
+function createStatsMiddleware(): Connect.NextHandleFunction {
+  return (req, res, next) => {
+    const rawUrl = req.url ?? ''
+    if (!rawUrl.startsWith('/api/stats')) {
+      next()
+      return
+    }
+
+    if (req.method !== 'GET' && req.method !== 'HEAD') {
+      respondJson(res, 405, { error: 'METHOD_NOT_ALLOWED' })
+      return
+    }
+
+    res.statusCode = 200
+    res.setHeader('Content-Type', 'application/json; charset=utf-8')
+    res.setHeader('Cache-Control', 'public, s-maxage=600, stale-while-revalidate=1200')
+    res.end(JSON.stringify({ totalTeleports: 0, activeRooms: 1 }))
+  }
+}
+
 function attachSignaling(server: { middlewares: Connect.Server }, log: (message: string) => void): void {
   server.middlewares.use(createLanInfoMiddleware())
+  server.middlewares.use(createStatsMiddleware())
   void ensureEmbeddedPeerServer(log)
 }
 

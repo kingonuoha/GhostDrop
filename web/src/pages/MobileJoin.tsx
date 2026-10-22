@@ -8,11 +8,12 @@
  */
 
 import { useCallback, useEffect, useRef } from 'react'
-import { Ghost, ImagePlus, ScanLine, Unplug } from 'lucide-react'
+import { Ghost, ImagePlus, ScanLine, Unplug, Wifi } from 'lucide-react'
 import { NestedPillButton } from '../components/brand/NestedPillButton'
 import { OrbBadge } from '../components/brand/OrbBadge'
 import { SquiggleCardBg } from '../components/brand/SquiggleCardBg'
 import { DropZone } from '../components/room/DropZone'
+import { OfflineLinkCard } from '../components/room/OfflineLinkCard'
 import { RoomToast } from '../components/room/RoomToast'
 import { TextComposer } from '../components/room/TextComposer'
 import { TransferFeed } from '../components/room/TransferFeed'
@@ -56,7 +57,7 @@ function JoinStart() {
           size="lg"
           variant="cobalt-on-lime"
           icon={ScanLine}
-          onClick={openScanner}
+          onClick={() => openScanner()}
           className="relative mt-6 w-full justify-between"
         >
           Scan or Type a Code
@@ -100,7 +101,13 @@ type JoinRoomProps = {
 
 function JoinRoom({ code }: JoinRoomProps) {
   const room = useGhostRoomContext()
-  const { publishPresence, publishTtlPreset, registerComposer, registerTtlHandler } = useShell()
+  const {
+    publishPresence,
+    publishTtlPreset,
+    registerComposer,
+    registerTtlHandler,
+    openScanner,
+  } = useShell()
 
   const {
     peers,
@@ -171,9 +178,14 @@ function JoinRoom({ code }: JoinRoomProps) {
   const handleNote = useCallback((text: string) => sendText(text), [sendText])
 
   // While the automatic rejoin is running the bridge carries the label, so the
-  // blocking card waits until the attempts are truly spent.
+  // blocking card waits until the attempts are truly spent. An offline
+  // handshake in progress also owns the screen, so no red card covers it.
+  const offlineHandshaking =
+    room.isOfflineDirect &&
+    (room.offlineStep === 'host-waiting-for-reply' ||
+      room.offlineStep === 'guest-showing-reply')
   const failure =
-    connectionError && status !== 'reconnecting'
+    connectionError && status !== 'reconnecting' && !offlineHandshaking
       ? buildFeedback(connectionError, { roomCode: code })
       : null
   const failureIcon = connectionError === 'ERR_ROOM_NOT_FOUND' ? Ghost : Unplug
@@ -182,6 +194,22 @@ function JoinRoom({ code }: JoinRoomProps) {
 
   return (
     <div className="flex flex-col gap-4 md:mx-auto md:max-w-[560px] md:gap-5">
+      {!isLinked && room.offlineStep === 'guest-showing-reply' ? (
+        <OfflineLinkCard
+          mode="guest-reply"
+          token={room.offlineReplyToken}
+          onCopyFeedback={room.announceFeedback}
+        />
+      ) : null}
+
+      {!isLinked && room.isOfflineDirect && room.role === 'host' ? (
+        <OfflineLinkCard
+          mode="host-waiting"
+          token={room.offlineInviteToken}
+          onOpenReplyScanner={() => openScanner('reply')}
+          onCopyFeedback={room.announceFeedback}
+        />
+      ) : null}
       <section
         aria-labelledby="join-title"
         className="relative overflow-hidden rounded-[32px] bg-brand-cobalt p-5 text-white shadow-pop-cobalt md:p-7"
@@ -229,6 +257,20 @@ function JoinRoom({ code }: JoinRoomProps) {
           headingLevel="h2"
           onAction={() => reconnect()}
         />
+      ) : null}
+
+      {!isLinked && (failure || room.isOfflineDirect) ? (
+        <button
+          type="button"
+          onClick={() => {
+            void room.activateOfflineDirect()
+            openScanner('join')
+          }}
+          className="inline-flex min-h-[44px] items-center justify-center gap-2 self-center rounded-full bg-brand-stone px-4 text-sm font-semibold text-brand-ink transition-colors hover:bg-brand-line"
+        >
+          <Wifi size={16} strokeWidth={2} aria-hidden="true" />
+          <span>Link Offline (QR or Code)</span>
+        </button>
       ) : null}
 
       <TransferFeed
