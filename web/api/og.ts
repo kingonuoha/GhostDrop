@@ -1,0 +1,172 @@
+/**
+ * Dynamic Open Graph SVG Generator for Vercel Edge Runtime.
+ * Serves dynamic social cards with zero cold start.
+ * Supports:
+ *   ?title=Custom+Title
+ *   ?subtitle=Custom+Subtitle
+ *   ?code=ROOMCD
+ *   ?badge=v0.9
+ */
+
+export const config = {
+  runtime: 'edge',
+}
+
+function escapeXml(unsafe: string): string {
+  return unsafe
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;')
+}
+
+export default function handler(request: Request): Response {
+  const { searchParams } = new URL(request.url)
+  const code = searchParams.get('code')
+  const title = escapeXml(
+    searchParams.get('title') ||
+      (code
+        ? `Ready to link in room #${code}`
+        : 'Send photos and text between your screens.'),
+  )
+  const subtitle = escapeXml(
+    searchParams.get('subtitle') ||
+      'Instant peer-to-peer teleportation. No cloud uploads, zero trace, and everything self-destructs automatically.',
+  )
+  const badge = escapeXml(code ? `#${code}` : searchParams.get('badge') || 'v0.9')
+
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1433CC" />
+      <stop offset="55%" stop-color="#1E45FB" />
+      <stop offset="100%" stop-color="#122BB5" />
+    </linearGradient>
+    <pattern id="dotGrid" x="0" y="0" width="32" height="32" patternUnits="userSpaceOnUse">
+      <circle cx="3" cy="3" r="1.5" fill="#FFFFFF" fill-opacity="0.08" />
+    </pattern>
+    <filter id="og-goo" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur" />
+      <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -8" />
+    </filter>
+    <style>
+      .font-display {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-weight: 800;
+      }
+      .font-body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-weight: 600;
+      }
+      .font-mono {
+        font-family: ui-monospace, SFMono-Regular, monospace;
+        font-weight: 700;
+      }
+    </style>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bgGrad)" />
+  <rect width="1200" height="630" fill="url(#dotGrid)" />
+  <rect x="24" y="24" width="1152" height="582" rx="36" fill="none" stroke="#FFFFFF" stroke-opacity="0.12" stroke-width="2" />
+
+  <g opacity="0.22" transform="translate(420, 180) scale(1.4)">
+    <path
+      d="M 45 290 C 65 110, 165 25, 225 90 C 275 145, 210 265, 145 250 C 80 235, 165 95, 295 125 C 415 155, 445 255, 375 270 C 305 285, 330 165, 445 195 C 510 212, 545 180, 565 75 C 575 20, 440 -10, 435 55 C 430 125, 535 165, 585 95 L 605 290"
+      stroke="#CDF22B"
+      stroke-width="32"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      fill="none"
+    />
+  </g>
+
+  <g transform="translate(80, 80)">
+    <g transform="translate(0, 0)">
+      <rect width="58" height="58" rx="18" fill="#CDF22B" />
+      <g fill="#1E45FB" transform="translate(-1, -1) scale(0.95)" filter="url(#og-goo)">
+        <circle cx="24" cy="38" r="13" />
+        <circle cx="40" cy="42" r="10" />
+        <circle cx="33" cy="24" r="8.5" />
+      </g>
+      <circle cx="47" cy="14" r="5" fill="#1E45FB" />
+    </g>
+
+    <text x="76" y="42" fill="#FFFFFF" class="font-display" font-size="36" letter-spacing="-0.03em">
+      GhostDrop
+    </text>
+
+    <rect x="272" y="16" width="76" height="28" rx="14" fill="#CDF22B" />
+    <text x="310" y="35" text-anchor="middle" fill="#0D0F12" class="font-mono" font-size="14" font-weight="800">
+      ${badge}
+    </text>
+
+    <g transform="translate(860, 6)">
+      <rect width="180" height="42" rx="21" fill="#FFFFFF" fill-opacity="0.12" stroke="#FFFFFF" stroke-opacity="0.2" stroke-width="1.5" />
+      <circle cx="24" cy="21" r="5" fill="#CDF22B" />
+      <text x="38" y="26" fill="#FFFFFF" class="font-body" font-size="14" letter-spacing="0.02em">
+        100% Stateless P2P
+      </text>
+    </g>
+  </g>
+
+  <g transform="translate(80, 240)">
+    <g transform="translate(0, 0)">
+      <rect width="190" height="34" rx="17" fill="#CDF22B" fill-opacity="0.2" stroke="#CDF22B" stroke-width="1.5" />
+      <text x="95" y="22" text-anchor="middle" fill="#CDF22B" class="font-body" font-size="13" font-weight="700" letter-spacing="0.06em">
+        EPHEMERAL DEVICE BRIDGE
+      </text>
+    </g>
+
+    <text x="0" y="90" fill="#FFFFFF" class="font-display" font-size="48" letter-spacing="-0.03em">
+      ${title}
+    </text>
+
+    <text x="0" y="170" fill="#FFFFFF" fill-opacity="0.88" class="font-body" font-size="21" letter-spacing="-0.01em">
+      ${subtitle}
+    </text>
+  </g>
+
+  <g transform="translate(80, 526)">
+    <g transform="translate(0, 0)">
+      <rect width="210" height="44" rx="22" fill="#FFFFFF" fill-opacity="0.14" stroke="#FFFFFF" stroke-opacity="0.25" stroke-width="1.5" />
+      <path d="M 24 23 L 31 13 L 28 22 L 34 22 L 27 32 L 29 23 Z" fill="#CDF22B" />
+      <text x="44" y="27" fill="#FFFFFF" class="font-body" font-size="15">
+        WebRTC P2P Streams
+      </text>
+    </g>
+
+    <g transform="translate(230, 0)">
+      <rect width="200" height="44" rx="22" fill="#FFFFFF" fill-opacity="0.14" stroke="#FFFFFF" stroke-opacity="0.25" stroke-width="1.5" />
+      <circle cx="26" cy="22" r="7" stroke="#CDF22B" stroke-width="2" fill="none" />
+      <path d="M 26 18 L 26 22 L 29 24" stroke="#CDF22B" stroke-width="2" stroke-linecap="round" fill="none" />
+      <text x="42" y="27" fill="#FFFFFF" class="font-body" font-size="15">
+        Self-Destruct TTL
+      </text>
+    </g>
+
+    <g transform="translate(450, 0)">
+      <rect width="200" height="44" rx="22" fill="#FFFFFF" fill-opacity="0.14" stroke="#FFFFFF" stroke-opacity="0.25" stroke-width="1.5" />
+      <rect x="20" y="16" width="12" height="12" rx="2.5" stroke="#CDF22B" stroke-width="2" fill="none" />
+      <circle cx="26" cy="22" r="1.5" fill="#CDF22B" />
+      <text x="42" y="27" fill="#FFFFFF" class="font-body" font-size="15">
+        Instant QR Scanner
+      </text>
+    </g>
+
+    <g transform="translate(770, 6)">
+      <text x="270" y="24" text-anchor="end" fill="#CDF22B" class="font-mono" font-size="16" font-weight="700" letter-spacing="0.04em">
+        ghostdropapp.vercel.app
+      </text>
+    </g>
+  </g>
+</svg>`
+
+  return new Response(svg, {
+    status: 200,
+    headers: {
+      'Content-Type': 'image/svg+xml',
+      'Cache-Control': 'public, max-age=86400, s-maxage=604800, stale-while-revalidate=86400',
+    },
+  })
+}

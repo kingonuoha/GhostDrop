@@ -307,6 +307,7 @@
   display: block;
   border-radius: var(--radius-pill);
   will-change: transform;
+  filter: blur(48px);
 }
 
 @keyframes soon-slab-drift-up {
@@ -345,41 +346,48 @@
   }
 }
 
-/* Negative delays start each field mid-cycle, so first paint is already composed. */
+/* Authentic brand color fields drifting periodically on 4 axes */
 .soon-slab-lime {
-  top: -45%;
-  left: -40%;
-  width: 140%;
-  height: 140%;
+  top: -20%;
+  left: -20%;
+  width: 85%;
+  height: 85%;
   background-color: var(--color-lime-400);
-  animation: soon-slab-drift-up 22s ease-in-out 0s infinite alternate;
+  opacity: 0.32;
+  animation: soon-slab-drift-up 20s ease-in-out 0s infinite alternate;
 }
 
 .soon-slab-cobalt {
-  top: -15%;
-  left: 45%;
-  width: 130%;
-  height: 160%;
+  top: -10%;
+  right: -15%;
+  left: auto;
+  width: 80%;
+  height: 90%;
   background-color: var(--color-cobalt-600);
-  animation: soon-slab-drift-right 26s ease-in-out -6s infinite alternate;
+  opacity: 0.22;
+  animation: soon-slab-drift-right 24s ease-in-out -5s infinite alternate;
 }
 
 .soon-slab-forest {
-  top: 50%;
-  left: -25%;
-  width: 150%;
-  height: 130%;
+  bottom: -20%;
+  top: auto;
+  left: -15%;
+  width: 90%;
+  height: 80%;
   background-color: var(--color-forest-800);
-  animation: soon-slab-drift-down 30s ease-in-out -12s infinite alternate;
+  opacity: 0.20;
+  animation: soon-slab-drift-down 28s ease-in-out -10s infinite alternate;
 }
 
 .soon-slab-stone {
-  top: 45%;
-  left: 50%;
-  width: 120%;
-  height: 150%;
+  bottom: -15%;
+  top: auto;
+  right: -10%;
+  left: auto;
+  width: 80%;
+  height: 85%;
   background-color: var(--color-stone-100);
-  opacity: 0.85;
+  opacity: 0.45;
   animation: soon-slab-drift-left 18s ease-in-out -3s infinite alternate;
 }
 
@@ -389,15 +397,23 @@
   Jet Ink text: at the lightest stop (62%) the ratio is 8.86:1, AAA for the
   countdown and comfortably above AA for the headline.
 */
+
+.soon-brand-texture {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, var(--color-ink-950) 1px, transparent 1px);
+  background-size: 32px 32px;
+  opacity: 0.035;
+}
+
 .soon-scrim {
   position: absolute;
   inset: 0;
-  background-image: linear-gradient(
-    to bottom,
-    color-mix(in srgb, var(--color-stone-50) 70%, transparent) 0%,
-    color-mix(in srgb, var(--color-stone-50) 76%, transparent) 26%,
-    color-mix(in srgb, var(--color-stone-50) 62%, transparent) 58%,
-    color-mix(in srgb, var(--color-stone-50) 66%, transparent) 100%
+  background-image: radial-gradient(
+    ellipse at 50% 45%,
+    color-mix(in srgb, var(--color-stone-50) 85%, transparent) 0%,
+    color-mix(in srgb, var(--color-stone-50) 50%, transparent) 55%,
+    transparent 100%
   );
 }
 
@@ -431,7 +447,7 @@
   stroke-dashoffset: 1;
   animation:
     soon-squiggle-draw var(--soon-draw, var(--dur-draw)) var(--ease-draw) forwards,
-    soon-squiggle-retract 900ms var(--ease-draw) var(--soon-retract-delay, 3150ms) forwards;
+    soon-squiggle-retract var(--soon-retract, 1800ms) var(--ease-draw) var(--soon-retract-delay, 6400ms) forwards;
 }
 
 /*

@@ -5,7 +5,7 @@ import type { TtlPreset } from '../types/protocol'
  * the desktop top pill bar and the mobile status header.
  * Source: AGENTS.md section 5, decisions.md D-014 item 1.
  */
-export const APP_VERSION = '0.8'
+export const APP_VERSION = '0.9'
 
 /**
  * Prelaunch gate. Launch is 23 October 2026 at 17:00 WAT (UTC+1), which is

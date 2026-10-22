@@ -104,6 +104,7 @@ export function ConnectedWorkspace() {
 
   return (
     <div className="flex flex-col gap-5 md:gap-6">
+      <h1 className="sr-only">Connected Room {code ? `#${code}` : ''}</h1>
       <ConnectionBridge
         code={code}
         status={status}

@@ -2,258 +2,214 @@ import { useEffect, useState } from 'react'
 import type { CSSProperties } from 'react'
 
 /**
- * Five decorative squiggly lines that draw themselves in at a random corner or
- * edge anchor, hold, retract, and only then move to the next anchor.
+ * Decorative self-drawing brand squiggly ribbons scattered around screen edges.
  *
- * Rule source: decisions.md D-006 and D-015 item 6, docs/05-motion-spec.md.
- * The only animated property on a squiggle is `stroke-dashoffset`. Nothing here
- * translates, scales, or fades the line. A position change is a discrete jump
- * applied after the retract has finished, so no frame ever shows a visible
- * squiggle moving. The layer is `display: none` under reduced motion, and the
- * media query is watched for the life of the layer, so flipping the OS setting
- * while the teaser is open clears every interval instead of only hiding paint.
- *
- * `ComingSoonBackdrop` renders this layer between the colour fields and the
- * Warm Stone wash, so the order slab, squiggle, wash holds in one stacking
- * context. The page must not render it a second time.
+ * Requirements:
+ * 1. Equalized perimeter distribution (top-left, top-right, mid-left, mid-right,
+ *    bottom-left, bottom-right). No clustering on one side.
+ * 2. Starts from outside the edge of the screen.
+ * 3. Rounded tips everywhere (strokeLinecap="round" with overflow-visible so
+ *    tips are never cut flat).
+ * 4. Thick, chunky brand ribbon strokes (strokeWidth 42-46).
+ * 5. 100% slower timing (2400ms draw, 1800ms retract, 4.5s-8s hold).
+ * 6. Brand palette: Electric Cobalt (#1E45FB), Acid Lime (#CDF22B), Deep Forest (#124B38).
  */
 
-type SoonAnchor = {
-  x: number
-  y: number
+type EdgeZone = {
+  id: string
+  className: string
+  rotate: number
+  tone: 'cobalt' | 'lime' | 'forest'
+  pathD: string
 }
 
-/** Four corners plus four edge midpoints, as percentages of the layer box. */
-const ANCHORS: readonly SoonAnchor[] = [
-  { x: 12, y: 10 },
-  { x: 50, y: 4 },
-  { x: 88, y: 10 },
-  { x: 94, y: 50 },
-  { x: 88, y: 90 },
-  { x: 50, y: 96 },
-  { x: 12, y: 90 },
-  { x: 6, y: 50 },
-]
-
-const SHAPES = [
+// 6 equalized zones around the perimeter
+const ZONES: readonly EdgeZone[] = [
   {
-    viewBox: '0 0 600 320',
-    strokeWidth: 26,
-    d: 'M 20 268 C 110 248, 200 180, 200 104 C 200 44, 120 40, 118 110 C 116 190, 240 240, 360 194 C 450 160, 520 128, 585 120',
+    id: 'top-left',
+    className: '-top-10 -left-16 sm:-top-12 sm:-left-20',
+    rotate: -4,
+    tone: 'cobalt',
+    // Starts off-screen left at x: -40, curves in, loops, ends with round tip at (480, 140)
+    pathD:
+      'M -40 220 C 80 200, 160 90, 240 80 C 310 70, 310 180, 220 180 C 140 180, 180 60, 300 70 C 400 80, 440 160, 520 130',
   },
   {
-    viewBox: '0 0 600 300',
-    strokeWidth: 24,
-    d: 'M 30 278 C 62 120, 150 40, 210 100 C 260 150, 200 252, 140 238 C 82 224, 160 96, 285 126 C 380 148, 400 232, 340 248 C 286 262, 320 150, 430 180 C 500 198, 530 158, 556 80 C 566 40, 500 26, 496 86 C 492 150, 560 178, 586 118',
+    id: 'top-right',
+    className: '-top-10 -right-16 sm:-top-12 sm:-right-20',
+    rotate: 6,
+    tone: 'lime',
+    // Starts off-screen right at x: 640, curves in, loops, ends with round tip at (80, 140)
+    pathD:
+      'M 640 90 C 520 80, 420 180, 340 180 C 260 180, 280 70, 370 70 C 450 70, 440 210, 310 200 C 200 190, 150 110, 60 120',
   },
   {
-    viewBox: '0 0 600 320',
-    strokeWidth: 28,
-    d: 'M 16 250 C 82 140, 152 130, 226 204 C 300 278, 376 268, 446 184 C 496 124, 546 106, 588 130',
+    id: 'mid-left',
+    className: 'top-[34%] -left-16 sm:top-[36%] sm:-left-20',
+    rotate: 2,
+    tone: 'forest',
+    // Starts off-screen left at x: -40, double-loops, ends with round tip at (500, 110)
+    pathD:
+      'M -40 160 C 80 180, 160 60, 240 70 C 320 80, 290 190, 200 180 C 130 170, 170 50, 290 60 C 380 70, 420 150, 510 100',
+  },
+  {
+    id: 'mid-right',
+    className: 'top-[38%] -right-16 sm:top-[40%] sm:-right-20',
+    rotate: -4,
+    tone: 'cobalt',
+    // Starts off-screen right at x: 640, loops gracefully, ends with round tip at (70, 130)
+    pathD:
+      'M 640 170 C 510 190, 430 80, 350 80 C 270 80, 290 190, 380 180 C 460 170, 430 60, 310 70 C 200 80, 140 150, 70 110',
+  },
+  {
+    id: 'bottom-left',
+    className: '-bottom-10 -left-16 sm:-bottom-12 sm:-left-20',
+    rotate: -6,
+    tone: 'lime',
+    // Starts off-screen left at x: -40, curves up into loop, ends with round tip at (490, 120)
+    pathD:
+      'M -40 190 C 90 210, 170 90, 260 90 C 340 90, 330 200, 230 190 C 150 180, 180 60, 300 70 C 390 80, 430 150, 500 110',
+  },
+  {
+    id: 'bottom-right',
+    className: '-bottom-10 -right-16 sm:-bottom-12 sm:-right-20',
+    rotate: 8,
+    tone: 'forest',
+    // Starts off-screen right at x: 640, curves up into loop, ends with round tip at (80, 120)
+    pathD:
+      'M 640 180 C 510 200, 430 80, 340 80 C 250 80, 270 200, 370 190 C 450 180, 420 60, 290 70 C 190 80, 140 150, 80 100',
   },
 ] as const
 
-const TONE_CLASS = {
-  forest: 'text-brand-forest',
-  cobalt: 'text-brand-cobalt',
+const TONE_CLASSES = {
+  cobalt: 'text-brand-cobalt opacity-45',
+  lime: 'text-brand-lime opacity-80',
+  forest: 'text-brand-forest opacity-40',
 } as const
 
-type SoonTone = keyof typeof TONE_CLASS
+const DRAW_MS = 2400
+const RETRACT_MS = 1800
+const HOLD_MIN_MS = 4000
+const HOLD_MAX_MS = 8000
+const CYCLE_TAIL_MS = 500
 
-const SQUIGGLE_COUNT = 5
-
-/** Mirrors --dur-draw in web/src/styles/tokens.css and is passed to CSS inline. */
-const DRAW_MS = 1150
-const RETRACT_MS = 900
-const HOLD_MIN_MS = 2000
-const HOLD_MAX_MS = 5000
-/** Small tail so a cycle never starts before the retract has fully landed. */
-const CYCLE_TAIL_MS = 240
-const PHASE_SPREAD_MS = 900
-
-/** Mirrors the `prefers-reduced-motion` block at the end of web/src/index.css. */
 const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)'
-
-type SoonSquiggleSpec = {
-  id: number
-  size: number
-  rotate: number
-  tone: SoonTone
-  shape: number
-  /** Fixed per instance, so one interval per squiggle is created once. */
-  cycleMs: number
-  /** Shuffled once on mount, then walked one anchor per cycle. */
-  order: number[]
-}
-
-type SoonCycleState = {
-  specs: SoonSquiggleSpec[]
-  steps: number[]
-  holds: number[]
-  nonces: number[]
-}
 
 function randomHold(): number {
   return HOLD_MIN_MS + Math.round(Math.random() * (HOLD_MAX_MS - HOLD_MIN_MS))
-}
-
-function shuffledAnchors(): number[] {
-  const order = ANCHORS.map((_, index) => index)
-
-  for (let index = order.length - 1; index > 0; index -= 1) {
-    const swapWith = Math.floor(Math.random() * (index + 1))
-    const held = order[index]
-    order[index] = order[swapWith]
-    order[swapWith] = held
-  }
-
-  return order
-}
-
-function buildSpecs(): SoonSquiggleSpec[] {
-  const longestCycle = DRAW_MS + HOLD_MAX_MS + RETRACT_MS + CYCLE_TAIL_MS
-
-  return Array.from({ length: SQUIGGLE_COUNT }, (_, index) => ({
-    id: index,
-    size: 90 + Math.round(Math.random() * 130),
-    rotate: Math.round(Math.random() * 44) - 22,
-    tone: index % 2 === 0 ? 'forest' : 'cobalt',
-    shape: index % SHAPES.length,
-    // A spread on the period keeps the five from drawing in lockstep.
-    cycleMs: longestCycle + Math.round(Math.random() * PHASE_SPREAD_MS),
-    order: shuffledAnchors(),
-  }))
 }
 
 function prefersReducedMotion(): boolean {
   if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
     return false
   }
-
   return window.matchMedia(REDUCED_MOTION_QUERY).matches
 }
 
 export function ComingSoonSquiggles() {
-  /*
-    Specs are built in the state initializer, so they exist before any effect
-    runs and no effect has to read a ref filled by another effect. The shuffle
-    still happens exactly once per instance, never in the render output.
-  */
-  const [cycleState, setCycleState] = useState<SoonCycleState>(() => {
-    const specs = buildSpecs()
-
-    return {
-      specs,
-      steps: specs.map(() => 0),
-      holds: specs.map(() => randomHold()),
-      nonces: specs.map(() => 0),
-    }
-  })
+  const [holds, setHolds] = useState<number[]>(() => ZONES.map(() => randomHold()))
+  const [nonces, setNonces] = useState<number[]>(() => ZONES.map(() => 0))
   const [reducedMotion, setReducedMotion] = useState<boolean>(prefersReducedMotion)
-  /** Stable identity for the life of the layer, so the timer effect runs once. */
-  const specs = cycleState.specs
 
-  // Watch the OS setting, so flipping it mid session takes effect immediately.
   useEffect(() => {
-    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
-      return
-    }
-
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return
     const query = window.matchMedia(REDUCED_MOTION_QUERY)
-
-    // Re-read once, in case the setting changed between render and effect.
     setReducedMotion(query.matches)
 
-    const handleChange = (event: MediaQueryListEvent) => {
-      setReducedMotion(event.matches)
-    }
-
+    const handleChange = (e: MediaQueryListEvent) => setReducedMotion(e.matches)
     query.addEventListener('change', handleChange)
-
-    return () => {
-      query.removeEventListener('change', handleChange)
-    }
+    return () => query.removeEventListener('change', handleChange)
   }, [])
 
   useEffect(() => {
-    if (reducedMotion) {
-      return
-    }
+    if (reducedMotion) return
 
-    // One interval per squiggle, created once and cleared when reduce turns on.
-    const timers = specs.map((spec, index) =>
-      window.setInterval(() => {
-        setCycleState((current) => {
-          const steps = current.steps.slice()
-          steps[index] = (steps[index] + 1) % ANCHORS.length
+    const cycleDuration = DRAW_MS + HOLD_MAX_MS + RETRACT_MS + CYCLE_TAIL_MS
 
-          const holds = current.holds.slice()
-          holds[index] = randomHold()
+    // Stagger timers across the 6 equalized zones so they draw rhythmically
+    const timers = ZONES.map((_, index) => {
+      const initialDelay = index * 1400
 
-          const nonces = current.nonces.slice()
-          nonces[index] += 1
+      let intervalId: number | null = null
+      const timeoutId = window.setTimeout(() => {
+        intervalId = window.setInterval(() => {
+          setHolds((current) => {
+            const next = current.slice()
+            next[index] = randomHold()
+            return next
+          })
+          setNonces((current) => {
+            const next = current.slice()
+            next[index] += 1
+            return next
+          })
+        }, cycleDuration + index * 300)
+      }, initialDelay)
 
-          return { ...current, steps, holds, nonces }
-        })
-      }, spec.cycleMs),
-    )
+      return {
+        clear: () => {
+          window.clearTimeout(timeoutId)
+          if (intervalId !== null) window.clearInterval(intervalId)
+        },
+      }
+    })
 
     return () => {
-      timers.forEach((timer) => window.clearInterval(timer))
+      timers.forEach((t) => t.clear())
     }
-  }, [reducedMotion, specs])
+  }, [reducedMotion])
+
+  if (reducedMotion) return null
 
   return (
     <div
       aria-hidden="true"
       className="soon-squiggle-layer pointer-events-none absolute inset-0 overflow-hidden"
     >
-      {specs.map((spec, index) => {
-        const anchor = ANCHORS[cycleState.steps[index]]
-        const shape = SHAPES[spec.shape]
-        const box = `min(${spec.size}px, 44vw)`
-        const retractDelay = DRAW_MS + cycleState.holds[index]
+      {ZONES.map((zone, index) => {
+        const retractDelay = DRAW_MS + holds[index]
+        const toneClass = TONE_CLASSES[zone.tone]
 
         return (
-          <svg
-            key={`soon-squiggle-${spec.id}-${cycleState.nonces[index]}`}
-            viewBox={shape.viewBox}
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-hidden="true"
-            focusable="false"
-            className={`absolute ${TONE_CLASS[spec.tone]}`}
+          <div
+            key={`soon-zone-${zone.id}-${nonces[index]}`}
+            className={`absolute ${zone.className} pointer-events-none select-none`}
             style={{
-              left: `calc(${anchor.x}% - (${box} / 2))`,
-              top: `calc(${anchor.y}% - (${box} / 2))`,
-              width: box,
-              height: box,
-              /*
-                Static stamp angle chosen once on mount. It is never animated
-                and it sits on the wrapper, not on the path, so the draw-only
-                rule for the line itself is untouched.
-              */
-              transform: `rotate(${spec.rotate}deg)`,
+              width: 'min(580px, 60vw)',
+              height: 'auto',
+              transform: `rotate(${zone.rotate}deg)`,
+              overflow: 'visible',
             }}
           >
-            <path
-              d={shape.d}
-              pathLength="1"
-              strokeDasharray="1"
-              stroke="currentColor"
-              strokeWidth={shape.strokeWidth}
-              strokeLinecap="round"
-              strokeLinejoin="round"
+            <svg
+              viewBox="0 0 600 240"
               fill="none"
-              className="soon-squiggle-path"
-              style={
-                {
-                  '--soon-draw': `${DRAW_MS}ms`,
-                  '--soon-retract-delay': `${retractDelay}ms`,
-                } as CSSProperties
-              }
-            />
-          </svg>
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+              focusable="false"
+              className={`h-auto w-full ${toneClass}`}
+              style={{ overflow: 'visible' }}
+            >
+              <path
+                d={zone.pathD}
+                pathLength="1"
+                strokeDasharray="1"
+                stroke="currentColor"
+                strokeWidth={42}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                fill="none"
+                className="soon-squiggle-path"
+                style={
+                  {
+                    '--soon-draw': `${DRAW_MS}ms`,
+                    '--soon-retract': `${RETRACT_MS}ms`,
+                    '--soon-retract-delay': `${retractDelay}ms`,
+                  } as CSSProperties
+                }
+              />
+            </svg>
+          </div>
         )
       })}
     </div>

@@ -78,6 +78,8 @@ export default defineConfig(({ command, mode }) => {
         registerType: 'autoUpdate',
         includeAssets: [
           'favicon.svg',
+          'og-image.png',
+          'og-image.svg',
           'fonts/laroka.otf',
           'icons/logo.jpg',
           'icons/pwa-192x192.png',

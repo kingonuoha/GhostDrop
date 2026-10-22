@@ -3,31 +3,34 @@ import { ComingSoonSquiggles } from './ComingSoonSquiggles'
 /**
  * Decorative backdrop for the prelaunch coming soon wall.
  *
- * Four locked brand colours drift as soft fields on four axes using
- * `transform: translate3d()` only, the squiggle layer draws itself over them,
- * and the Warm Stone wash carries the text. The fields and the line are two
- * separate motion primitives: D-006 bans fly, slide and bounce on the squiggly
- * line, D-015 item 7 permits the slab drift, and neither borrows from the other.
+ * Four locked brand colours drift periodically on four axes (up, down, right, left),
+ * while authentic brand squiggles self-draw gracefully from perimeter edges.
  *
- * Sources: plans/coming-soon-wall-plan.md sections 5.1 and 5.4, decisions.md
- * D-015 items 6 to 9, docs/05-motion-spec.md.
- *
- * The layer is `absolute inset-0` and `overflow: hidden`, so a drifting field can
- * never add a scrollbar or a horizontal scroll at 360px. The page renders this
- * once, on a positioned ancestor, and renders nothing else from this folder.
+ * Requirements:
+ * - Brand color slabs sliding continuously in an animation loop.
+ * - Genuine brand colors (Acid Lime #CDF22B, Electric Cobalt #1E45FB, Deep Forest #124B38).
+ * - Equalized perimeter squiggles with round tips (never flat).
  */
 export function ComingSoonBackdrop() {
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
+      className="pointer-events-none absolute inset-0 -z-10 overflow-hidden bg-brand-canvas"
     >
+      {/* 4 brand color fields sliding periodically on 4 axes */}
       <span className="soon-slab soon-slab-lime" />
       <span className="soon-slab soon-slab-cobalt" />
       <span className="soon-slab soon-slab-forest" />
       <span className="soon-slab soon-slab-stone" />
-      <ComingSoonSquiggles />
+
+      {/* Subtle brand tactile dot texture */}
+      <div className="soon-brand-texture pointer-events-none absolute inset-0" />
+
+      {/* Center contrast wash for crisp typography */}
       <div className="soon-scrim" />
+
+      {/* Equalized perimeter self-drawing squiggles */}
+      <ComingSoonSquiggles />
     </div>
   )
 }
