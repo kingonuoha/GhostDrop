@@ -294,6 +294,172 @@
   animation: scanline-sweep 2600ms var(--ease-out) infinite;
 }
 
+/*
+  Coming soon wall. The four locked brand colours drift as soft fields behind
+  the teaser, the squiggles draw themselves in over them, and a Warm Stone wash
+  carries the text.
+  Sources: plans/coming-soon-wall-plan.md sections 5.1 and 5.4 and decisions.md
+  D-015 items 6 to 9. Slab translation is a separate primitive: it never touches
+  the squiggly line, and the squiggly line never translates.
+*/
+.soon-slab {
+  position: absolute;
+  display: block;
+  border-radius: var(--radius-pill);
+  will-change: transform;
+}
+
+@keyframes soon-slab-drift-up {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(0, -7%, 0);
+  }
+}
+
+@keyframes soon-slab-drift-right {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(7%, 0, 0);
+  }
+}
+
+@keyframes soon-slab-drift-down {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 7%, 0);
+  }
+}
+
+@keyframes soon-slab-drift-left {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-7%, 0, 0);
+  }
+}
+
+/* Negative delays start each field mid-cycle, so first paint is already composed. */
+.soon-slab-lime {
+  top: -45%;
+  left: -40%;
+  width: 140%;
+  height: 140%;
+  background-color: var(--color-lime-400);
+  animation: soon-slab-drift-up 22s ease-in-out 0s infinite alternate;
+}
+
+.soon-slab-cobalt {
+  top: -15%;
+  left: 45%;
+  width: 130%;
+  height: 160%;
+  background-color: var(--color-cobalt-600);
+  animation: soon-slab-drift-right 26s ease-in-out -6s infinite alternate;
+}
+
+.soon-slab-forest {
+  top: 50%;
+  left: -25%;
+  width: 150%;
+  height: 130%;
+  background-color: var(--color-forest-800);
+  animation: soon-slab-drift-down 30s ease-in-out -12s infinite alternate;
+}
+
+.soon-slab-stone {
+  top: 45%;
+  left: 50%;
+  width: 120%;
+  height: 150%;
+  background-color: var(--color-stone-100);
+  opacity: 0.85;
+  animation: soon-slab-drift-left 18s ease-in-out -3s infinite alternate;
+}
+
+/*
+  Legibility wash. Measured against the composed result, never the token. Deep
+  Forest is the darkest field under the wash, so it is the true worst case for
+  Jet Ink text: at the lightest stop (62%) the ratio is 8.86:1, AAA for the
+  countdown and comfortably above AA for the headline.
+*/
+.soon-scrim {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--color-stone-50) 70%, transparent) 0%,
+    color-mix(in srgb, var(--color-stone-50) 76%, transparent) 26%,
+    color-mix(in srgb, var(--color-stone-50) 62%, transparent) 58%,
+    color-mix(in srgb, var(--color-stone-50) 66%, transparent) 100%
+  );
+}
+
+/*
+  Squiggle draw and retract. Two animations on one path, both touching nothing
+  but stroke-dashoffset. The retract carries no backwards fill, so it stays out
+  of the way until its delay elapses, and that delay is the hold. The anchor only
+  changes when the interval fires, which is after the retract has finished, so
+  the teleport always happens at zero visible length. Source: D-006, D-015 item 6.
+*/
+@keyframes soon-squiggle-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes soon-squiggle-retract {
+  from {
+    stroke-dashoffset: 0;
+  }
+  to {
+    stroke-dashoffset: 1;
+  }
+}
+
+.soon-squiggle-path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation:
+    soon-squiggle-draw var(--soon-draw, var(--dur-draw)) var(--ease-draw) forwards,
+    soon-squiggle-retract 900ms var(--ease-draw) var(--soon-retract-delay, 3150ms) forwards;
+}
+
+/*
+  Countdown digits. Laroka ships proportional digits and no tnum feature (digit
+  advances run 483 to 773 per 1200 units), so tabular-nums alone cannot hold the
+  row steady while seconds tick. Every digit gets a fixed cell instead.
+*/
+.soon-countdown {
+  font-family: var(--font-display);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+  letter-spacing: 0;
+}
+
+.soon-countdown-digit {
+  display: inline-block;
+  width: 0.66em;
+  text-align: center;
+}
+
+/*
+  Footnote ink. The muted token measures 3.46:1 on the wash over Deep Forest,
+  below AA for small text, so the quieter line keeps a deeper ink instead.
+*/
+.soon-footnote {
+  color: var(--color-ink-800);
+}
+
 @media (prefers-reduced-motion: reduce) {
   /*
     Transforms collapse to instant state changes. Hover and press scale physics
@@ -338,5 +504,38 @@
   .scanline-sweep {
     animation: none;
     opacity: 0.7;
+  }
+
+  /*
+    Coming soon wall: the four brand fields hold a fixed offset so the
+    composition still reads as four colours with no motion, and the squiggle
+    layer is removed entirely so no draw is left running.
+  */
+  .soon-slab-lime,
+  .soon-slab-cobalt,
+  .soon-slab-forest,
+  .soon-slab-stone {
+    animation: none !important;
+    will-change: auto;
+  }
+
+  .soon-slab-lime {
+    transform: translate3d(0, -4%, 0);
+  }
+
+  .soon-slab-cobalt {
+    transform: translate3d(4%, 0, 0);
+  }
+
+  .soon-slab-forest {
+    transform: translate3d(0, 4%, 0);
+  }
+
+  .soon-slab-stone {
+    transform: translate3d(-4%, 0, 0);
+  }
+
+  .soon-squiggle-layer {
+    display: none;
   }
 }

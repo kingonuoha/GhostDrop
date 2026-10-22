@@ -3,8 +3,10 @@ import { useRef, useState } from 'react'
 import { GhostRoomProvider } from './components/shell/GhostRoomProvider'
 import type { RoomSession } from './components/shell/GhostRoomProvider'
 import { AppShell } from './components/shell/AppShell'
+import { useLaunchGate } from './hooks/useLaunchGate'
 import { generateRoomCode, isValidRoomCode, normalizeRoomCode } from './lib/p2p'
 import { matchRoomPath, useRoute } from './lib/router'
+import { ComingSoon } from './pages/ComingSoon'
 import { ConnectedWorkspace } from './pages/ConnectedWorkspace'
 import { HomeHub } from './pages/HomeHub'
 import { HowItWorks } from './pages/HowItWorks'
@@ -50,7 +52,14 @@ function requestedSession(
   return null
 }
 
-export default function App() {
+/**
+ * The unlocked app: router, session and the room provider.
+ *
+ * Everything in here, including the `useState(createHubCode)` hub code
+ * allocation, only exists once the gate opens. Keeping it in a child component
+ * is what guarantees a locked visitor never evaluates `generateRoomCode()`.
+ */
+function GhostDropApp() {
   const { path, query } = useRoute()
   const normalizedPath = path.length > 1 ? path.replace(/\/+$/, '') : path
 
@@ -92,4 +101,17 @@ export default function App() {
       <AppShell>{page}</AppShell>
     </GhostRoomProvider>
   )
+}
+
+/**
+ * Launch gate. The teaser renders ABOVE the P2P runtime, so while locked there
+ * is no room provider, no shell provider, no `/peerjs` socket, no room peer id
+ * and no ICE gathering. Source: decisions.md D-015 items 1 and 2.
+ */
+export default function App() {
+  const { unlocked, unlock } = useLaunchGate()
+
+  if (!unlocked) return <ComingSoon onUnlock={unlock} />
+
+  return <GhostDropApp />
 }

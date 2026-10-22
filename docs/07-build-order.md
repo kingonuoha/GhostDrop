@@ -26,3 +26,13 @@
    - Audit every success toast, error state, empty state, SVG icon, and TTL poof animation against `docs/design.md`, `docs/02-brand-persona-and-copy.md`, and `docs/05-motion-spec.md`.
 9. **Step 9: Comprehensive 6-Gate QA Audit (`ghostdrop-qa`)**
    - Execute all checks in `docs/08-qa-checklist.md` and write `docs/tasks/<slug>/qa-report.md`.
+10. **Step 10: v0.7 Offline, Hotspot, Camera, TTL and UX Fixes (`ghostdrop-backend` -> `ghostdrop-web` -> `ghostdrop-ui-polish` -> `ghostdrop-qa`)**
+   - Same-port `/peerjs` signaling, `/__ghostdrop/lan-info`, offline ICE, `burnOnRead` protocol, dynamic device identity, QR camera fallback, `BURN_ON_COPY` sync, clipboard and share actions. Signed off PASS.
+11. **Step 11: Improvements (`docs/tasks/step-11-improvements/`)**
+   - DEFERRED. Not executed. Runs after Step 12.
+12. **Step 12: v0.8 Coming Soon Wall and Teaser Animation (`ghostdrop-web` -> `ghostdrop-ui-polish` -> `ghostdrop-qa`)**
+   - Gate every route behind a public teaser rendered above `GhostRoomProvider` so no signaling or room state is consumed while locked.
+   - Hidden unlock gestures only: `Ctrl+Alt+C` on desktop and tapping the GhostDrop logo 3 times fast on any device, persisted in `localStorage`.
+   - Live countdown to 23 October 2026 17:00 local with a live state at zero and no auto-launch.
+   - Full-bleed brand colour slabs drifting up, right, down, and left on 18s to 30s loops, `translate3d` only, with a mandatory reduced-motion override and a Warm Stone legibility scrim. Recorded as D-015.
+   - Version `0.7` to `0.8` (no new dependency).

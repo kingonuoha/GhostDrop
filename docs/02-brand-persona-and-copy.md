@@ -40,6 +40,28 @@
   - `50 mins`
   - `When I close this page`
 
+### 2.1 Prelaunch Coming Soon Wall (`/` before launch)
+
+Every route sits behind this teaser until the wall unveils itself, so these strings are the entire public face of GhostDrop before launch. Source of truth in code: `web/src/lib/copyDeck.ts` (`SOON_*` block).
+
+| Key | Copy |
+| :--- | :--- |
+| `SOON_EYEBROW` | `Coming soon` |
+| `SOON_HEADLINE` | `GhostDrop is almost here` |
+| `SOON_SUB` | `Send photos and text between your screens. Then watch them vanish.` |
+| `SOON_COUNTDOWN_LABEL` | `Doors open in` |
+| `SOON_STEP_ONE` | `Scan the code` |
+| `SOON_STEP_TWO` | `Drop it in` |
+| `SOON_STEP_THREE` | `It poofs when you say` |
+| `SOON_WELCOME` | `Welcome in. GhostDrop is live.` |
+| `SOON_FOOTNOTE` | `No accounts. No uploads. Nothing left behind.` |
+
+Teaser rules:
+1. `SOON_WELCOME` is the only post launch string. It replaces the countdown block the moment the launch instant passes, holds for a beat, then the wall lifts itself.
+2. The three steps never carry a numeric prefix: the page renders a numbered `#CDF22B` and `#1E45FB` orb badge beside each one, per D-014 item 6.
+3. No string in this block, and nothing rendered on the teaser, may hint at how the wall unlocks. The gesture has no visible affordance at all.
+4. Zero em dashes, zero en dashes, zero emojis. Any accent is a crisp `lucide-react` SVG icon inside a brand badge.
+
 ---
 
 ## 3. Playful Success Messages (Joyful Acid Lime `#CDF22B` Cards/Toasts + SVG Icons)

@@ -287,3 +287,22 @@ export function ttlPresetLabel(preset: TtlPreset): string {
       return '50 mins'
   }
 }
+
+/*
+  Prelaunch coming soon wall.
+  Source: docs/02-brand-persona-and-copy.md section 2.1, decisions.md D-015.
+
+  These strings are the whole visible teaser. None of them hints at how the
+  wall unlocks: the gesture stays invisible by design, and the welcome line is
+  the only post launch string.
+*/
+export const SOON_EYEBROW = 'Coming soon'
+export const SOON_HEADLINE = 'GhostDrop is almost here'
+export const SOON_SUB =
+  'Send photos and text between your screens. Then watch them vanish.'
+export const SOON_COUNTDOWN_LABEL = 'Doors open in'
+export const SOON_STEP_ONE = 'Scan the code'
+export const SOON_STEP_TWO = 'Drop it in'
+export const SOON_STEP_THREE = 'It poofs when you say'
+export const SOON_WELCOME = 'Welcome in. GhostDrop is live.'
+export const SOON_FOOTNOTE = 'No accounts. No uploads. Nothing left behind.'

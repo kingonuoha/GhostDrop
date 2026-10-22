@@ -155,3 +155,22 @@
   5. **Image/File Clipboard Copy & Native Share:** Add `Copy Image` (`navigator.clipboard.write` with PNG conversion fallback) and native OS `Share` (`navigator.share({ files })`) alongside `Save` as a secondary action on file transfer cards.
   6. **Card Step Number Deduplication:** Remove redundant `1.` and `2.` text prefixes from card headings when an `<OrbBadge>` already displays the step number in a circle.
 - **Rationale:** Direct user testing feedback from Kingsley across PC, mobile camera QR scan, offline Wi-Fi, and phone hotspot topologies.
+
+---
+
+## D-015: Prelaunch Coming Soon Wall, Hidden Unlock Gestures, and Brand Colour Slab Motion
+- **Date:** 2026-10-22
+- **Status:** LOCKED
+- **Scope:** `web/src/App.tsx`, `web/src/pages/ComingSoon.tsx`, `web/src/components/soon/`, `web/src/hooks/useLaunchGate.ts`, `web/src/index.css`, `docs/07-build-order.md`
+- **Decision:**
+  1. **Gate above the P2P runtime.** The coming soon wall renders ABOVE `GhostRoomProvider` in `web/src/App.tsx`. While locked, no signaling WebSocket opens, no `ghostdrop-room-XXXXXX` peer id is registered, and no ICE gathering starts. A teaser visitor must never consume room or signaling state.
+  2. **Lock scope is all routes.** `/`, `/join`, `/room/*`, and `/how-it-works` all render the teaser until unlocked. There is no path that bypasses the gate except the unlock gestures.
+  3. **Two unlock gestures, no visible UI.** `Ctrl+Alt+C` bound on `event.code === 'KeyC'` with `preventDefault()` and `event.repeat` ignored, plus tapping the GhostDrop logo 3 times inside a `900ms` window via `onPointerDown`. Unlock persists in `localStorage` under `ghostdrop.launch.unlocked`. No visible button, badge, or hint advertises either gesture, and no copy string may reference a gesture.
+  4. **Launch is a fixed global instant, not a local clock.** The anchor is 23 October 2026 at 17:00 WAT (UTC+1), which is 16:00 UTC. `LAUNCH_AT` therefore ships as `Date.UTC(2026, 9, 23, 16, 0, 0)`. Every visitor counts down to the same absolute moment regardless of their timezone, and the countdown display derives from the visitor's local offset.
+  5. **At zero the wall unveils itself after a welcome.** When `LAUNCH_AT` has passed, the countdown block is replaced by a welcome state, and after a short hold the gate unlocks itself and persists the unlock. Visitors who arrive after launch see the welcome then land on the app. Manual gestures remain the path before launch. There is no scenario where the wall sits permanently on a visitor after launch.
+  6. **Background squiggles stay draw-only.** The teaser renders five squiggly lines that draw in and retract purely via `stroke-dashoffset`, then reposition at a randomized corner or edge anchor **only while the path has zero visible length**. D-006 is unchanged and fully honoured. A squiggle on a visible translation remains a P0 breach, and no exception was granted.
+  7. **Brand colour slab motion is permitted.** The four locked brand colours may drift as full-bleed bands on four axes (up, right, down, left) using `transform: translate3d()` only, on loops of 18s to 30s. D-006 bans fly-in, fly-out, slide-in, and bounce-in **on the squiggly line only**. Slab translation is a distinct motion primitive and is explicitly allowed here. Any squiggly line on the teaser still animates exclusively through `pathLength="1"`, `stroke-dasharray: 1`, and `stroke-dashoffset: 1 -> 0`. Note that the production CSS minifier may lower `translate3d()` to `translate` or `translateY()` while keeping identical composed behaviour; source authorship must still be `translate3d()` and the built output is reviewed against behaviour, not syntax.
+  8. **Reduced motion is mandatory.** `prefers-reduced-motion: reduce` sets `animation: none !important` on all four slabs with a static offset per slab, and hides the squiggle layer entirely, so the composition still reads as four brand colours without movement.
+  9. **Legibility scrim is mandatory.** A Warm Stone scrim sits between the slabs and the content so headline contrast is measured against the scrim, never against a moving Cobalt field.
+- **Rationale:** Explicit prelaunch request from Kingsley with a hard global launch instant of 23 October 2026 at 17:00 WAT (16:00 UTC), the need to keep testing the real app on both PC and phone without exposing it publicly, and a deliberate self-unveiling so no visitor is ever stuck behind a wall after launch.
+
