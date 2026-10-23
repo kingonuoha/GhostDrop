@@ -5,13 +5,13 @@ import type { TtlPreset } from '../types/protocol'
  * the desktop top pill bar and the mobile status header.
  * Source: AGENTS.md section 5, decisions.md D-014 item 1.
  */
-export const APP_VERSION = '0.12'
+export const APP_VERSION = '0.13'
 
 /**
- * Prelaunch gate. Launch is 23 October 2026 at 17:00 WAT (UTC+1), which is
- * 16:00 UTC. Fixed global instant so every visitor counts to the same moment.
+ * Prelaunch gate. Launch is 23 October 2026 at 13:00 WAT (UTC+1), which is
+ * 12:00 UTC. Fixed global instant so every visitor counts to the same moment.
  */
-export const LAUNCH_AT = Date.UTC(2026, 9, 23, 16, 0, 0)
+export const LAUNCH_AT = Date.UTC(2026, 9, 23, 12, 0, 0)
 
 /** localStorage key for the hidden unlock, see decisions.md D-015. */
 export const LAUNCH_UNLOCK_KEY = 'ghostdrop.launch.unlocked'

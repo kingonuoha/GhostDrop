@@ -32,10 +32,29 @@ export const CHANGELOG_SEEN_KEY = 'ghostdrop.last_seen_version'
 
 export const CHANGELOG_RELEASES: readonly ChangelogRelease[] = [
   {
+    version: '0.13',
+    dateTime: '23 Oct 2026, 1:00 PM',
+    headline: 'We could not wait. GhostDrop opened its doors early.',
+    isCurrent: true,
+    items: [
+      {
+        category: 'speed',
+        title: 'Doors opened sooner',
+        description:
+          'We moved the opening time forward to 1pm because everything was ready and waiting. No more counting down.',
+      },
+      {
+        category: 'feature',
+        title: 'No internet needed',
+        description:
+          'Two screens on the same Wi-Fi or phone hotspot can now swap files with zero internet at all. Point, scan, done.',
+      },
+    ],
+  },
+  {
     version: '0.12',
     dateTime: '22 Oct 2026, 11:30 PM',
     headline: 'In-app feedback, dedicated release notes, and community milestone counters.',
-    isCurrent: true,
     items: [
       {
         category: 'feature',

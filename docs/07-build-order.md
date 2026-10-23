@@ -33,7 +33,7 @@
 12. **Step 12: v0.8 Coming Soon Wall and Teaser Animation (`ghostdrop-ui-polish` -> `ghostdrop-web` -> `ghostdrop-qa`)**
    - Gate every route behind a public teaser rendered above `GhostRoomProvider` so no signaling or room state is consumed while locked.
    - Hidden unlock gestures only: `Ctrl+Alt+C` on desktop and tapping the GhostDrop logo 3 times fast on any device, persisted in `localStorage`.
-   - Live countdown to 23 October 2026 17:00 local with a live state at zero and no auto-launch.
+   - Live countdown to 23 October 2026 13:00 local with a live state at zero and no auto-launch.
    - Full-bleed brand colour slabs drifting up, right, down, and left on 18s to 30s loops, `translate3d` only, with a mandatory reduced-motion override and a Warm Stone legibility scrim. Recorded as D-015. Signed off PASS.
 13. **Step 13: v0.11 Total Offline and Hotspot Direct WebRTC Bridge (`ghostdrop-backend` -> `ghostdrop-ui-polish` -> `ghostdrop-web` -> `ghostdrop-qa`)**
    - Build `compactSdp.ts`, `iceUnmask.ts`, and `offlineDirectEngine.ts` (`P2PSignalingAdapter` over native `RTCPeerConnection` + `RTCDataChannel` + `BroadcastChannel` shortcut) so two cached PWAs on the same Wi-Fi or phone hotspot connect with zero internet and zero server via a 2-step QR or copyable Offline Code (`GD1...` / `#gd=...`) handshake.
