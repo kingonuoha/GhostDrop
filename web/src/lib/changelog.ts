@@ -32,10 +32,35 @@ export const CHANGELOG_SEEN_KEY = 'ghostdrop.last_seen_version'
 
 export const CHANGELOG_RELEASES: readonly ChangelogRelease[] = [
   {
+    version: '0.16',
+    dateTime: '26 Oct 2026, 5:20 PM',
+    headline: 'A switch for pairings, a shorter code, and words that fit any device.',
+    isCurrent: true,
+    items: [
+      {
+        category: 'feature',
+        title: 'One switch for how you link',
+        description:
+          'The pairing card now has an Online and a No internet switch in one place.',
+      },
+      {
+        category: 'speed',
+        title: 'An easier code to scan',
+        description:
+          'The everyday code is shorter now, so your phone camera reads it faster.',
+      },
+      {
+        category: 'fix',
+        title: 'Words for any device',
+        description:
+          'The pairing words no longer assume which device you are holding.',
+      },
+    ],
+  },
+  {
     version: '0.15',
     dateTime: '26 Oct 2026, 2:30 PM',
     headline: 'A tidier progress line, one shared timer, and a Remove that always lands.',
-    isCurrent: true,
     items: [
       {
         category: 'fix',

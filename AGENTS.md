@@ -96,7 +96,7 @@ npm run type-check  # tsc --noEmit
 
 ## 5. Versioning and GitHub Main-Branch Bump Rule (P0)
 
-1. **Current Baseline Version:** `0.15` (`v0.15`), synced in `web/package.json` (`"version": "0.15"`) and `APP_VERSION = '0.15'` in `web/src/lib/constants.ts`. Step 11 shipped 0.14, and the 0.15 fix batch (progress wave, shared timer rule, burn notice, offline paste) added no dependencies.
+1. **Current Baseline Version:** `0.16` (`v0.16`), synced in `web/package.json` (`"version": "0.16"`) and `APP_VERSION = '0.16'` in `web/src/lib/constants.ts`. Step 11 shipped 0.14, and the 0.16 fix batch (progress wave, shared timer, burn notice, offline pairing card) added no dependencies.
 2. **Navbar Display:** Render the baseline as small display text directly beside the `GhostDrop` wordmark in `<Logo />` on both Desktop (`DesktopTopPillBar`) and Mobile (`MobileStatusHeader`). The version is read from `APP_VERSION`, never hardcoded in a component.
 3. **Version Anatomy (`<whole>.<decimal>`):**
    - **Whole number (`X` in `X.Y`):** Increments whenever a **new dependency** is installed in `web/package.json` (and resets `.Y` to `.0`, or `.1` for the first task in that major version).

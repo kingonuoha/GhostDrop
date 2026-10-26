@@ -57,7 +57,7 @@ export function ConnectedWorkspace() {
     : 'your other screen'
   const fileInputRef = useRef<HTMLInputElement>(null)
   const { publishPresence, openScanner } = useShell()
-  const { joinUrl } = useJoinUrl(code, room.offlineInviteToken)
+  const { joinUrl, offlineJoinUrl } = useJoinUrl(code, room.offlineInviteToken)
 
   // Keeps the compact mobile header pill in step with this room.
   useEffect(() => {
@@ -120,7 +120,7 @@ export function ConnectedWorkspace() {
         peers={peers}
         localDeviceType={localDeviceType}
         localDeviceName={localDeviceName}
-        joinUrl={joinUrl}
+        joinUrl={room.isOfflineDirect ? offlineJoinUrl : joinUrl}
       />
 
       {!isLinked && room.offlineStep === 'guest-showing-reply' ? (

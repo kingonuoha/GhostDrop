@@ -36,7 +36,7 @@ export function HomeHub() {
   const localDeviceType = room.localDeviceType
   const fileInputRef = useRef<HTMLInputElement>(null)
   const { notice: shareNotice, dismiss: dismissShareNotice } = useShareIntake()
-  const { joinUrl, lanCandidates, activeLanUrl, setActiveLanUrl } = useJoinUrl(
+  const { joinUrl, offlineJoinUrl, lanCandidates, activeLanUrl, setActiveLanUrl } = useJoinUrl(
     roomCode,
     room.offlineInviteToken,
   )
@@ -107,6 +107,7 @@ export function HomeHub() {
         <RoomCodeCard
           code={roomCode ?? '......'}
           joinUrl={joinUrl}
+          offlineJoinUrl={offlineJoinUrl}
           deviceType={localDeviceType}
           lanOptions={lanCandidates}
           activeLanUrl={activeLanUrl}

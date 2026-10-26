@@ -14,8 +14,16 @@ import { fetchLanInfo, resolveJoinOrigin } from '../lib/lanInfo'
 import type { LanCandidate } from '../lib/lanInfo'
 
 export interface JoinUrlState {
-  /** Link the other screen opens: `${origin}/join?room=${code}`, plus any direct link code. */
+  /**
+   * Plain pairing link: `${origin}/join?room=${code}`. Never carries a direct
+   * link code, so the everyday QR stays short and easy to scan.
+   */
   joinUrl: string
+  /**
+   * Pairing link plus the pre-generated direct link code in the fragment, used
+   * by the no internet view and the in-room offline QR.
+   */
+  offlineJoinUrl: string
   /** Real Wi-Fi and hotspot origins the QR code may point at. */
   lanCandidates: readonly LanCandidate[]
   /** Currently selected LAN origin, when the page is on loopback. */
@@ -57,13 +65,19 @@ export function useJoinUrl(
     const origin = typeof window === 'undefined' ? '' : window.location.origin
     const hostname = typeof window === 'undefined' ? undefined : window.location.hostname
     const base = resolveJoinOrigin(origin, hostname, lanCandidates, activeLanUrl)
-    const baseJoinUrl = `${base}/join?room=${roomCode ?? ''}`
-    // The direct link code rides along in the fragment, so a phone camera app
-    // that opens this link finishes the offline handshake with no second scan.
-    return offlineInviteToken
-      ? `${baseJoinUrl}#gd=${offlineInviteToken}`
-      : baseJoinUrl
-  }, [activeLanUrl, lanCandidates, offlineInviteToken, roomCode])
+    return `${base}/join?room=${roomCode ?? ''}`
+  }, [activeLanUrl, lanCandidates, roomCode])
 
-  return { joinUrl, lanCandidates, activeLanUrl, setActiveLanUrl }
+  /**
+   * The same link plus the direct link code after its hash, so a phone camera
+   * app that opens it finishes the offline handshake with no second scan. Only
+   * the no internet view uses this value, because the payload is 250 to 400
+   * characters and makes an everyday QR dense.
+   */
+  const offlineJoinUrl = useMemo(
+    () => (offlineInviteToken ? `${joinUrl}#gd=${offlineInviteToken}` : joinUrl),
+    [joinUrl, offlineInviteToken],
+  )
+
+  return { joinUrl, offlineJoinUrl, lanCandidates, activeLanUrl, setActiveLanUrl }
 }

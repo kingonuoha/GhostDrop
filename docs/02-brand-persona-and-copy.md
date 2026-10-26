@@ -25,8 +25,14 @@
 - **Top Bar Timer Pill (`Clock` SVG icon):** `Auto-delete: 50 mins`
 - **Top Bar Action Button (`Plus` SVG icon):** `Enter a Code`
 - **Page H1 (`Laroka`):** `Send photos and text between your screens.`
-- **Left Card Title (`Laroka`):** `Scan with your phone` (a phone reads `Scan with your other screen`)
-- **Left Card Helper:** `Open your phone camera and point it here:` (a phone reads `Open the camera or GhostDrop on your PC or other phone:`)
+- **Left Card Title (`Laroka`):** `Scan with your other device` (a phone reads `Scan with your other screen`)
+- **Left Card Helper:** `Open the camera on your other device and point it here:` (a phone reads `Open the camera or GhostDrop on your PC or other phone:`)
+- **Pairing Card Mode Group Label:** `Connection type`
+- **Pairing Card Mode Chip (online):** `Online`
+- **Pairing Card Mode Chip (no internet):** `No internet`
+- **Pairing Card Preparing Line (no internet, shown while the code is built):** `Getting your no internet code ready...`
+- **Pairing Card QR Title (online):** `Scan this code with your other device`
+- **Pairing Card QR Title (no internet):** `Scan this code with your other device. No internet needed.`
 - **Room Code Label:** `Or type code:`
 - **Right Card Title (`Laroka`):** `Pick what to send`
 - **Card Step Numbers:** The `<OrbBadge>` circle carries `1` on the pairing card and `2` on the send card. Card titles never repeat the number as `1.` or `2.` text.
@@ -39,6 +45,8 @@
   - `15 mins`
   - `50 mins`
   - `When I close this page`
+
+Device wording rule: pairing copy never names a fixed device. The reader may already be holding the phone, so every line says `your other device` or `your other screen`, and the only mention of a specific machine is the phone helper naming `your PC or other phone` so a phone reader knows what to look for.
 
 ### 2.1 Prelaunch Coming Soon Wall (`/` before launch)
 
@@ -70,11 +78,11 @@ When the two screens share a Wi-Fi network or a phone hotspot but no internet, l
 | :--- | :--- |
 | `OFFLINE_BADGE_LABEL` | `Offline Wi-Fi / Hotspot Mode` |
 | `OFFLINE_HOST_STEP_TITLE` | `Finish linking without internet` |
-| `OFFLINE_HOST_STEP_BODY` | `Two quick scans. Your phone scans this screen first, then point this camera at the code on your phone.` |
+| `OFFLINE_HOST_STEP_BODY` | `Two quick scans. Your other device scans this screen first, then point this camera at the code it shows.` |
 | `OFFLINE_SCAN_REPLY_CTA` | `Scan or Paste Reply` |
 | `OFFLINE_COPY_INVITE_CTA` | `Copy Offline Code` |
 | `OFFLINE_PASTE_LABEL` | `No camera? Paste the code here` |
-| `OFFLINE_PASTE_PLACEHOLDER` | `The code from your phone` |
+| `OFFLINE_PASTE_PLACEHOLDER` | `The code from your other device` |
 | `OFFLINE_PASTE_CTA` | `Use this code` |
 | `OFFLINE_GUEST_REPLY_TITLE` | `Show this reply to your other screen` |
 | `OFFLINE_GUEST_REPLY_BODY` | `On your other screen, point its camera at this code. No camera on that screen? Copy this code and paste it there.` |
@@ -82,8 +90,8 @@ When the two screens share a Wi-Fi network or a phone hotspot but no internet, l
 | `OFFLINE_SWITCH_CTA` | `No internet? Link directly on Wi-Fi or Hotspot` |
 
 Offline linking rules:
-1. **Two screens, two codes.** The Host shows the invite card, the Guest shows the reply card, and the Host reads the reply. No screen ever shows more than one code at a time. The order is fixed and stated on screen: the phone reads the Host code first, then the Host reads the reply. Saying so up front stops the second scan reading as an unexpected extra chore.
-2. **Plain everyday words only.** No network or connection terms reach the screen. The code is called a code, the camera is called a camera, and the other device is always `your other screen`.
+1. **Two screens, two codes.** The Host shows the invite card, the Guest shows the reply card, and the Host reads the reply. No screen ever shows more than one code at a time. The order is fixed and stated on screen: your other device reads the Host code first, then the Host reads the reply. Saying so up front stops the second scan reading as an unexpected extra chore.
+2. **Plain everyday words only.** No network or connection terms reach the screen. The code is called a code, the camera is called a camera, and the partner screen is always `your other device` or `your other screen`, never a fixed device name.
 3. **One obvious button per card.** The Guest card carries `Copy code instead` as its only action, because the other screen does the reading. The Host panel carries `Scan or Paste Reply` first and `Copy Offline Code` second, plus a paste field (`OFFLINE_PASTE_LABEL`, `OFFLINE_PASTE_PLACEHOLDER`, `OFFLINE_PASTE_CTA`) so a screen without a camera can still finish by pasting the reply code.
 4. **A camera free path always exists.** Every offline step can be finished by copying and pasting a code instead of scanning, so a denied camera is never a dead end.
 5. **Zero em dashes, zero en dashes, zero emojis.** The badge accent is a `Wifi` SVG icon inside a `#CDF22B` pill, never a symbol character.

@@ -106,20 +106,32 @@ export function peerDisplayName(peerDeviceType: DeviceType, localDeviceType: Dev
   return same ? 'Other Computer' : 'Your Computer'
 }
 
-/** Waiting state pill: what this screen is still looking for. */
-export function waitingLabel(localDeviceType: DeviceType): string {
-  if (localDeviceType === 'mobile' || localDeviceType === 'tablet') {
-    return 'Waiting for your computer or phone'
-  }
-  return 'Waiting for your phone or PC'
+/**
+ * Waiting state pill: what this screen is still looking for.
+ *
+ * The line never names a device. The reader may already be holding the phone,
+ * so "waiting for your phone" would tell them to wait for themselves. One
+ * neutral sentence serves a computer, a tablet and a phone alike, and it keeps
+ * the same length as the old lines so the pill does not change shape. The
+ * parameter stays in the signature because every caller still passes this
+ * screen's type, and the bridge draws the likely device icon beside this line
+ * rather than spelling the device out in words.
+ */
+export function waitingLabel(_localDeviceType: DeviceType): string {
+  return 'Waiting for your other screen'
 }
 
 /**
  * Placeholder name for the not yet connected slot on the bridge.
- * A desktop expects a phone next, a phone expects a computer next.
+ *
+ * This is the label under the empty peer badge, so it follows the same rule as
+ * `waitingLabel`: no fixed device. The slot already carries the likely device
+ * icon from `expectedPeerType`, and "Other Screen" is the phrasing the rest of
+ * the pairing copy uses, so a second wording would only be a second thing to
+ * learn.
  */
-export function expectedPeerLabel(localDeviceType: DeviceType): string {
-  return localDeviceType === 'desktop' ? 'Your Phone' : 'Other Screen'
+export function expectedPeerLabel(_localDeviceType: DeviceType): string {
+  return 'Other Screen'
 }
 
 /** Device class the not yet connected slot on the bridge is drawn as. */
@@ -127,15 +139,18 @@ export function expectedPeerType(localDeviceType: DeviceType): DeviceType {
   return localDeviceType === 'desktop' ? 'mobile' : 'desktop'
 }
 
-/** Hub pairing card title, phrased for whichever screen is reading it. */
+/**
+ * Hub pairing card title, phrased for whichever screen is reading it.
+ * A computer never names the phone, because the reader may be the phone.
+ */
 export function scanCardTitle(localDeviceType: DeviceType): string {
-  return localDeviceType === 'desktop' ? 'Scan with your phone' : 'Scan with your other screen'
+  return localDeviceType === 'desktop' ? 'Scan with your other device' : 'Scan with your other screen'
 }
 
 /** Hub pairing card helper line under the title. */
 export function scanCardHelper(localDeviceType: DeviceType): string {
   return localDeviceType === 'desktop'
-    ? 'Open your phone camera and point it here:'
+    ? 'Open the camera on your other device and point it here:'
     : 'Open the camera or GhostDrop on your PC or other phone:'
 }
 

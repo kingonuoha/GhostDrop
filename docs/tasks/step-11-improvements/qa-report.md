@@ -260,3 +260,20 @@ Four defects surfaced during the user acceptance walkthrough on the Vercel previ
 ### Still manual
 
 The two device run in section 10.1 remains the release gate, and it now also covers shared timer changes, a third device joining, the scoped join sync, and offline completion with a camera free host.
+
+---
+
+## 13. Pairing Card Batch (v0.16, 2026-10-26)
+
+User feedback after the 0.15 preview. Four fixes, all UI and wording, zero dependency change.
+
+| ID | Severity | Finding | Fix |
+| :--- | :--- | :--- | :--- |
+| F-19 | P1 | The ordinary pairing QR was dense and hard to scan, and it secretly contained the offline invite token even when the room was online. The host pre-generates an offline offer on mount for fast failover, and `useJoinUrl` appended it unconditionally. | `useJoinUrl` now returns a short `joinUrl` that never carries the token and a separate `offlineJoinUrl`. Only the workspace bridge and the no internet view use the long one. |
+| F-20 | P2 | Offline mode grew the pairing card by stacking a second panel under the normal QR. | One segmented toggle, `Online` and `No internet`, swaps the QR and its controls in place. The offline view shows the long link at 264px, level L, with a real quiet zone, then the scan and paste controls inline. Auto-switches to the offline view on a direct engine failover without fighting a deliberate tap back to online. |
+| F-21 | P2 | The answer QR was 232px with no quiet zone, which is marginal for a 250 to 350 character payload. | Raised to 248px with `marginSize={2}` and level L, still width bound on narrow screens. |
+| F-22 | P2 | Pairing copy assumed the reader was on a computer, so a phone was told to get a code from its phone. | Placeholder is now `The code from your other device`. Hub titles and helpers, the host step body and the bridge waiting label are all device neutral. `expectedPeerLabel` aligns to the existing `Other Screen` wording. |
+
+Gates after the batch: `type-check`, `lint` and `build` exit 0, entry `227.88 kB` raw, precache 18 entries, 742.55 KiB, `jsqr` still isolated, zero dashes and emojis in authored scope.
+
+Still manual: the 360px no internet view, including the preparing state before the token arrives, and the full two device run in section 10.1.

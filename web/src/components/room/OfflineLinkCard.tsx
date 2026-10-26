@@ -68,6 +68,12 @@ export interface OfflineLinkCardProps {
   onAcceptReplyCode?: (raw: string) => boolean | Promise<boolean>
   /** Triggered when copy succeeds or fails so the page toast announces it. */
   onCopyFeedback?: (key: RoomFeedbackKey) => void
+  /**
+   * `panel` is the standalone card used on the workspace and mobile pages.
+   * `inline` drops the badge, heading, body and outer padding, keeping only the
+   * scan button and the paste form for use directly under a pairing QR.
+   */
+  variant?: 'panel' | 'inline'
   className?: string
 }
 
@@ -87,6 +93,7 @@ export function OfflineLinkCard({
   onOpenReplyScanner,
   onAcceptReplyCode,
   onCopyFeedback,
+  variant = 'panel',
   className,
 }: OfflineLinkCardProps) {
   const [copied, setCopied] = useState(false)
@@ -182,18 +189,19 @@ export function OfflineLinkCard({
           zero candidates, 252 to 264 for the live invite and reply, up to 353
           with four candidates, and 405 at the eight candidate cap. The reply
           card in practice lands between 250 and 350 characters. At level L
-          that span is 57 to 69 modules, so 232px holds a module pitch of
-          4.07px down to 3.36px. Three pixels per module is the floor for a
-          laptop camera reading a phone screen at arm's length, which is why
-          232 stays. The svg is width bound and shrinks on very narrow screens
-          instead of overflowing.
+          that span is 57 to 69 modules, so 248px holds a module pitch of
+          4.35px down to 3.59px. Three pixels per module is the floor for a
+          laptop camera reading a phone screen at arm's length. A two module
+          quiet zone keeps the finder patterns clear of the card edge, and the
+          svg is width bound so it shrinks on very narrow screens instead of
+          overflowing.
         */}
-        <div className="relative mx-auto w-full max-w-[256px] rounded-[24px] bg-brand-surface p-3 shadow-soft">
+        <div className="relative mx-auto w-full max-w-[272px] rounded-[24px] bg-brand-surface p-3 shadow-soft">
           <QRCodeSVG
             value={token}
-            size={232}
+            size={248}
             level="L"
-            marginSize={0}
+            marginSize={2}
             bgColor="transparent"
             fgColor="currentColor"
             title="Scan this reply code with your other screen"
@@ -223,6 +231,105 @@ export function OfflineLinkCard({
     )
   }
 
+  const scanReplyButton = (
+    <NestedPillButton
+      variant="lime-on-cobalt"
+      size="md"
+      icon={ScanLine}
+      aria-label={OFFLINE_SCAN_REPLY_CTA}
+      onClick={onOpenReplyScanner}
+      className="w-full"
+    >
+      {OFFLINE_SCAN_REPLY_CTA}
+    </NestedPillButton>
+  )
+
+  const copyInviteButton = (
+    <button
+      type="button"
+      onClick={() => {
+        void handleCopy()
+      }}
+      disabled={!token}
+      aria-label={copied ? 'Offline code copied' : 'Copy the offline code'}
+      className={cn(
+        'inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-full px-4 text-sm font-semibold transition-colors duration-200 active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50',
+        copied
+          ? 'bg-brand-ink text-brand-lime'
+          : 'bg-brand-stone text-brand-ink hover:bg-brand-lime-tint',
+      )}
+    >
+      {copied ? (
+        <Check size={16} strokeWidth={2} aria-hidden="true" />
+      ) : (
+        <Copy size={16} strokeWidth={2} aria-hidden="true" />
+      )}
+      <span>{OFFLINE_COPY_INVITE_CTA}</span>
+    </button>
+  )
+
+  /*
+    Camera-free path for the second half of the handshake. A desktop with no
+    webcam can paste the reply code the other screen shows, so the pairing
+    never dead ends at the camera modal.
+  */
+  const pasteReplyForm = (
+    <form
+      onSubmit={(event) => {
+        event.preventDefault()
+        void handleAcceptReplyCode()
+      }}
+      noValidate
+      aria-busy={accepting}
+      className="mt-3.5 rounded-[20px] border border-brand-line bg-brand-stone/70 p-3"
+    >
+      <label
+        htmlFor={pasteId}
+        className="block text-[0.66rem] font-bold uppercase leading-tight tracking-[0.08em] text-brand-ink-muted"
+      >
+        {OFFLINE_PASTE_LABEL}
+      </label>
+
+      <input
+        id={pasteId}
+        name="offlineReplyCode"
+        type="text"
+        value={pasteValue}
+        onChange={(event) => setPasteValue(event.target.value)}
+        placeholder={OFFLINE_PASTE_PLACEHOLDER}
+        autoComplete="off"
+        autoCorrect="off"
+        autoCapitalize="off"
+        spellCheck={false}
+        inputMode="text"
+        className="mt-2 min-h-[44px] w-full min-w-0 max-w-full rounded-full border border-brand-line bg-brand-surface px-4 text-base font-semibold text-brand-ink outline-none transition-shadow placeholder:text-brand-ink-muted focus-visible:ring-2 focus-visible:ring-brand-cobalt"
+      />
+
+      <NestedPillButton
+        type="submit"
+        variant="ink"
+        size="sm"
+        icon={ClipboardPaste}
+        aria-label={OFFLINE_PASTE_CTA}
+        disabled={!onAcceptReplyCode || pasteValue.trim().length === 0 || accepting}
+        className="mt-2 w-full"
+      >
+        {OFFLINE_PASTE_CTA}
+      </NestedPillButton>
+    </form>
+  )
+
+  if (variant === 'inline') {
+    // Sits directly under the pairing QR, so it adds no card chrome and never
+    // repeats the heading or badge of the card above it.
+    return (
+      <div className={cn('relative w-full text-left text-brand-ink', className)}>
+        <div className="flex flex-col gap-2">{scanReplyButton}</div>
+        {pasteReplyForm}
+      </div>
+    )
+  }
+
   return (
     <section
       aria-labelledby="offline-host-title"
@@ -242,88 +349,11 @@ export function OfflineLinkCard({
       <p className="mt-1.5 text-sm font-semibold text-brand-ink/75">{OFFLINE_HOST_STEP_BODY}</p>
 
       <div className="mt-3.5 flex flex-col gap-2">
-        <NestedPillButton
-          variant="lime-on-cobalt"
-          size="md"
-          icon={ScanLine}
-          aria-label={OFFLINE_SCAN_REPLY_CTA}
-          onClick={onOpenReplyScanner}
-          className="w-full"
-        >
-          {OFFLINE_SCAN_REPLY_CTA}
-        </NestedPillButton>
-
-        <button
-          type="button"
-          onClick={() => {
-            void handleCopy()
-          }}
-          disabled={!token}
-          aria-label={copied ? 'Offline code copied' : 'Copy the offline code'}
-          className={cn(
-            'inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-full px-4 text-sm font-semibold transition-colors duration-200 active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50',
-            copied
-              ? 'bg-brand-ink text-brand-lime'
-              : 'bg-brand-stone text-brand-ink hover:bg-brand-lime-tint',
-          )}
-        >
-          {copied ? (
-            <Check size={16} strokeWidth={2} aria-hidden="true" />
-          ) : (
-            <Copy size={16} strokeWidth={2} aria-hidden="true" />
-          )}
-          <span>{OFFLINE_COPY_INVITE_CTA}</span>
-        </button>
+        {scanReplyButton}
+        {copyInviteButton}
       </div>
 
-      {/*
-        Camera-free path for the second half of the handshake. A desktop with no
-        webcam can paste the reply code the other screen shows, so the pairing
-        never dead ends at the camera modal.
-      */}
-      <form
-        onSubmit={(event) => {
-          event.preventDefault()
-          void handleAcceptReplyCode()
-        }}
-        noValidate
-        aria-busy={accepting}
-        className="mt-3.5 rounded-[20px] border border-brand-line bg-brand-stone/70 p-3"
-      >
-        <label
-          htmlFor={pasteId}
-          className="block text-[0.66rem] font-bold uppercase leading-tight tracking-[0.08em] text-brand-ink-muted"
-        >
-          {OFFLINE_PASTE_LABEL}
-        </label>
-
-        <input
-          id={pasteId}
-          name="offlineReplyCode"
-          type="text"
-          value={pasteValue}
-          onChange={(event) => setPasteValue(event.target.value)}
-          placeholder={OFFLINE_PASTE_PLACEHOLDER}
-          autoComplete="off"
-          autoCorrect="off"
-          autoCapitalize="off"
-          spellCheck={false}
-          inputMode="text"
-          className="mt-2 min-h-[44px] w-full min-w-0 max-w-full rounded-full border border-brand-line bg-brand-surface px-4 text-base font-semibold text-brand-ink outline-none transition-shadow placeholder:text-brand-ink-muted focus-visible:ring-2 focus-visible:ring-brand-cobalt"
-        />
-
-        <NestedPillButton
-          type="submit"
-          variant="ink"
-          size="sm"
-          icon={ClipboardPaste}
-          aria-label={OFFLINE_PASTE_CTA}
-          disabled={!onAcceptReplyCode || pasteValue.trim().length === 0 || accepting}
-          className="mt-2 w-full"
-        >
-          {OFFLINE_PASTE_CTA}
-        </NestedPillButton>
-      </form>
+      {pasteReplyForm}
 
       <p aria-live="polite" className="sr-only">
         {copied ? 'Offline code copied. Send it to your other screen.' : ''}

@@ -134,3 +134,11 @@ QA report: `docs/tasks/step-11-improvements/qa-report.md` (PASS, 0 P0, 0 P1).
 **Device stamp:** `ASUS-LAPTOP-DNLA241D` - fix batch - 2026-10-26
 
 Four user acceptance defects fixed after the 0.14 signoff: progress wave alignment and drift, shared room auto-delete preset via the new `TTL_SET` packet, manual burn notice no longer gated on the peer registry, and an offline paste fallback with clearer two-scan copy. Details and evidence are in `qa-report.md` section 12. Version is `0.15`, zero new dependencies, all gates green.
+
+---
+
+## 9. Pairing Card Batch (v0.16)
+
+**Device stamp:** `ASUS-LAPTOP-DNLA241D` - pairing card batch - 2026-10-26
+
+Four pairing card fixes from the 0.15 preview. The everyday QR no longer carries the long offline token, so it scans easily again. Offline is now an `Online` / `No internet` toggle that swaps the QR in place instead of growing the card, the answer QR is larger with a real quiet zone, and all pairing copy is device neutral. Auto-switch lands on the offline view when the direct engine takes over. Evidence is in `qa-report.md` section 13. Version is `0.16`, zero new dependencies, all gates green. The one scan research and phased sound plan live in `plans/offline-one-scan-pairing-plan.md`.

@@ -348,6 +348,23 @@ export const SOON_WELCOME = 'Welcome in. GhostDrop is live.'
 export const SOON_FOOTNOTE = 'No accounts. No uploads. Nothing left behind.'
 
 /*
+  Hub pairing card.
+  Source: docs/02-brand-persona-and-copy.md section 2, "Home and Pairing Screen".
+
+  The card offers two ways to connect and one shared QR title, so the reader can
+  pick a mode without meeting a network term. No line here names a fixed device:
+  the reader might already be holding the phone, so the partner is always "your
+  other device".
+*/
+export const PAIRING_MODE_GROUP_LABEL = 'Connection type'
+export const PAIRING_MODE_ONLINE_LABEL = 'Online'
+export const PAIRING_MODE_OFFLINE_LABEL = 'No internet'
+export const PAIRING_OFFLINE_PREPARING = 'Getting your no internet code ready...'
+export const PAIRING_QR_TITLE_ONLINE = 'Scan this code with your other device'
+export const PAIRING_QR_TITLE_OFFLINE =
+  'Scan this code with your other device. No internet needed.'
+
+/*
   Offline direct linking.
   Source: docs/02-brand-persona-and-copy.md section 2.2, decisions.md D-016 item 2.
 
@@ -360,11 +377,11 @@ export const SOON_FOOTNOTE = 'No accounts. No uploads. Nothing left behind.'
 export const OFFLINE_BADGE_LABEL = 'Offline Wi-Fi / Hotspot Mode'
 export const OFFLINE_HOST_STEP_TITLE = 'Finish linking without internet'
 export const OFFLINE_HOST_STEP_BODY =
-  'Two quick scans. Your phone scans this screen first, then point this camera at the code on your phone.'
+  'Two quick scans. Your other device scans this screen first, then point this camera at the code it shows.'
 export const OFFLINE_SCAN_REPLY_CTA = 'Scan or Paste Reply'
 export const OFFLINE_COPY_INVITE_CTA = 'Copy Offline Code'
 export const OFFLINE_PASTE_LABEL = 'No camera? Paste the code here'
-export const OFFLINE_PASTE_PLACEHOLDER = 'The code from your phone'
+export const OFFLINE_PASTE_PLACEHOLDER = 'The code from your other device'
 export const OFFLINE_PASTE_CTA = 'Use this code'
 export const OFFLINE_GUEST_REPLY_TITLE = 'Show this reply to your other screen'
 export const OFFLINE_GUEST_REPLY_BODY =
