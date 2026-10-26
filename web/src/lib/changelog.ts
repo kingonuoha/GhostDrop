@@ -32,10 +32,41 @@ export const CHANGELOG_SEEN_KEY = 'ghostdrop.last_seen_version'
 
 export const CHANGELOG_RELEASES: readonly ChangelogRelease[] = [
   {
+    version: '0.15',
+    dateTime: '26 Oct 2026, 2:30 PM',
+    headline: 'A tidier progress line, one shared timer, and a Remove that always lands.',
+    isCurrent: true,
+    items: [
+      {
+        category: 'fix',
+        title: 'A tidier progress line',
+        description:
+          'The moving line on a file now sits exactly on top of the coloured fill, so the progress looks right.',
+      },
+      {
+        category: 'fix',
+        title: 'One timer for both screens',
+        description:
+          'Both screens now agree on when things tidy up, even if one of them joins later.',
+      },
+      {
+        category: 'feature',
+        title: 'Easier pairing without internet',
+        description:
+          'Pairing without internet is easier to follow, and a screen without a camera can paste a code instead.',
+      },
+      {
+        category: 'fix',
+        title: 'Remove works on both screens',
+        description:
+          'Remove now clears the item on both screens every time.',
+      },
+    ],
+  },
+  {
     version: '0.14',
     dateTime: '24 Oct 2026, 10:15 AM',
     headline: 'Watch a photo arrive, clear anything in one tap, and keep the timer close by.',
-    isCurrent: true,
     items: [
       {
         category: 'feature',

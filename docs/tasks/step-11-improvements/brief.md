@@ -126,3 +126,11 @@ F-02 launch titles, F-03 inbound idle watchdog (`IDLE_TIMEOUT_MS = 30000`), F-04
 4. Cold offline PWA boot with airplane mode.
 
 QA report: `docs/tasks/step-11-improvements/qa-report.md` (PASS, 0 P0, 0 P1).
+
+---
+
+## 8. Post-Signoff Fix Batch (v0.15)
+
+**Device stamp:** `ASUS-LAPTOP-DNLA241D` - fix batch - 2026-10-26
+
+Four user acceptance defects fixed after the 0.14 signoff: progress wave alignment and drift, shared room auto-delete preset via the new `TTL_SET` packet, manual burn notice no longer gated on the peer registry, and an offline paste fallback with clearer two-scan copy. Details and evidence are in `qa-report.md` section 12. Version is `0.15`, zero new dependencies, all gates green.

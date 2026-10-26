@@ -246,3 +246,17 @@
   5. Toast auto-close is exactly `TOAST_AUTO_DISMISS_MS = 5000`, driven by one remaining-time value that controls both the dismissal and the drain bar, with independent pointer and focus pause flags. Inline feedback cards never opt in.
   6. The hub and the in-room QR drawer share one `useJoinUrl` hook so the pairing link and the LAN choice cannot drift.
 - **Rationale:** The deferred items were still real user problems at `0.13`. Rebasing against the shipped code, recording the corrected integration points, and enforcing a watchdog on the new receiving path keeps the build order honest without reintroducing stale instructions.
+
+---
+
+## D-021: Shared Room Auto-Delete Rule, Offline Two-Scan Clarity, and Reliable Burn Notice
+- **Date:** 2026-10-26
+- **Status:** LOCKED
+- **Scope:** `web/src/types/protocol.ts`, `web/src/hooks/useGhostRoom.ts`, `docs/06-protocol-and-tech-spec.md`, `web/src/components/room/OfflineLinkCard.tsx`, `web/src/lib/copyDeck.ts`
+- **Decision:**
+  1. The auto-delete preset is a shared room rule. Add a `TTL_SET` packet carrying `ttlPreset`. A user change retimes local items and broadcasts once; a received preset applies locally with no re-broadcast. The host sends its preset on every peer join, so a late guest adopts the room rule.
+  2. The preset change must never touch the signaling engine. The user reported the other screen blinking a connection error while a preset changed, so the change is a state and packet operation only, with no reconnect path.
+  3. Manual burn and burn-on-copy notify peers whenever an engine exists, not only when the peer registry is non-empty. A momentarily empty registry must not silently drop the `ITEM_NUKE`, because the local removal already happened and the other screen would keep a ghost item.
+  4. Offline direct pairing stays a two exchange handshake, because each screen must learn the other network details and no server exists to relay them. The copy must say two scans plainly, and the host card must offer a paste fallback for a computer without a camera.
+  5. The host paste fallback accepts the same compact token as the QR scanner and raises the existing playful invalid-code notice on failure, never a raw error.
+- **Rationale:** Two devices that disagree about when files vanish is a real data-lifetime bug, not a preference. The remaining fixes remove avoidable dead ends without changing the locked wire chunking, TTL per item semantics, or the zero cost serverless architecture.

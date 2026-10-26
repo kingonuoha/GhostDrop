@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useId, useRef, useState } from 'react'
 import { QRCodeSVG } from 'qrcode.react'
-import { Check, Copy, ScanLine, Wifi } from 'lucide-react'
+import { Check, ClipboardPaste, Copy, ScanLine, Wifi } from 'lucide-react'
 import { cn } from '../../lib/cn'
 import type { RoomFeedbackKey } from '../../lib/copyDeck'
 import {
@@ -11,6 +11,9 @@ import {
   OFFLINE_GUEST_REPLY_TITLE,
   OFFLINE_HOST_STEP_BODY,
   OFFLINE_HOST_STEP_TITLE,
+  OFFLINE_PASTE_CTA,
+  OFFLINE_PASTE_LABEL,
+  OFFLINE_PASTE_PLACEHOLDER,
   OFFLINE_SCAN_REPLY_CTA,
 } from '../../lib/copyDeck'
 import { NestedPillButton } from '../brand/NestedPillButton'
@@ -58,6 +61,11 @@ export interface OfflineLinkCardProps {
   token: string | null
   /** Triggered when the Host clicks 'Scan or Paste Reply' (opens QrScannerModal in reply mode). */
   onOpenReplyScanner?: () => void
+  /**
+   * Triggered when the Host submits a pasted reply code. Resolves true when the
+   * handshake accepted the code. This is the path for a screen with no camera.
+   */
+  onAcceptReplyCode?: (raw: string) => boolean | Promise<boolean>
   /** Triggered when copy succeeds or fails so the page toast announces it. */
   onCopyFeedback?: (key: RoomFeedbackKey) => void
   className?: string
@@ -77,11 +85,15 @@ export function OfflineLinkCard({
   mode,
   token,
   onOpenReplyScanner,
+  onAcceptReplyCode,
   onCopyFeedback,
   className,
 }: OfflineLinkCardProps) {
   const [copied, setCopied] = useState(false)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const [pasteValue, setPasteValue] = useState('')
+  const [accepting, setAccepting] = useState(false)
+  const pasteId = useId()
 
   useEffect(() => {
     return () => {
@@ -119,6 +131,26 @@ export function OfflineLinkCard({
     timerRef.current = setTimeout(() => setCopied(false), COPIED_HOLD_MS)
     onCopyFeedback?.('SUCCESS_COPIED')
   }, [token, onCopyFeedback])
+
+  /**
+   * Handles the camera-free path for the Host. A rejected code keeps the typed
+   * text so a mistyped character is a quick fix, and the hook already raises
+   * the playful invalid code toast, so this never prints a raw error string.
+   */
+  const handleAcceptReplyCode = useCallback(async () => {
+    const raw = pasteValue.trim()
+    if (!raw || accepting || !onAcceptReplyCode) return
+
+    setAccepting(true)
+    try {
+      const accepted = await onAcceptReplyCode(raw)
+      if (accepted) setPasteValue('')
+    } catch {
+      // The toast owns the message, and the field keeps the text for a retry.
+    } finally {
+      setAccepting(false)
+    }
+  }, [accepting, onAcceptReplyCode, pasteValue])
 
   if (mode === 'guest-reply') {
     // Nothing to show before the reply token exists, and the page only mounts
@@ -243,6 +275,55 @@ export function OfflineLinkCard({
           <span>{OFFLINE_COPY_INVITE_CTA}</span>
         </button>
       </div>
+
+      {/*
+        Camera-free path for the second half of the handshake. A desktop with no
+        webcam can paste the reply code the other screen shows, so the pairing
+        never dead ends at the camera modal.
+      */}
+      <form
+        onSubmit={(event) => {
+          event.preventDefault()
+          void handleAcceptReplyCode()
+        }}
+        noValidate
+        aria-busy={accepting}
+        className="mt-3.5 rounded-[20px] border border-brand-line bg-brand-stone/70 p-3"
+      >
+        <label
+          htmlFor={pasteId}
+          className="block text-[0.66rem] font-bold uppercase leading-tight tracking-[0.08em] text-brand-ink-muted"
+        >
+          {OFFLINE_PASTE_LABEL}
+        </label>
+
+        <input
+          id={pasteId}
+          name="offlineReplyCode"
+          type="text"
+          value={pasteValue}
+          onChange={(event) => setPasteValue(event.target.value)}
+          placeholder={OFFLINE_PASTE_PLACEHOLDER}
+          autoComplete="off"
+          autoCorrect="off"
+          autoCapitalize="off"
+          spellCheck={false}
+          inputMode="text"
+          className="mt-2 min-h-[44px] w-full min-w-0 max-w-full rounded-full border border-brand-line bg-brand-surface px-4 text-base font-semibold text-brand-ink outline-none transition-shadow placeholder:text-brand-ink-muted focus-visible:ring-2 focus-visible:ring-brand-cobalt"
+        />
+
+        <NestedPillButton
+          type="submit"
+          variant="ink"
+          size="sm"
+          icon={ClipboardPaste}
+          aria-label={OFFLINE_PASTE_CTA}
+          disabled={!onAcceptReplyCode || pasteValue.trim().length === 0 || accepting}
+          className="mt-2 w-full"
+        >
+          {OFFLINE_PASTE_CTA}
+        </NestedPillButton>
+      </form>
 
       <p aria-live="polite" className="sr-only">
         {copied ? 'Offline code copied. Send it to your other screen.' : ''}

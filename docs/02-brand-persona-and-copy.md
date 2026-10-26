@@ -70,18 +70,21 @@ When the two screens share a Wi-Fi network or a phone hotspot but no internet, l
 | :--- | :--- |
 | `OFFLINE_BADGE_LABEL` | `Offline Wi-Fi / Hotspot Mode` |
 | `OFFLINE_HOST_STEP_TITLE` | `Finish linking without internet` |
-| `OFFLINE_HOST_STEP_BODY` | `1. Scan this QR on your other screen. 2. Tap Scan Reply below and point at your other screen.` |
+| `OFFLINE_HOST_STEP_BODY` | `Two quick scans. Your phone scans this screen first, then point this camera at the code on your phone.` |
 | `OFFLINE_SCAN_REPLY_CTA` | `Scan or Paste Reply` |
 | `OFFLINE_COPY_INVITE_CTA` | `Copy Offline Code` |
+| `OFFLINE_PASTE_LABEL` | `No camera? Paste the code here` |
+| `OFFLINE_PASTE_PLACEHOLDER` | `The code from your phone` |
+| `OFFLINE_PASTE_CTA` | `Use this code` |
 | `OFFLINE_GUEST_REPLY_TITLE` | `Show this reply to your other screen` |
-| `OFFLINE_GUEST_REPLY_BODY` | `On your other screen, tap Scan or Paste Reply and point its camera right here.` |
-| `OFFLINE_COPY_REPLY_CTA` | `Copy Reply Code` |
+| `OFFLINE_GUEST_REPLY_BODY` | `On your other screen, point its camera at this code. No camera on that screen? Copy this code and paste it there.` |
+| `OFFLINE_COPY_REPLY_CTA` | `Copy code instead` |
 | `OFFLINE_SWITCH_CTA` | `No internet? Link directly on Wi-Fi or Hotspot` |
 
 Offline linking rules:
-1. **Two screens, two codes.** The Host shows the invite card, the Guest shows the reply card, and the Host reads the reply. No screen ever shows more than one code at a time.
+1. **Two screens, two codes.** The Host shows the invite card, the Guest shows the reply card, and the Host reads the reply. No screen ever shows more than one code at a time. The order is fixed and stated on screen: the phone reads the Host code first, then the Host reads the reply. Saying so up front stops the second scan reading as an unexpected extra chore.
 2. **Plain everyday words only.** No network or connection terms reach the screen. The code is called a code, the camera is called a camera, and the other device is always `your other screen`.
-3. **One obvious button per card.** The Guest card carries `Copy Reply Code` as its only action, because the other screen does the reading. The Host panel carries `Scan or Paste Reply` first and `Copy Offline Code` second, so a locked camera still has a way out.
+3. **One obvious button per card.** The Guest card carries `Copy code instead` as its only action, because the other screen does the reading. The Host panel carries `Scan or Paste Reply` first and `Copy Offline Code` second, plus a paste field (`OFFLINE_PASTE_LABEL`, `OFFLINE_PASTE_PLACEHOLDER`, `OFFLINE_PASTE_CTA`) so a screen without a camera can still finish by pasting the reply code.
 4. **A camera free path always exists.** Every offline step can be finished by copying and pasting a code instead of scanning, so a denied camera is never a dead end.
 5. **Zero em dashes, zero en dashes, zero emojis.** The badge accent is a `Wifi` SVG icon inside a `#CDF22B` pill, never a symbol character.
 
@@ -103,7 +106,7 @@ Offline linking rules:
 | `SUCCESS_DROP_AND_NUKE` | `Sparkles` | `Sent and cleaned up!` | `{fileName} is safe on your computer and removed here.` | `Done` |
 | `SUCCESS_PWA_INSTALLED` | `Download` | `Added to your phone!` | `Next time, open GhostDrop right from your home screen.` | `Great!` |
 | `INFO_OFFLINE_READY` | `Wifi` | `Offline link ready!` | `No internet needed. Scan the QR code, then scan the reply QR from your other screen.` | `Got It` |
-| `INFO_OFFLINE_REPLY_READY` | `QrCode` | `Almost linked!` | `Show this reply QR code to your other screen (or copy the reply code) to finish linking.` | `Copy Reply Code` |
+| `INFO_OFFLINE_REPLY_READY` | `QrCode` | `Almost linked!` | `Show this reply QR code to your other screen (or copy the reply code) to finish linking.` | `Copy code instead` |
 
 ---
 

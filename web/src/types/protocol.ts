@@ -79,6 +79,17 @@ export interface ItemNukePacket {
   reason: NukeReason
 }
 
+/**
+ * Shared room rule. The auto-delete preset is a property of the room, not of
+ * one screen, so a change on any device is announced to the rest of the room.
+ * The host relays it like every other control packet, and a receiver applies
+ * it without echoing, so the rule converges in one hop.
+ */
+export interface TtlSetPacket {
+  type: 'TTL_SET'
+  ttlPreset: TtlPreset
+}
+
 export type WirePacket =
   | HelloPeerPacket
   | TextPacket
@@ -87,6 +98,7 @@ export type WirePacket =
   | FileEndPacket
   | FileAckPacket
   | ItemNukePacket
+  | TtlSetPacket
 
 export type WirePacketType = WirePacket['type']
 
@@ -256,6 +268,8 @@ export function isWirePacket(value: unknown): value is WirePacket {
       return isNonEmptyString(value.id) && isAckStatus(value.status)
     case 'ITEM_NUKE':
       return isNonEmptyString(value.id) && isNukeReason(value.reason)
+    case 'TTL_SET':
+      return isTtlPreset(value.ttlPreset)
     default:
       return false
   }

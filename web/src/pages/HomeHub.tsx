@@ -115,6 +115,7 @@ export function HomeHub() {
           isOfflineDirect={room.isOfflineDirect}
           offlineInviteToken={room.offlineInviteToken}
           onOpenReplyScanner={() => openScanner('reply')}
+          onAcceptReplyCode={(raw) => room.acceptOfflineToken(raw)}
           onActivateOffline={() => {
             void room.activateOfflineDirect()
           }}

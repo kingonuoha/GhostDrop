@@ -657,26 +657,38 @@ export function useGhostRoom(options: UseGhostRoomOptions = {}): GhostRoom {
    * One preset change writes the ref synchronously, so a drop sent in the same
    * tick already uses the new rule, then retimes every active item so a note or
    * file sent before the change adopts the new cleanup rule immediately.
+   *
+   * The preset is a shared room rule, so the change is announced to the room by
+   * default. An inbound TTL_SET passes `broadcast: false` and is never echoed.
    * Source: docs/tasks/step-10-v07-offline-hotspot-camera-ttl-and-ux/web-task.md item 5.4.
    */
   const applyTtlPreset = useCallback(
-    (nextPreset: TtlPreset) => {
+    (nextPreset: TtlPreset, options?: { broadcast?: boolean }) => {
       ttlPresetRef.current = nextPreset
       setTtlPresetState(nextPreset)
 
-      if (store.isDisposed()) return
+      if (!store.isDisposed()) {
+        const burnOnCopy = nextPreset === 'BURN_ON_COPY'
+        const ttlMs = ttlMsForPreset(nextPreset)
+        const now = store.now()
 
-      const burnOnCopy = nextPreset === 'BURN_ON_COPY'
-      const ttlMs = ttlMsForPreset(nextPreset)
-      const now = store.now()
+        for (const item of store.getSnapshot()) {
+          if (item.status === 'expired' || item.status === 'nuked' || item.status === 'error') continue
+          const deleteAt = burnOnCopy || ttlMs === null ? null : now + ttlMs
+          store.updateItem(item.id, { burnOnCopy, deleteAt })
+        }
+      }
 
-      for (const item of store.getSnapshot()) {
-        if (item.status === 'expired' || item.status === 'nuked' || item.status === 'error') continue
-        const deleteAt = burnOnCopy || ttlMs === null ? null : now + ttlMs
-        store.updateItem(item.id, { burnOnCopy, deleteAt })
+      if (options?.broadcast === false) return
+
+      // A closed or empty channel never blocks a local preset change.
+      try {
+        activeEngine()?.send({ type: 'TTL_SET', ttlPreset: nextPreset })
+      } catch {
+        // The local rule is already applied, so a lost notice changes nothing.
       }
     },
-    [store],
+    [activeEngine, store],
   )
 
   useEffect(() => {
@@ -862,9 +874,15 @@ export function useGhostRoom(options: UseGhostRoomOptions = {}): GhostRoom {
         }
         case 'HELLO_PEER':
           return
+        case 'TTL_SET': {
+          // The room rule arrived from another screen, so it is adopted locally
+          // and never echoed back. No toast: the picker itself is the feedback.
+          applyTtlPreset(packet.ttlPreset, { broadcast: false })
+          return
+        }
       }
     },
-    [receiver, store],
+    [applyTtlPreset, receiver, store],
   )
 
   const handleInboundBinary = useCallback(
@@ -904,6 +922,19 @@ export function useGhostRoom(options: UseGhostRoomOptions = {}): GhostRoom {
           applyOfflineReply(engine.guestReplyToken)
           setFeedback(buildFeedback('SUCCESS_PEER_JOINED'))
           trackPeerConnected(peer?.deviceType ?? localDeviceType)
+          // A late guest adopts the host rule the moment it joins. Only the
+          // host announces, and only to the joining peer, so a third device
+          // appearing never retimes an older guest's countdowns.
+          if (session.role === 'host' && peer?.peerId) {
+            try {
+              engine.send(
+                { type: 'TTL_SET', ttlPreset: ttlPresetRef.current },
+                { to: peer.peerId },
+              )
+            } catch {
+              // The link is already up, a lost rule sync is not a failure.
+            }
+          }
         }),
       )
 
@@ -1319,6 +1350,19 @@ export function useGhostRoom(options: UseGhostRoomOptions = {}): GhostRoom {
       setStatus('connected')
       setFeedback(buildFeedback('SUCCESS_PEER_JOINED'))
       trackPeerConnected(peer?.deviceType ?? localDeviceType)
+      // A guest that joins late adopts the host rule immediately. Only the
+      // host announces, and only to the joining peer, so a third device
+      // appearing never retimes an older guest's countdowns.
+      if (role === 'host' && peer?.peerId) {
+        try {
+          engine.send(
+            { type: 'TTL_SET', ttlPreset: ttlPresetRef.current },
+            { to: peer.peerId },
+          )
+        } catch {
+          // The peer is already linked, a lost rule sync is not a failure.
+        }
+      }
     })
 
     const unsubscribeLeave = engine.on('peer:leave', () => {
@@ -1726,7 +1770,7 @@ export function useGhostRoom(options: UseGhostRoomOptions = {}): GhostRoom {
       namesRef.current.delete(id)
 
       const engine = activeEngine()
-      if (engine && engine.peers.length > 0) {
+      if (engine) {
         try {
           engine.send({ type: 'ITEM_NUKE', id, reason: 'BURN_ON_COPY' })
         } catch {
@@ -1857,8 +1901,12 @@ export function useGhostRoom(options: UseGhostRoomOptions = {}): GhostRoom {
       namesRef.current.delete(id)
 
       const engine = activeEngine()
-      if (engine && engine.peers.length > 0) {
-        engine.send({ type: 'ITEM_NUKE', id, reason: 'MANUAL_BURN' })
+      if (engine) {
+        try {
+          engine.send({ type: 'ITEM_NUKE', id, reason: 'MANUAL_BURN' })
+        } catch {
+          // The local copy is already gone, a lost notice never blocks the burn.
+        }
       }
       return true
     },

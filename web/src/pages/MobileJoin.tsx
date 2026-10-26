@@ -203,6 +203,7 @@ function JoinRoom({ code }: JoinRoomProps) {
           mode="host-waiting"
           token={room.offlineInviteToken}
           onOpenReplyScanner={() => openScanner('reply')}
+          onAcceptReplyCode={(raw) => room.acceptOfflineToken(raw)}
           onCopyFeedback={room.announceFeedback}
         />
       ) : null}

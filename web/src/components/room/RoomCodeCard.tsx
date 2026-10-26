@@ -49,6 +49,8 @@ type RoomCodeCardProps = {
   offlineInviteToken?: string | null
   /** Opens the camera modal ready to read the guest reply code. */
   onOpenReplyScanner?: () => void
+  /** Accepts a pasted reply code, for a screen with no camera. */
+  onAcceptReplyCode?: (raw: string) => boolean | Promise<boolean>
   /** Switches this room to the direct link without waiting for a timeout. */
   onActivateOffline?: () => void
 }
@@ -69,6 +71,7 @@ export function RoomCodeCard({
   isOfflineDirect = false,
   offlineInviteToken = null,
   onOpenReplyScanner,
+  onAcceptReplyCode,
   onActivateOffline,
 }: RoomCodeCardProps) {
   const [copied, setCopied] = useState(false)
@@ -217,6 +220,7 @@ export function RoomCodeCard({
           mode="host-waiting"
           token={offlineInviteToken}
           onOpenReplyScanner={onOpenReplyScanner}
+          onAcceptReplyCode={onAcceptReplyCode}
           onCopyFeedback={onCopyFeedback}
           className="relative w-full"
         />

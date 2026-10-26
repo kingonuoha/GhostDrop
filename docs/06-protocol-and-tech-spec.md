@@ -79,8 +79,19 @@ export type WirePacket =
       type: 'ITEM_NUKE';
       id: string;
       reason: 'TTL_EXPIRED' | 'MANUAL_BURN' | 'BURN_ON_COPY';
+    }
+  | {
+      type: 'TTL_SET';
+      ttlPreset: 'BURN_ON_COPY' | '15m' | '50m' | '24h' | 'TAB_CLOSE';
     };
 ```
+
+### Shared Auto-Delete Rule (`TTL_SET`)
+- The auto-delete preset is one room rule, not a per-screen setting.
+- A user change applies locally and broadcast, retimes every live item on the sender first, then sends one `TTL_SET`.
+- A receiving screen applies the preset locally, retimes its own live items, and never re-broadcasts, so the packet cannot echo.
+- The room host sends its current preset on every `peer:join`, so a late guest adopts the room rule immediately.
+- The host already relays every non `HELLO_PEER` control packet, so a third device receives the same rule without extra code.
 
 ### Backpressure Streaming Rule (Non-Negotiable)
 - Before sending each `16,384-byte` `ArrayBuffer` slice, check `dataChannel.bufferedAmount`.

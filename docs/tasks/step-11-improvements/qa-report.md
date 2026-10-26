@@ -231,3 +231,32 @@ Conditions attached to this PASS:
 3. F-10 is informational and gates nothing.
 
 **Signed:** `@ghostdrop-qa` (audit) and `@ghostdrop-orchestrator` (remediation verification), 2026-10-24.
+
+---
+
+## 12. Post-Signoff Fix Batch (v0.15, 2026-10-26)
+
+**Device stamp:** `ASUS-LAPTOP-DNLA241D` - fix batch - 2026-10-26
+
+Four defects surfaced during the user acceptance walkthrough on the Vercel preview. All four were fixed, gated and re-verified. Version moved from `0.14` to `0.15` with zero new dependencies.
+
+| ID | Severity | Finding | Fix | Proof |
+| :--- | :--- | :--- | :--- | :--- |
+| F-15 | P1 | The receiving progress wave did not line up with the lime fill and never moved. The old path revealed with a 1 unit dash pattern, so the visible wave started near the end of the path. | Replaced the dash reveal with a `clipPath` rect whose width is the same clamped value as the fill, and added a seamless 30 unit drift under a fixed clip window. | Fill right edge is `clamped * W`; clip rect right edge is `(W/300) * 300 * clamped`, identical at 0, 6, 11, 50 and 100 percent. Reduced motion parks the drift. |
+| F-16 | P1 | Auto-delete preset was per screen, so the phone never followed a desktop change. | Added the `TTL_SET` packet. A user change retimes locally and broadcasts once; a received preset applies with no echo. The host sends it to each joining peer only, so a third device does not retime older guests. | `types/protocol.ts` packet and guard, `useGhostRoom.ts` broadcast, apply and both join sync sites, `docs/06-protocol-and-tech-spec.md` shared rule, decision D-021. |
+| F-17 | P2 | Manual Remove removed locally but the peer notice could be skipped when the peer registry was momentarily empty. | Send `ITEM_NUKE` whenever an engine exists, in try/catch, and let `send` no-op with no open target. Same for `BURN_ON_COPY`. | `useGhostRoom.ts` burn paths, no `peers.length` gate left. |
+| F-18 | P2 | Offline pairing read as an unexplained second chore, and a computer without a camera could not accept the reply code. | Copy now states two scans up front and names the camera free path. The host card gained a paste field wired to `acceptOfflineToken`, with the playful invalid code notice on failure. | `copyDeck.ts` strings, `OfflineLinkCard.tsx` paste form, `RoomCodeCard.tsx` and both pages pass the prop. |
+
+### Gates after the fix batch
+
+| Gate | Result |
+| :--- | :--- |
+| `npm run type-check` | exit 0 |
+| `npm run lint` | exit 0 |
+| `npm run build` | exit 0, entry `225.97 kB` raw, precache 18 entries, `jsqr` still isolated |
+| Em dash, en dash, emoji | 0 in authored scope |
+| Protocol | `TTL_SET` added, every existing packet shape and the 16,384 byte budget unchanged |
+
+### Still manual
+
+The two device run in section 10.1 remains the release gate, and it now also covers shared timer changes, a third device joining, the scoped join sync, and offline completion with a camera free host.

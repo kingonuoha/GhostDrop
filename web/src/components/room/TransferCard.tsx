@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import {
   Check,
   ClipboardCheck,
@@ -40,9 +40,28 @@ type TransferCardProps = {
   onBurn: (id: string) => void
 }
 
-/** Data bound squiggle: stroke-dashoffset tracks the transfer, no CSS animation. */
+/**
+ * Transfer progress: a lime fill and a cobalt wave that ride the very same
+ * progress edge.
+ *
+ * The wave is not revealed with stroke dashes any more, because a dash offset
+ * reveals from the path start, not from the left edge, so the wave never landed
+ * on the fill. Instead one clipPath window does the revealing: its rect is
+ * `300 * clamped` wide, the same clamped number that sets the fill width, so the
+ * clip right edge and the fill right edge are the same point at every value.
+ *
+ * The wave itself is a 30 unit period extended one whole period past both ends
+ * and drifting sideways by exactly one period, so the loop has no seam. This is
+ * a progress accent, not the brand squiggle draw: see docs/05-motion-spec.md.
+ */
+const WAVE_D =
+  'M -30 8 Q -15 3, 0 8 T 30 8 T 60 8 T 90 8 T 120 8 T 150 8 T 180 8 T 210 8 T 240 8 T 270 8 T 300 8 T 330 8'
+
 function ProgressSquiggle({ value, label }: { value: number; label: string }) {
   const clamped = Math.min(1, Math.max(0, value))
+  // useId can emit characters such as `:` that break `url(#...)`, so the id is
+  // narrowed to letters, digits, hyphen and underscore and stays unique per card.
+  const clipId = `progress-wave-${useId().replace(/[^a-zA-Z0-9_-]/g, '')}`
 
   return (
     <div
@@ -53,6 +72,7 @@ function ProgressSquiggle({ value, label }: { value: number; label: string }) {
       aria-valuenow={Math.round(clamped * 100)}
       className="relative h-4 w-full overflow-hidden rounded-full bg-brand-surface"
     >
+      {/* Lime fill. Its right edge is the progress edge. */}
       <span
         aria-hidden="true"
         className="absolute inset-y-0 left-0 rounded-full bg-brand-lime/40"
@@ -66,15 +86,23 @@ function ProgressSquiggle({ value, label }: { value: number; label: string }) {
         focusable="false"
         className="absolute inset-0 h-full w-full text-brand-cobalt"
       >
-        <path
-          d="M 0 8 Q 15 0, 30 8 T 60 8 T 90 8 T 120 8 T 150 8 T 180 8 T 210 8 T 240 8 T 270 8 T 300 8"
-          stroke="currentColor"
-          strokeWidth={5}
-          strokeLinecap="round"
-          vectorEffect="non-scaling-stroke"
-          pathLength={1}
-          style={{ strokeDasharray: 1, strokeDashoffset: 1 - clamped }}
-        />
+        <defs>
+          <clipPath id={clipId} clipPathUnits="userSpaceOnUse">
+            {/* Same clamped value as the fill width, so both edges agree. */}
+            <rect x={0} y={0} width={300 * clamped} height={16} />
+          </clipPath>
+        </defs>
+        <g clipPath={`url(#${clipId})`}>
+          <path
+            d={WAVE_D}
+            stroke="currentColor"
+            strokeWidth={5}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            vectorEffect="non-scaling-stroke"
+            className="progress-wave-drift"
+          />
+        </g>
       </svg>
     </div>
   )

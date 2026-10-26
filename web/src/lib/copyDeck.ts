@@ -288,7 +288,7 @@ export function buildFeedback(
         tone: 'success',
         title: 'Almost linked!',
         body: 'Show this reply QR code to your other screen (or copy the reply code) to finish linking.',
-        actionLabel: 'Copy Reply Code',
+        actionLabel: 'Copy code instead',
       }
     case 'ERR_OFFLINE_CODE_INVALID':
       return {
@@ -351,17 +351,23 @@ export const SOON_FOOTNOTE = 'No accounts. No uploads. Nothing left behind.'
   Offline direct linking.
   Source: docs/02-brand-persona-and-copy.md section 2.2, decisions.md D-016 item 2.
 
-  Two screens, one short code each, no internet in between. Every line here is
-  plain everyday English so a first time user never meets a network term.
+  Two screens, one short code each, no internet in between. Linking needs two
+  exchanges because each screen has to learn the other's network details, so the
+  Host body names both scans up front instead of letting the second one arrive
+  as a surprise. Every line here is plain everyday English so a first time user
+  never meets a network term.
 */
 export const OFFLINE_BADGE_LABEL = 'Offline Wi-Fi / Hotspot Mode'
 export const OFFLINE_HOST_STEP_TITLE = 'Finish linking without internet'
 export const OFFLINE_HOST_STEP_BODY =
-  '1. Scan this QR on your other screen. 2. Tap Scan Reply below and point at your other screen.'
+  'Two quick scans. Your phone scans this screen first, then point this camera at the code on your phone.'
 export const OFFLINE_SCAN_REPLY_CTA = 'Scan or Paste Reply'
 export const OFFLINE_COPY_INVITE_CTA = 'Copy Offline Code'
+export const OFFLINE_PASTE_LABEL = 'No camera? Paste the code here'
+export const OFFLINE_PASTE_PLACEHOLDER = 'The code from your phone'
+export const OFFLINE_PASTE_CTA = 'Use this code'
 export const OFFLINE_GUEST_REPLY_TITLE = 'Show this reply to your other screen'
 export const OFFLINE_GUEST_REPLY_BODY =
-  'On your other screen, tap Scan or Paste Reply and point its camera right here.'
-export const OFFLINE_COPY_REPLY_CTA = 'Copy Reply Code'
+  'On your other screen, point its camera at this code. No camera on that screen? Copy this code and paste it there.'
+export const OFFLINE_COPY_REPLY_CTA = 'Copy code instead'
 export const OFFLINE_SWITCH_CTA = 'No internet? Link directly on Wi-Fi or Hotspot'
