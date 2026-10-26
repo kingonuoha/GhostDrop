@@ -96,11 +96,12 @@ npm run type-check  # tsc --noEmit
 
 ## 5. Versioning and GitHub Main-Branch Bump Rule (P0)
 
-1. **Current Baseline Version:** `0.7` (`v0.7`), synced in `web/package.json` (`"version": "0.7"`) and `APP_VERSION = '0.7'` in `web/src/lib/constants.ts`.
-2. **Navbar Display:** Render `v0.7` as small display text directly beside the `GhostDrop` wordmark in `<Logo />` on both Desktop (`DesktopTopPillBar`) and Mobile (`MobileStatusHeader`).
+1. **Current Baseline Version:** `0.14` (`v0.14`), synced in `web/package.json` (`"version": "0.14"`) and `APP_VERSION = '0.14'` in `web/src/lib/constants.ts`. Step 11 shipped this baseline with zero new dependencies.
+2. **Navbar Display:** Render the baseline as small display text directly beside the `GhostDrop` wordmark in `<Logo />` on both Desktop (`DesktopTopPillBar`) and Mobile (`MobileStatusHeader`). The version is read from `APP_VERSION`, never hardcoded in a component.
 3. **Version Anatomy (`<whole>.<decimal>`):**
    - **Whole number (`X` in `X.Y`):** Increments whenever a **new dependency** is installed in `web/package.json` (and resets `.Y` to `.0`, or `.1` for the first task in that major version).
-   - **Decimal place (`Y` in `X.Y`):** Represents the cumulative number of tasks/fixes completed in the current whole-number version. For minor fixes, features, or polish without adding a new dependency, increment the decimal place (e.g., `0.7 -> 0.8`).
+   - **Decimal place (`Y` in `X.Y`):** Represents the cumulative number of tasks/fixes completed in the current whole-number version. For minor fixes, features, or polish without adding a new dependency, increment the decimal place (e.g., `0.13 -> 0.14`).
+   - Every bump must also add a matching `CHANGELOG_RELEASES` entry in `web/src/lib/changelog.ts` with a small `DD MMM YYYY, H:MM AM/PM` marker, grandma-friendly wording, and no technical jargon.
 4. **GitHub Main Push Mandate:** Whenever pushing changes to the `main` branch on GitHub for `web/`, agents MUST bump the version number in `web/package.json` and `web/src/lib/constants.ts` according to this rule before pushing.
 
 ---

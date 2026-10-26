@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { FolderPlus, ShieldCheck } from 'lucide-react'
 import type { EphemeralItem } from '../../lib/p2p'
 import { cn } from '../../lib/cn'
@@ -16,13 +17,16 @@ type TransferFeedProps = {
   /** Native OS share sheet, omitted on a browser without `navigator.share`. */
   onShare?: (id: string) => void
   onSave: (id: string) => void
+  /** Manual burn, passed straight through to every card. */
+  onBurn: (id: string) => void
   onChooseFile: () => void
   className?: string
 }
 
 /**
- * Shared Items feed. Three cards at most, newest first, so the newest drop is
- * always the first thing on the screen.
+ * Shared Items feed. Three cards at most by default, newest first, so the newest
+ * drop is always the first thing on the screen. A Show all toggle reveals every
+ * active item, because a fourth drop must never be stranded off screen.
  * Layout reference: docs/design/ghostdrop_connected_workspace_grandma_friendly.
  */
 export function TransferFeed({
@@ -33,24 +37,40 @@ export function TransferFeed({
   onCopy,
   onShare,
   onSave,
+  onBurn,
   onChooseFile,
   className,
 }: TransferFeedProps) {
-  const visible = items
-    .filter((item) => item.status !== 'nuked')
-    .slice(-MAX_VISIBLE)
-    .reverse()
+  const [showAll, setShowAll] = useState(false)
+  const activeItems = items.filter((item) => item.status !== 'nuked')
+  const rendered = showAll ? activeItems : activeItems.slice(-MAX_VISIBLE)
+  const visible = [...rendered].reverse()
+  const canToggle = activeItems.length > MAX_VISIBLE
 
   return (
     <section aria-labelledby="feed-title" className={cn('flex flex-col gap-4', className)}>
-      <div className="flex items-center justify-between gap-3 px-1">
-        <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 px-1">
+        <div className="flex min-w-0 items-center gap-2">
           <h2 id="feed-title" className="type-h2">
             Shared Items
           </h2>
-          {visible.length > 0 ? <OrbBadge size="sm">{visible.length}</OrbBadge> : null}
+          {activeItems.length > 0 ? (
+            <OrbBadge size="sm">{activeItems.length}</OrbBadge>
+          ) : null}
         </div>
-        <p className="text-xs font-semibold text-brand-ink-muted">Latest {MAX_VISIBLE} only</p>
+        {canToggle ? (
+          <button
+            type="button"
+            aria-expanded={showAll}
+            aria-controls="feed-list"
+            onClick={() => setShowAll((current) => !current)}
+            className="inline-flex min-h-[44px] items-center rounded-full border border-brand-line bg-brand-surface px-3.5 text-xs font-bold text-brand-ink transition-colors hover:bg-brand-stone focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-cobalt"
+          >
+            {showAll ? `Latest ${MAX_VISIBLE}` : `Show all (${activeItems.length})`}
+          </button>
+        ) : (
+          <p className="text-xs font-semibold text-brand-ink-muted">Newest on top</p>
+        )}
       </div>
 
       {visible.length === 0 ? (
@@ -63,7 +83,7 @@ export function TransferFeed({
           onAction={onChooseFile}
         />
       ) : (
-        <ul className="flex flex-col gap-3">
+        <ul id="feed-list" className="flex flex-col gap-3">
           {visible.map((item, index) => (
             <li key={item.id}>
               {item.status === 'expired' ? (
@@ -78,6 +98,7 @@ export function TransferFeed({
                   onCopy={onCopy}
                   onShare={onShare}
                   onSave={onSave}
+                  onBurn={onBurn}
                 />
               )}
             </li>

@@ -12,6 +12,7 @@ import { Ghost, ImagePlus, ScanLine, Unplug, Wifi } from 'lucide-react'
 import { NestedPillButton } from '../components/brand/NestedPillButton'
 import { OrbBadge } from '../components/brand/OrbBadge'
 import { SquiggleCardBg } from '../components/brand/SquiggleCardBg'
+import { SquiggleConnectionBridge } from '../components/brand/SquiggleConnectionBridge'
 import { DropZone } from '../components/room/DropZone'
 import { OfflineLinkCard } from '../components/room/OfflineLinkCard'
 import { RoomToast } from '../components/room/RoomToast'
@@ -103,9 +104,7 @@ function JoinRoom({ code }: JoinRoomProps) {
   const room = useGhostRoomContext()
   const {
     publishPresence,
-    publishTtlPreset,
     registerComposer,
-    registerTtlHandler,
     openScanner,
   } = useShell()
 
@@ -120,6 +119,7 @@ function JoinRoom({ code }: JoinRoomProps) {
     copyItem,
     shareItem,
     saveItem,
+    burnItem,
     connectionError,
     dismissFeedback,
     feedback,
@@ -148,12 +148,8 @@ function JoinRoom({ code }: JoinRoomProps) {
     return () => publishPresence(null)
   }, [publishPresence, code, presenceStatus, peerName])
 
-  // The dock timer tab needs the room's real preset, both ways.
-  useEffect(() => {
-    publishTtlPreset(room.ttlPreset)
-  }, [publishTtlPreset, room.ttlPreset])
-
-  useEffect(() => registerTtlHandler(room.setTtlPreset), [registerTtlHandler, room.setTtlPreset])
+  // The dock timer tab needs the room's real preset, both ways. The global
+  // sync lives in RoomShellSync, so no page registers a second handler here.
 
   // Dock Send tab: focus the note field here instead of navigating away.
   useEffect(
@@ -210,6 +206,17 @@ function JoinRoom({ code }: JoinRoomProps) {
           onCopyFeedback={room.announceFeedback}
         />
       ) : null}
+
+      <div className="relative overflow-hidden rounded-[24px] border border-brand-line bg-brand-stone p-4 shadow-soft">
+        <SquiggleConnectionBridge
+          status={isLinked ? 'connected' : 'idle'}
+          hostLabel={room.localDeviceName}
+          hostDeviceType={room.localDeviceType}
+          peerLabel={peerLabel}
+          peerDeviceType={peers[0]?.deviceType ?? 'desktop'}
+        />
+      </div>
+
       <section
         aria-labelledby="join-title"
         className="relative overflow-hidden rounded-[32px] bg-brand-cobalt p-5 text-white shadow-pop-cobalt md:p-7"
@@ -285,6 +292,9 @@ function JoinRoom({ code }: JoinRoomProps) {
           void shareItem(id)
         }}
         onSave={(id) => saveItem(id)}
+        onBurn={(id) => {
+          burnItem(id)
+        }}
         onChooseFile={() => fileRef.current?.click()}
       />
 

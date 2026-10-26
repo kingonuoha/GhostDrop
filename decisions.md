@@ -231,3 +231,18 @@
 
 
 
+
+---
+
+## D-020: Step 11 Resumed and Rebased After Deferral (v0.14)
+- **Date:** 2026-10-24
+- **Status:** LOCKED
+- **Scope:** `docs/tasks/step-11-improvements/**`, `web/src/components/shell/RoomShellSync.tsx`, `web/src/hooks/useJoinUrl.ts`, `web/src/lib/p2p/chunkReceiver.ts`, `web/src/lib/p2p/janitor.ts`, `web/src/components/ui/FeedbackCard.tsx`
+- **Decision:**
+  1. Step 11 keeps its original 12 improvement items but its version target moved from `0.8` to `0.14`, because Steps 12, 13 and 14 shipped first. The rebase is documented in `docs/tasks/step-11-improvements/brief.md` section 0, and no specialist follows the stale line numbers in the original task files.
+  2. Global auto-delete sync lives in `RoomShellSync` mounted inside `ShellChrome`, because `GhostRoomProvider` renders above `ShellProvider` and cannot call `useShell`. Exactly one component publishes `room.ttlPreset` and registers `room.setTtlPreset`; pages must not register a second handler.
+  3. An inbound file is staged in `EphemeralStore` at `FILE_START` with `status: sending`, no Blob and no timer. `completeReceivedFile` promotes it in place, revokes any prior URL first, mints exactly one, and starts the TTL at completion.
+  4. A stalled inbound transfer must fail loudly, never hang: `IDLE_TIMEOUT_MS = 30000` per transfer, routed through the existing `failTransfer` path. `P2PError` carries an optional `transferId` so one failed stream settles only its own card.
+  5. Toast auto-close is exactly `TOAST_AUTO_DISMISS_MS = 5000`, driven by one remaining-time value that controls both the dismissal and the drain bar, with independent pointer and focus pause flags. Inline feedback cards never opt in.
+  6. The hub and the in-room QR drawer share one `useJoinUrl` hook so the pairing link and the LAN choice cannot drift.
+- **Rationale:** The deferred items were still real user problems at `0.13`. Rebasing against the shipped code, recording the corrected integration points, and enforcing a watchdog on the new receiving path keeps the build order honest without reintroducing stale instructions.

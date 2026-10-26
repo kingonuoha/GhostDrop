@@ -25,7 +25,7 @@ function DeviceBadge({ icon: Icon, label, tone }: DeviceBadgeProps) {
       <span className={cn('flex h-12 w-12 items-center justify-center rounded-full', shell)}>
         <Icon size={22} strokeWidth={2} aria-hidden="true" />
       </span>
-      <span className="text-[11px] font-semibold leading-tight text-brand-ink">{label}</span>
+      <span className="text-xs font-semibold leading-tight text-brand-ink">{label}</span>
     </div>
   )
 }

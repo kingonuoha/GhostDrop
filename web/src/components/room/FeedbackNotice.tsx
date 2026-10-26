@@ -19,6 +19,7 @@ import {
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import type { RoomFeedback, RoomFeedbackKey } from '../../lib/copyDeck'
+import { TOAST_AUTO_DISMISS_MS } from '../../lib/constants'
 import { FeedbackCard } from '../ui/FeedbackCard'
 import { PoofNotice } from './PoofNotice'
 
@@ -31,6 +32,7 @@ const ICONS: Record<RoomFeedbackKey, LucideIcon> = {
   SUCCESS_SAVED: SaveCheck,
   SUCCESS_SHARED: Share2,
   SUCCESS_FILE_SENT: Check,
+  SUCCESS_FILE_RECEIVED: Download,
   SUCCESS_DROP_AND_NUKE: Sparkles,
   SUCCESS_PWA_INSTALLED: Download,
   SUCCESS_SHARE_CAUGHT: Share2,
@@ -90,6 +92,7 @@ export function FeedbackNotice({
         actionLabel={feedback.actionLabel}
         onAction={onAction ?? onDismiss}
         onDismiss={onDismiss}
+        autoDismissMs={TOAST_AUTO_DISMISS_MS}
       />
     </div>
   )

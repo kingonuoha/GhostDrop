@@ -19,6 +19,7 @@ export type RoomFeedbackKey =
   | 'SUCCESS_SAVED'
   | 'SUCCESS_SHARED'
   | 'SUCCESS_FILE_SENT'
+  | 'SUCCESS_FILE_RECEIVED'
   | 'SUCCESS_DROP_AND_NUKE'
   | 'SUCCESS_PWA_INSTALLED'
   | 'SUCCESS_SHARE_CAUGHT'
@@ -155,6 +156,16 @@ export function buildFeedback(
         tone: 'success',
         title: 'All sent!',
         body: `${fileName ?? 'Your file'} is ready on your other screen.`,
+        actionLabel: 'Save',
+        roomCode,
+      }
+    case 'SUCCESS_FILE_RECEIVED':
+      // The receiving side. The file already landed, so Save keeps it.
+      return {
+        key,
+        tone: 'success',
+        title: 'New file arrived!',
+        body: `${fileName ?? 'Your file'} just landed on your screen.`,
         actionLabel: 'Save',
         roomCode,
       }

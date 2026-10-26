@@ -303,6 +303,95 @@ export async function clearShareHandoff(): Promise<boolean> {
   }
 }
 
+/**
+ * Boot sweep for unclaimed share handoffs (Step 07 QA finding F-01).
+ *
+ * Deletes the slot only when the record is malformed or its `expiresAt` has
+ * already passed, so a fresh share waiting to be claimed is never touched.
+ * Resolves true only when a delete actually committed. Every IndexedDB access
+ * is fail soft, so a blocked or absent store resolves false instead of throwing.
+ */
+export async function sweepExpiredShareHandoff(now: number = Date.now()): Promise<boolean> {
+  const db = await openShareDatabase()
+  if (!db) return false
+
+  try {
+    return await new Promise<boolean>((resolve) => {
+      let settled = false
+      const finish = (removed: boolean): void => {
+        if (settled) return
+        settled = true
+        resolve(removed)
+      }
+
+      try {
+        const transaction = db.transaction(SHARE_HANDOFF_STORE, 'readwrite')
+        const store = transaction.objectStore(SHARE_HANDOFF_STORE)
+        let deleted = false
+
+        const request = store.get(LATEST_KEY)
+        request.onsuccess = () => {
+          const raw: unknown = request.result
+          if (raw === undefined || raw === null) return
+          const stale = !isShareHandoffPayload(raw) || raw.expiresAt <= now
+          if (!stale) return
+          try {
+            store.delete(LATEST_KEY)
+            deleted = true
+          } catch {
+            // The record stays readable until the next sweep, which is harmless.
+          }
+        }
+
+        transaction.oncomplete = () => finish(deleted)
+        transaction.onerror = () => finish(false)
+        transaction.onabort = () => finish(false)
+      } catch {
+        finish(false)
+      }
+    })
+  } catch {
+    return false
+  } finally {
+    db.close()
+  }
+}
+
+/**
+ * True when this page life booted on a share claim URL (`/?shared=1` or
+ * `/?shared=error`). Captured at module load because the claim path strips the
+ * flag synchronously, so a helper that read the URL later could not tell a
+ * plain boot from a live claim. Written against `globalThis` so the service
+ * worker build, which has no `window`, still compiles.
+ */
+function bootedWithShareClaim(): boolean {
+  const scope = globalThis as { location?: { search?: string } }
+  const search = scope.location?.search
+  if (typeof search !== 'string') return false
+  return new URLSearchParams(search).has('shared')
+}
+
+const BOOTED_WITH_SHARE_CLAIM = bootedWithShareClaim()
+
+/** Set on the first boot sweep request, so a remount can never sweep twice. */
+let bootSweepRequested = false
+
+/**
+ * One boot sweep per page life, called once from the app shell so every route
+ * gets it, including a cold boot straight to `/room/CODE` or `/join`.
+ *
+ * A plain boot has no `shared` flag, so nothing would ever claim a record
+ * parked by an earlier visit and it would sit in IndexedDB past its five minute
+ * life. A page that booted on a claim URL never sweeps, because the claim owns
+ * the slot. The sweep itself never throws.
+ */
+export function sweepExpiredShareHandoffOnce(): void {
+  if (bootSweepRequested) return
+  bootSweepRequested = true
+  if (BOOTED_WITH_SHARE_CLAIM) return
+  void sweepExpiredShareHandoff()
+}
+
 /** Turns a claimed payload back into `File` objects for the room sender. */
 export function sharePayloadToFiles(payload: ShareHandoffPayload): File[] {
   return payload.files.map((file) => new File([file.blob], file.name, {

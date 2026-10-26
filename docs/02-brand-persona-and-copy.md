@@ -99,6 +99,7 @@ Offline linking rules:
 | `SUCCESS_SAVED` | `SaveCheck` | `Saved!` | `{fileName} is on this device now.` | `Got It` |
 | `SUCCESS_SHARED` | `Share2` | `Off it goes!` | `Handed straight to your share sheet.` | `Done` |
 | `SUCCESS_FILE_SENT` | `Check` | `All sent!` | `{fileName} is ready on your other screen.` | `Save` |
+| `SUCCESS_FILE_RECEIVED` | `Download` | `New file arrived!` | `{fileName} just landed on your screen.` | `Save` |
 | `SUCCESS_DROP_AND_NUKE` | `Sparkles` | `Sent and cleaned up!` | `{fileName} is safe on your computer and removed here.` | `Done` |
 | `SUCCESS_PWA_INSTALLED` | `Download` | `Added to your phone!` | `Next time, open GhostDrop right from your home screen.` | `Great!` |
 | `INFO_OFFLINE_READY` | `Wifi` | `Offline link ready!` | `No internet needed. Scan the QR code, then scan the reply QR from your other screen.` | `Got It` |

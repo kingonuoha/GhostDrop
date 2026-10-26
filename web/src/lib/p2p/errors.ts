@@ -22,11 +22,18 @@ export type P2PErrorCode =
 
 export class P2PError extends Error {
   readonly code: P2PErrorCode
+  /**
+   * The transfer this error belongs to, when the failure is scoped to one
+   * stream. Callers settle only that transfer, so a healthy concurrent
+   * transfer never shows a failure card.
+   */
+  readonly transferId: string | undefined
 
-  constructor(code: P2PErrorCode, message: string) {
+  constructor(code: P2PErrorCode, message: string, transferId?: string) {
     super(message)
     this.name = 'P2PError'
     this.code = code
+    this.transferId = transferId
   }
 }
 

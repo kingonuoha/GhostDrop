@@ -1,5 +1,6 @@
 import { Sparkles } from 'lucide-react'
 import { buildFeedback } from '../../lib/copyDeck'
+import { TOAST_AUTO_DISMISS_MS } from '../../lib/constants'
 import type { TtlPreset } from '../../types/protocol'
 import { FeedbackCard } from '../ui/FeedbackCard'
 
@@ -32,6 +33,7 @@ export function PoofNotice({ preset, itemName, onDismiss, className }: PoofNotic
         actionLabel={copy.actionLabel}
         onAction={onDismiss}
         onDismiss={onDismiss}
+        autoDismissMs={TOAST_AUTO_DISMISS_MS}
         className="poof-notice-enter"
       />
     </div>

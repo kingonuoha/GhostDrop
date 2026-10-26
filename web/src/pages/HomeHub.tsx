@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { OrbBadge } from '../components/brand/OrbBadge'
 import { SquiggleCardBg } from '../components/brand/SquiggleCardBg'
 import { TeleportCounterBadge } from '../components/brand/TeleportCounterBadge'
@@ -13,10 +13,9 @@ import { useGhostRoomContext } from '../components/shell/GhostRoomProvider'
 import { useShell } from '../components/shell/ShellProvider'
 import { useClipboardPaste } from '../hooks/useClipboardPaste'
 import { useFileDropTarget } from '../hooks/useFileDropTarget'
+import { useJoinUrl } from '../hooks/useJoinUrl'
 import { useShareIntake } from '../hooks/useShareIntake'
 import { waitingLabel } from '../lib/device'
-import { fetchLanInfo, resolveJoinOrigin } from '../lib/lanInfo'
-import type { LanCandidate } from '../lib/lanInfo'
 import { stashPendingDrop } from '../lib/pendingDrop'
 import { navigate } from '../lib/router'
 
@@ -37,30 +36,10 @@ export function HomeHub() {
   const localDeviceType = room.localDeviceType
   const fileInputRef = useRef<HTMLInputElement>(null)
   const { notice: shareNotice, dismiss: dismissShareNotice } = useShareIntake()
-  /**
-   * Real Wi-Fi and hotspot addresses reported by the dev server. Empty in a
-   * production build without the middleware, and the QR code then simply keeps
-   * the page origin.
-   */
-  const [lanCandidates, setLanCandidates] = useState<readonly LanCandidate[]>([])
-  const [activeLanUrl, setActiveLanUrl] = useState<string | null>(null)
-
-  // One fail soft read on mount so a phone never scans a `localhost` code.
-  useEffect(() => {
-    let cancelled = false
-
-    const load = async () => {
-      const info = await fetchLanInfo()
-      if (cancelled || !info || info.candidates.length === 0) return
-      setLanCandidates(info.candidates)
-      setActiveLanUrl(info.candidates[0].url)
-    }
-
-    void load()
-    return () => {
-      cancelled = true
-    }
-  }, [])
+  const { joinUrl, lanCandidates, activeLanUrl, setActiveLanUrl } = useJoinUrl(
+    roomCode,
+    room.offlineInviteToken,
+  )
 
   const openRoom = useCallback(() => {
     if (!roomCode) return
@@ -114,18 +93,6 @@ export function HomeHub() {
       void handleNote(text)
     },
   })
-
-  const joinUrl = useMemo(() => {
-    const origin = typeof window === 'undefined' ? '' : window.location.origin
-    const hostname = typeof window === 'undefined' ? undefined : window.location.hostname
-    const base = resolveJoinOrigin(origin, hostname, lanCandidates, activeLanUrl)
-    const baseJoinUrl = `${base}/join?room=${roomCode ?? ''}`
-    // The direct link code rides along in the fragment, so a phone camera app
-    // that opens this link finishes the offline handshake with no second scan.
-    return room.offlineInviteToken
-      ? `${baseJoinUrl}#gd=${room.offlineInviteToken}`
-      : baseJoinUrl
-  }, [activeLanUrl, lanCandidates, room.offlineInviteToken, roomCode])
 
   return (
     <section aria-labelledby="hub-title" className="flex flex-col gap-6 md:gap-8">

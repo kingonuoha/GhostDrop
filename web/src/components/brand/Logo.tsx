@@ -66,7 +66,7 @@ export function Logo({ size = 36, withWordmark = false, className, wordmarkClass
     <span className={cn('inline-flex items-center gap-2', className)}>
       {mark}
       {/*
-        Wordmark plus the v0.7 version pill.
+        Wordmark plus the app version pill.
 
         The pill is nested inside the wordmark span on purpose: `em` resolves
         against the wordmark's own computed size, so the badge tracks the 1.35rem

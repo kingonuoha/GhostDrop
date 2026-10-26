@@ -76,7 +76,7 @@ Implement three backend capabilities in `web/src/lib/p2p/` and `web/src/lib/shar
 ---
 
 ## Verification Checklist
-- [ ] `ChunkReceiver` calls `onStart` upon accepting a valid `FILE_START` packet and emits 0% initial receive progress.
-- [ ] `EphemeralStore` can register an incoming `'sending'` file item without a `Blob` at `FILE_START`, promote it to `'ready'` with `blob` and `blobUrl` on `FILE_END`, and maintain `leakedObjectUrlCount === 0` across all completion, failure, burn, and sweep paths.
-- [ ] `sweepExpiredShareHandoff()` deletes expired or malformed records from `ghostdrop-share-handoff` while preserving unexpired records.
-- [ ] `npm run type-check`, `npm run lint`, and `npm run build` in `web/` exit `0` with zero em dashes, zero emojis, and zero `any`.
+- [x] `ChunkReceiver` calls `onStart` upon accepting a valid `FILE_START` packet and emits 0% initial receive progress.
+- [x] `EphemeralStore` can register an incoming `'sending'` file item without a `Blob` at `FILE_START`, promote it to `'ready'` with `blob` and `blobUrl` on `FILE_END`, and maintain `leakedObjectUrlCount === 0` across all completion, failure, burn, and sweep paths.
+- [x] `sweepExpiredShareHandoff()` deletes expired or malformed records from `ghostdrop-share-handoff` while preserving unexpired records.
+- [x] `npm run type-check`, `npm run lint`, and `npm run build` in `web/` exit `0` with zero em dashes, zero emojis, and zero `any`.

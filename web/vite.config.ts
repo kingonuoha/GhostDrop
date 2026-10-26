@@ -154,5 +154,33 @@ export default defineConfig(({ command, mode }) => {
         plugins: [singleLarokaSource],
       },
     },
+    /**
+     * Vendor chunking keeps the first paint payload small and lets the browser
+     * cache the big libraries separately from the app shell. `jsqr` is already
+     * split by its lazy import in `AppShell.tsx`; these groups cover the two
+     * dependencies that every route needs but seldom changes.
+     */
+    build: {
+      rolldownOptions: {
+        output: {
+          codeSplitting: {
+            groups: [
+              {
+                name: 'vendor-react',
+                test: /node_modules[\\/](react|react-dom|scheduler)[\\/]/,
+              },
+              {
+                name: 'vendor-peerjs',
+                test: /node_modules[\\/](peerjs|peerjs-js-binarypack|eventemitter3|webrtc-adapter|@msgpack[\\/]msgpack)[\\/]/,
+              },
+              {
+                name: 'vendor-qr',
+                test: /node_modules[\\/]qrcode\.react[\\/]/,
+              },
+            ],
+          },
+        },
+      },
+    },
   }
 })

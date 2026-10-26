@@ -112,16 +112,16 @@ Implement all 12 Step 11 frontend improvements and bump the version from `0.7` t
 ---
 
 ## Verification Checklist
-- [ ] `web/package.json` and `APP_VERSION` are set to `"0.8"`, and `v0.8` renders beside `GhostDrop` on both PC and Mobile navbars.
-- [ ] Receiving a file immediately shows `Receiving... {percent}%` on the receiver screen and raises the `New file arrived!` toast when complete.
-- [ ] Clicking the `Trash2` (`Remove item now`) button on any transfer card removes the item locally, revokes its object URL, and wipes it from the connected peer via `ITEM_NUKE` (`MANUAL_BURN`).
-- [ ] Clicking `Auto-delete: ...` in `DesktopTopPillBar` opens a preset selector popover, and changing the timer anywhere on Desktop or Mobile stays 100% in sync across all pages and navbars.
-- [ ] `ConnectedWorkspace` has a `Show QR Code` toggle on `ConnectionBridge`.
-- [ ] `MobileJoin` displays `<SquiggleConnectionBridge />` with dynamic device icons and labels.
-- [ ] Text notes with `http://` or `https://` URLs offer a safe `Open` (`ExternalLink`) action (`target="_blank" rel="noopener noreferrer"`), and notes over 72 chars can be expanded/collapsed.
-- [ ] `TransferFeed` offers a `Show all (N)` toggle when more than 3 items exist.
-- [ ] `QrScannerModal` (`jsqr`) is code-split into a separate chunk, eliminating the Vite `> 500 KB` main chunk warning.
-- [ ] `sweepExpiredShareHandoff()` runs on boot when no active share is being claimed.
-- [ ] `HowItWorks.tsx` no longer renders the `Kind language for peace of mind` / `Helpful messages you will actually understand.` section.
-- [ ] Every toast (`RoomToast` and `Toast`) auto-closes after 5 seconds (`5000ms`) with a smooth emptying progress bar (`100% -> 0%`).
-- [ ] `npm run type-check`, `npm run lint`, and `npm run build` exit `0` with zero em dashes and zero emojis.
+- [x] `web/package.json` and `APP_VERSION` are set to `"0.8"`, and `v0.8` renders beside `GhostDrop` on both PC and Mobile navbars.
+- [x] Receiving a file immediately shows `Receiving... {percent}%` on the receiver screen and raises the `New file arrived!` toast when complete.
+- [x] Clicking the `Trash2` (`Remove item now`) button on any transfer card removes the item locally, revokes its object URL, and wipes it from the connected peer via `ITEM_NUKE` (`MANUAL_BURN`).
+- [x] Clicking `Auto-delete: ...` in `DesktopTopPillBar` opens a preset selector popover, and changing the timer anywhere on Desktop or Mobile stays 100% in sync across all pages and navbars.
+- [x] `ConnectedWorkspace` has a `Show QR Code` toggle on `ConnectionBridge`.
+- [x] `MobileJoin` displays `<SquiggleConnectionBridge />` with dynamic device icons and labels.
+- [x] Text notes with `http://` or `https://` URLs offer a safe `Open` (`ExternalLink`) action (`target="_blank" rel="noopener noreferrer"`), and notes over 72 chars can be expanded/collapsed.
+- [x] `TransferFeed` offers a `Show all (N)` toggle when more than 3 items exist.
+- [x] `QrScannerModal` (`jsqr`) is code-split into a separate chunk, eliminating the Vite `> 500 KB` main chunk warning.
+- [x] `sweepExpiredShareHandoff()` runs on boot when no active share is being claimed.
+- [x] `HowItWorks.tsx` no longer renders the `Kind language for peace of mind` / `Helpful messages you will actually understand.` section.
+- [x] Every toast (`RoomToast` and `Toast`) auto-closes after 5 seconds (`5000ms`) with a smooth emptying progress bar (`100% -> 0%`).
+- [x] `npm run type-check`, `npm run lint`, and `npm run build` exit `0` with zero em dashes and zero emojis.

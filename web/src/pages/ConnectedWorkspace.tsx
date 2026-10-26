@@ -14,6 +14,7 @@ import { useShell } from '../components/shell/ShellProvider'
 import { FeedbackCard } from '../components/ui/FeedbackCard'
 import { useClipboardPaste } from '../hooks/useClipboardPaste'
 import { useFileDropTarget } from '../hooks/useFileDropTarget'
+import { useJoinUrl } from '../hooks/useJoinUrl'
 import { buildFeedback } from '../lib/copyDeck'
 import { peerDisplayName } from '../lib/device'
 import { takePendingDrop } from '../lib/pendingDrop'
@@ -38,6 +39,7 @@ export function ConnectedWorkspace() {
     copyItem,
     shareItem,
     saveItem,
+    burnItem,
     dismissFeedback,
     feedback,
     connectionError,
@@ -55,6 +57,7 @@ export function ConnectedWorkspace() {
     : 'your other screen'
   const fileInputRef = useRef<HTMLInputElement>(null)
   const { publishPresence, openScanner } = useShell()
+  const { joinUrl } = useJoinUrl(code, room.offlineInviteToken)
 
   // Keeps the compact mobile header pill in step with this room.
   useEffect(() => {
@@ -117,6 +120,7 @@ export function ConnectedWorkspace() {
         peers={peers}
         localDeviceType={localDeviceType}
         localDeviceName={localDeviceName}
+        joinUrl={joinUrl}
       />
 
       {!isLinked && room.offlineStep === 'guest-showing-reply' ? (
@@ -212,6 +216,9 @@ export function ConnectedWorkspace() {
             void shareItem(id)
           }}
           onSave={(id) => saveItem(id)}
+          onBurn={(id) => {
+            burnItem(id)
+          }}
           onChooseFile={() => fileInputRef.current?.click()}
         />
       </div>

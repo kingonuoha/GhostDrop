@@ -1,4 +1,4 @@
-# GhostDrop Phase 1 — Web & PWA Implementation Plan
+# GhostDrop Phase 1 - Web & PWA Implementation Plan
 
 GhostDrop Phase 1 delivers a zero-cost, 100% stateless, ephemeral P2P device bridge built as an installable Progressive Web App (PWA) with **Vite + React + TypeScript + Tailwind CSS**. Any device (laptop, phone, tablet) can host or join a session via QR code, deep link, or 6-character code, and stream clipboard snippets, links, and files peer-to-peer over WebRTC `RTCDataChannel` using the exact Phase 1/2 shared wire protocol.
 

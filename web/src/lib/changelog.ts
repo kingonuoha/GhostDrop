@@ -32,10 +32,53 @@ export const CHANGELOG_SEEN_KEY = 'ghostdrop.last_seen_version'
 
 export const CHANGELOG_RELEASES: readonly ChangelogRelease[] = [
   {
+    version: '0.14',
+    dateTime: '24 Oct 2026, 10:15 AM',
+    headline: 'Watch a photo arrive, clear anything in one tap, and keep the timer close by.',
+    isCurrent: true,
+    items: [
+      {
+        category: 'feature',
+        title: 'See it arrive',
+        description:
+          'A photo or file now shows its own progress bar while it lands on your screen, so you always know it is on the way.',
+      },
+      {
+        category: 'feature',
+        title: 'New file arrived',
+        description:
+          'The moment a file finishes, a friendly note names it and points you straight to the save button.',
+      },
+      {
+        category: 'feature',
+        title: 'Remove anything right away',
+        description:
+          'Every card now has a Remove button, so one tap clears a note or a file on both of your screens at once.',
+      },
+      {
+        category: 'feature',
+        title: 'Timer on the top bar',
+        description:
+          'On a computer, tap the clock in the top bar and pick how long things stay before they tidy themselves up.',
+      },
+      {
+        category: 'feature',
+        title: 'Long notes open up',
+        description:
+          'A long note now offers a Show full note button, so you can read every word without it running off the card.',
+      },
+      {
+        category: 'speed',
+        title: 'Notices close themselves',
+        description:
+          'Friendly messages now close on their own after five seconds, and they wait politely while you hover over them.',
+      },
+    ],
+  },
+  {
     version: '0.13',
     dateTime: '23 Oct 2026, 1:00 PM',
     headline: 'We could not wait. GhostDrop opened its doors early.',
-    isCurrent: true,
     items: [
       {
         category: 'speed',

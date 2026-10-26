@@ -485,6 +485,11 @@ export function useGhostRoom(options: UseGhostRoomOptions = {}): GhostRoom {
 
   const sendMetaRef = useRef(new Map<string, SendMeta>())
   const namesRef = useRef(new Map<string, string>())
+  /**
+   * Inbound files that were announced at FILE_START and have not finished yet.
+   * A failed stream marks every id in here as `error` so no card spins forever.
+   */
+  const pendingReceiveIdsRef = useRef(new Set<string>())
   const warnedRef = useRef(new Set<string>())
   const ttlPresetRef = useRef<TtlPreset>('50m')
   /** Last committed whole percent per item, so 16KB frames never thrash React. */
@@ -556,22 +561,80 @@ export function useGhostRoom(options: UseGhostRoomOptions = {}): GhostRoom {
         onProgress: (payload) => {
           activeEngine()?.reportTransferProgress(payload)
         },
+        /**
+         * A validated FILE_START lands here before the first chunk arrives, so
+         * the receiving card exists at 0 percent instead of appearing at 100.
+         */
+        onStart: (started) => {
+          if (!mountedRef.current) return
+          if (store.isDisposed() || store.hasItem(started.id)) return
+
+          namesRef.current.set(started.id, started.name)
+          store.addFile({
+            id: started.id,
+            fileName: started.name,
+            size: started.size,
+            mime: started.mime,
+            direction: 'received',
+            ttlMs: null,
+            burnOnCopy: started.burnOnRead,
+            status: 'sending',
+          })
+          pendingReceiveIdsRef.current.add(started.id)
+        },
         onItem: (received) => {
           if (!mountedRef.current) return
-          if (store.isDisposed() || store.hasItem(received.id)) return
+          if (store.isDisposed()) return
+
+          // Read the staging flag before it is cleared: an item the user burned
+          // mid flight is gone on purpose and must not be re-added on arrival.
+          const wasPending = pendingReceiveIdsRef.current.has(received.id)
+          pendingReceiveIdsRef.current.delete(received.id)
           namesRef.current.set(received.id, received.name)
-          store.addFile({
-            id: received.id,
-            file: received.blob,
-            fileName: received.name,
-            mime: received.mime,
-            direction: 'received',
+          // Promotion keeps one item id and one object URL: the placeholder
+          // minted at FILE_START becomes the downloadable card in place.
+          const completed = store.completeReceivedFile(received.id, received.blob, {
             ttlMs: received.ttlMs,
             burnOnCopy: received.burnOnRead,
           })
+
+          // Only a card that really exists and can be saved may announce itself.
+          // A burned placeholder stays gone, and the user hears nothing.
+          let landed = completed !== null && completed.status === 'ready'
+
+          if (completed === null && !wasPending) {
+            store.addFile({
+              id: received.id,
+              file: received.blob,
+              fileName: received.name,
+              mime: received.mime,
+              direction: 'received',
+              ttlMs: received.ttlMs,
+              burnOnCopy: received.burnOnRead,
+              status: 'ready',
+            })
+            landed = store.hasItem(received.id)
+          }
+
+          if (landed) {
+            setFeedback(buildFeedback('SUCCESS_FILE_RECEIVED', { fileName: received.name }))
+          }
         },
-        onError: () => {
+        onError: (error) => {
           if (!mountedRef.current) return
+          // A scoped error settles only its own transfer, so a healthy
+          // concurrent transfer keeps its card and never flashes a failure.
+          // An unscoped error has no id to trust, so it settles every staged
+          // receive as before. One toast per error event either way.
+          const failedId = error.transferId
+          if (failedId === undefined) {
+            for (const id of pendingReceiveIdsRef.current) {
+              store.updateItem(id, { status: 'error' })
+            }
+            pendingReceiveIdsRef.current.clear()
+          } else if (pendingReceiveIdsRef.current.delete(failedId)) {
+            store.updateItem(failedId, { status: 'error' })
+          }
           setFeedback(buildFeedback('ERR_CHUNK_INTERRUPTED'))
         },
       }),
@@ -619,6 +682,7 @@ export function useGhostRoom(options: UseGhostRoomOptions = {}): GhostRoom {
   useEffect(() => {
     sendMetaRef.current.clear()
     namesRef.current.clear()
+    pendingReceiveIdsRef.current.clear()
     warnedRef.current.clear()
     progressPercentRef.current.clear()
     reconnectAttemptsRef.current = 0

@@ -1,11 +1,19 @@
 import type { TtlPreset } from '../types/protocol'
 
 /**
- * Shipped app version, rendered as `v0.8` beside the GhostDrop wordmark on both
- * the desktop top pill bar and the mobile status header.
+ * Shipped app version, rendered as `v0.14` beside the GhostDrop wordmark on
+ * both the desktop top pill bar and the mobile status header.
  * Source: AGENTS.md section 5, decisions.md D-014 item 1.
  */
-export const APP_VERSION = '0.13'
+export const APP_VERSION = '0.14'
+
+/**
+ * How long a toast stays on screen before it closes itself. The drain bar in
+ * `FeedbackCard` empties over the same window, so the visible countdown and the
+ * dismissal can never disagree.
+ * Source: docs/tasks/step-11-improvements/web-task.md item 12.
+ */
+export const TOAST_AUTO_DISMISS_MS = 5000
 
 /**
  * Prelaunch gate. Launch is 23 October 2026 at 13:00 WAT (UTC+1), which is

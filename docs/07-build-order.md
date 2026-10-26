@@ -4,7 +4,7 @@
 
 ---
 
-## Step-by-Step Build Sequence (13 Gates)
+## Step-by-Step Build Sequence (14 Gates)
 
 1. **Step 1: Stage UI Design Import and Audit (`ghostdrop-orchestrator`)**
    - Verify Stage/Stitch design exports are placed in `design/` or `docs/design/`.
@@ -28,8 +28,10 @@
    - Execute all checks in `docs/08-qa-checklist.md` and write `docs/tasks/<slug>/qa-report.md`.
 10. **Step 10: v0.7 Offline, Hotspot, Camera, TTL and UX Fixes (`ghostdrop-backend` -> `ghostdrop-web` -> `ghostdrop-ui-polish` -> `ghostdrop-qa`)**
    - Same-port `/peerjs` signaling, `/__ghostdrop/lan-info`, offline ICE, `burnOnRead` protocol, dynamic device identity, QR camera fallback, `BURN_ON_COPY` sync, clipboard and share actions. Signed off PASS.
-11. **Step 11: Improvements (`docs/tasks/step-11-improvements/`)**
-   - DEFERRED. Not executed. Runs after Step 13.
+11. **Step 11: Improvements (`docs/tasks/step-11-improvements/`)** (`ghostdrop-backend` -> `ghostdrop-ui-polish` -> `ghostdrop-web` -> `ghostdrop-qa`)
+   - Resumed 2026-10-24 after Steps 12, 13 and 14, rebased onto `0.13` and shipped at version `0.14` (zero new dependencies).
+   - Receiver live progress (`ChunkReceiver.onStart` plus placeholder promotion), `SUCCESS_FILE_RECEIVED` arrival toast, manual `Remove item now` burn, desktop timer popover with one global TTL publisher (`RoomShellSync`), in-room QR drawer, mobile `<SquiggleConnectionBridge />`, safe `http/https` links with expandable notes, `Show all (N)` feed toggle, lazy `QrScannerModal` (`jsqr` isolated), boot share handoff sweep, `HowItWorks` alerts section removed, and five second auto-closing toasts with a drain bar.
+   - **Status: Signed off PASS.** QA report `docs/tasks/step-11-improvements/qa-report.md` records 12 of 12 items, 6 of 6 gates, 0 P0, 0 P1, one open P2 manual two device run, one open P3 768px measurement, and 10 findings fixed in session. Entry chunk `222.67 kB` raw, `jsqr` isolated, precache 18 entries, `type-check`, `lint` and `build` all exit `0`.
 12. **Step 12: v0.8 Coming Soon Wall and Teaser Animation (`ghostdrop-ui-polish` -> `ghostdrop-web` -> `ghostdrop-qa`)**
    - Gate every route behind a public teaser rendered above `GhostRoomProvider` so no signaling or room state is consumed while locked.
    - Hidden unlock gestures only: `Ctrl+Alt+C` on desktop and tapping the GhostDrop logo 3 times fast on any device, persisted in `localStorage`.

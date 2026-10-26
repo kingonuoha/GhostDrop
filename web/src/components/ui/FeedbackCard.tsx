@@ -1,4 +1,4 @@
-import { useId } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { CheckCircle2, Info, TriangleAlert, X, Zap } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { cn } from '../../lib/cn'
@@ -65,6 +65,12 @@ export type FeedbackCardProps = {
    */
   headingLevel?: 'h2' | 'h3'
   className?: string
+  /**
+   * Milliseconds before the card closes itself, with a drain bar along the
+   * bottom edge. Only used when `onDismiss` is present, so inline cards (empty
+   * feed, room not found) stay put forever.
+   */
+  autoDismissMs?: number
 }
 
 export function FeedbackCard({
@@ -78,15 +84,140 @@ export function FeedbackCard({
   dismissLabel = 'Dismiss message',
   headingLevel = 'h3',
   className,
+  autoDismissMs,
 }: FeedbackCardProps) {
   const style = TONE_STYLE[tone]
   const Icon = icon ?? style.defaultIcon
   const titleId = `feedback-title-${useId().replace(/[^a-zA-Z0-9_-]/g, '')}`
   const Heading = headingLevel
+  const [remainingFraction, setRemainingFraction] = useState(1)
+
+  /**
+   * One remaining-time value drives both the dismissal and the drain bar, so a
+   * hover or a keyboard focus pauses the countdown exactly: the bar cannot keep
+   * moving while the clock is stopped.
+   *
+   * Pointer and focus are tracked as two independent flags. Clicking a control
+   * inside the toast focuses it and then the pointer leaves, so one shared flag
+   * would let the leave event resume a clock that is still being read, and a
+   * stuck toast is the result. The clock itself only pauses once while either
+   * flag is set, and only resumes once when the last one clears.
+   */
+  const deadlineRef = useRef(0)
+  const remainingRef = useRef(0)
+  const pointerPausedRef = useRef(false)
+  const focusPausedRef = useRef(false)
+  const pausedRef = useRef(false)
+  const onDismissRef = useRef(onDismiss)
+
+  useEffect(() => {
+    onDismissRef.current = onDismiss
+  }, [onDismiss])
+
+  const drainVisible =
+    autoDismissMs !== undefined && autoDismissMs > 0 && onDismiss !== undefined
+
+  useEffect(() => {
+    // A changed title or body is a new message, and the countdown restarts.
+    const message = `${title}\u0000${body}`
+    if (message.length === 0) return
+    if (autoDismissMs === undefined || autoDismissMs <= 0) {
+      setRemainingFraction(1)
+      return
+    }
+    if (!onDismissRef.current) return
+
+    const duration = autoDismissMs
+    let cancelled = false
+    let intervalId: ReturnType<typeof setInterval> | null = null
+
+    remainingRef.current = duration
+    deadlineRef.current = Date.now() + duration
+    pointerPausedRef.current = false
+    focusPausedRef.current = false
+    pausedRef.current = false
+    setRemainingFraction(1)
+
+    const stop = () => {
+      if (intervalId !== null) {
+        clearInterval(intervalId)
+        intervalId = null
+      }
+    }
+
+    const finish = () => {
+      if (cancelled) return
+      cancelled = true
+      stop()
+      onDismissRef.current?.()
+    }
+
+    const tick = () => {
+      if (cancelled || pausedRef.current) return
+      const left = Math.max(0, deadlineRef.current - Date.now())
+      remainingRef.current = left
+      setRemainingFraction(left / duration)
+      if (left <= 0) finish()
+    }
+
+    intervalId = setInterval(tick, 100)
+
+    return () => {
+      cancelled = true
+      stop()
+    }
+  }, [autoDismissMs, title, body])
+
+  /**
+   * Freezes the clock on the first reason to pause and restarts it on the last
+   * one to clear. Repeated enters, leaves, focuses and blurs therefore never
+   * move the deadline, because an unchanged state returns before any write.
+   */
+  const syncPauseState = () => {
+    const shouldPause = pointerPausedRef.current || focusPausedRef.current
+    if (shouldPause === pausedRef.current) return
+
+    if (shouldPause) {
+      pausedRef.current = true
+      remainingRef.current = Math.max(0, deadlineRef.current - Date.now())
+      return
+    }
+
+    pausedRef.current = false
+    deadlineRef.current = Date.now() + remainingRef.current
+  }
+
+  const handlePointerEnter = () => {
+    if (!drainVisible) return
+    pointerPausedRef.current = true
+    syncPauseState()
+  }
+
+  const handlePointerLeave = () => {
+    if (!drainVisible) return
+    pointerPausedRef.current = false
+    syncPauseState()
+  }
+
+  const handleFocus = () => {
+    if (!drainVisible) return
+    focusPausedRef.current = true
+    syncPauseState()
+  }
+
+  const handleBlur = () => {
+    if (!drainVisible) return
+    focusPausedRef.current = false
+    syncPauseState()
+  }
 
   return (
     <section
       aria-labelledby={titleId}
+      onPointerEnter={handlePointerEnter}
+      onPointerLeave={handlePointerLeave}
+      onFocus={handleFocus}
+      onBlur={handleBlur}
       className={cn(
         'relative overflow-hidden rounded-[32px] p-6 shadow-soft',
         style.card,
@@ -140,6 +271,36 @@ export function FeedbackCard({
             {actionLabel}
           </NestedPillButton>
         </div>
+      ) : null}
+
+      {drainVisible ? (
+        /*
+          The bar is pinned to the bottom edge inside the card's own
+          `overflow-hidden` and `rounded-[32px]` shell, so the rounded bottom
+          corners clip it cleanly. The action row ends on the 24px card padding
+          above the bar, so the bar never covers it.
+
+          The fill has to read against four very different surfaces. Cobalt
+          measures 4.98:1 on Acid Lime, 5.03:1 on the warning yellow and 6.39:1
+          on the white info card, so it carries those three. The coral error fill
+          only reaches 2.55:1 on the pale error tint, which is under the 3:1 bar
+          for a non text indicator, so the error card drains in Jet Ink instead
+          at 15.8:1. Colour only, no extra motion: the width is bound to the same
+          remaining time value the dismissal timer uses, so a pause holds the bar
+          exactly where the clock stopped.
+        */
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-1.5 bg-brand-ink/10"
+        >
+          <span
+            className={cn(
+              'block h-full origin-left',
+              tone === 'error' ? 'bg-brand-ink' : 'bg-brand-cobalt',
+            )}
+            style={{ transform: `scaleX(${remainingFraction})` }}
+          />
+        </span>
       ) : null}
     </section>
   )

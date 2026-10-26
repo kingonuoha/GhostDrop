@@ -1182,6 +1182,12 @@ export class OfflineDirectEngine implements P2PSignalingAdapter {
   private emit<K extends P2PEventName>(event: K, payload: P2PEventMap[K]): void {
     const set = this.listeners.get(event)
     if (!set) return
-    for (const listener of [...set]) listener(payload)
+    for (const listener of [...set]) {
+      try {
+        listener(payload)
+      } catch {
+        // One broken subscriber must never break packet routing for the rest.
+      }
+    }
   }
 }

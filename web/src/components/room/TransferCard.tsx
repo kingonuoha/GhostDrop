@@ -4,12 +4,14 @@ import {
   ClipboardCheck,
   Copy,
   Download,
+  ExternalLink,
   FileImage,
   FileText,
   Link2,
   RefreshCw,
   Share2,
   Sparkles,
+  Trash2,
 } from 'lucide-react'
 import type { EphemeralItem } from '../../lib/p2p'
 import { cn } from '../../lib/cn'
@@ -34,16 +36,18 @@ type TransferCardProps = {
   /** Native OS share sheet. Absent on a browser without `navigator.share`. */
   onShare?: (id: string) => void
   onSave: (id: string) => void
+  /** Manual burn: clears the item here and on the linked screen. */
+  onBurn: (id: string) => void
 }
 
 /** Data bound squiggle: stroke-dashoffset tracks the transfer, no CSS animation. */
-function ProgressSquiggle({ value }: { value: number }) {
+function ProgressSquiggle({ value, label }: { value: number; label: string }) {
   const clamped = Math.min(1, Math.max(0, value))
 
   return (
     <div
       role="progressbar"
-      aria-label="Sending progress"
+      aria-label={label}
       aria-valuemin={0}
       aria-valuemax={100}
       aria-valuenow={Math.round(clamped * 100)}
@@ -116,9 +120,11 @@ export function TransferCard({
   onCopy,
   onShare,
   onSave,
+  onBurn,
 }: TransferCardProps) {
   const [saved, setSaved] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [expanded, setExpanded] = useState(false)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -134,6 +140,11 @@ export function TransferCard({
   const percent = Math.round(Math.min(1, Math.max(0, progress)) * 100)
 
   if (item.status === 'sending') {
+    // A file arriving and a file leaving share this card, so the words, the
+    // pill, the icon and the progressbar label all flip on the direction.
+    const isReceiving = item.direction === 'received'
+    const SendingIcon = isReceiving ? Download : FileText
+
     return (
       <article className="relative flex flex-col gap-3 overflow-hidden rounded-[24px] bg-brand-stone p-5 shadow-soft">
         <SquiggleCardBg
@@ -145,24 +156,31 @@ export function TransferCard({
         <div className="relative flex flex-wrap items-center justify-between gap-2">
           <div className="flex min-w-0 items-center gap-3">
             <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-surface text-brand-cobalt">
-              <FileText size={20} strokeWidth={2} aria-hidden="true" />
+              <SendingIcon size={20} strokeWidth={2} aria-hidden="true" />
             </span>
             <div className="min-w-0">
               <h3 className="type-h3 truncate text-[1.05rem]">{item.fileName ?? 'Your file'}</h3>
-              <p className="text-xs font-semibold text-brand-ink-muted">On its way across</p>
+              <p className="text-xs font-semibold text-brand-ink-muted">
+                {isReceiving ? 'Landing on your screen' : 'On its way across'}
+              </p>
             </div>
           </div>
           <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-surface px-3 py-1 text-xs font-bold text-brand-ink">
             <span className="h-2 w-2 rounded-full bg-brand-cobalt" aria-hidden="true" />
-            Sending... <Numerals text={`${percent}%`} />
+            {isReceiving ? 'Receiving...' : 'Sending...'} <Numerals text={`${percent}%`} />
           </span>
         </div>
 
-        <ProgressSquiggle value={progress} />
+        <ProgressSquiggle
+          value={progress}
+          label={isReceiving ? 'Receiving progress' : 'Sending progress'}
+        />
 
-        <div className="flex items-center justify-between gap-2 text-xs font-semibold text-brand-ink-muted">
-          <span>To {peerLabel}</span>
-          <span>{percent < 90 ? 'Almost there' : 'Finishing up'}</span>
+        <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1 text-xs font-semibold text-brand-ink-muted">
+          <span className="min-w-0 break-words">
+            {isReceiving ? 'From' : 'To'} {peerLabel}
+          </span>
+          <span className="shrink-0">{percent < 90 ? 'Almost there' : 'Finishing up'}</span>
         </div>
       </article>
     )
@@ -188,13 +206,24 @@ export function TransferCard({
 
   if (item.kind === 'text') {
     const value = item.text ?? ''
-    const isLink = /^https?:\/\//i.test(value.trim())
-    const Icon = isLink ? Link2 : ClipboardCheck
+    const trimmed = value.trim()
+    // Only a real http or https address is offered as a link, so a note
+    // carrying `javascript:` or `data:` text renders as plain words.
+    let safeUrl: string | null = null
+    try {
+      const parsed = new URL(trimmed)
+      if (parsed.protocol === 'http:' || parsed.protocol === 'https:') safeUrl = trimmed
+    } catch {
+      safeUrl = null
+    }
+
+    const isLong = value.length > 72
+    const Icon = safeUrl ? Link2 : ClipboardCheck
 
     return (
       <article
         className={cn(
-          'relative flex flex-col gap-3 overflow-hidden rounded-[24px] p-5 shadow-soft sm:flex-row sm:items-center sm:justify-between',
+          'relative flex flex-col gap-3 overflow-hidden rounded-[24px] p-5 shadow-soft lg:flex-row lg:items-center lg:justify-between',
           tone === 'stone' ? 'bg-brand-stone' : 'bg-brand-surface',
         )}
       >
@@ -210,9 +239,27 @@ export function TransferCard({
             <Icon size={22} strokeWidth={2} aria-hidden="true" />
           </span>
           <div className="min-w-0">
-            <p className="break-words text-sm font-bold leading-snug text-brand-ink">
-              {shortenText(value)}
-            </p>
+            {isLong && expanded ? (
+              <p className="break-words whitespace-pre-wrap text-sm font-bold leading-snug text-brand-ink">
+                {value}
+              </p>
+            ) : (
+              <p className="break-words text-sm font-bold leading-snug text-brand-ink">
+                {shortenText(value)}
+              </p>
+            )}
+
+            {isLong ? (
+              <button
+                type="button"
+                aria-expanded={expanded}
+                onClick={() => setExpanded((current) => !current)}
+                className="-ml-2 mt-1 inline-flex min-h-[44px] items-center rounded-full px-2 text-xs font-bold text-brand-cobalt transition-colors hover:bg-brand-cobalt-tint focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-cobalt"
+              >
+                {expanded ? 'Show less' : 'Show full note'}
+              </button>
+            ) : null}
+
             <MetaLine
               direction={item.direction}
               peerLabel={peerLabel}
@@ -222,15 +269,42 @@ export function TransferCard({
           </div>
         </div>
 
-        <NestedPillButton
-          variant="cobalt-on-lime"
-          size="sm"
-          icon={Copy}
-          onClick={() => onCopy(item.id)}
-          className="relative w-full shrink-0 justify-between sm:w-auto sm:justify-center"
-        >
-          Copy
-        </NestedPillButton>
+        <div className="relative flex w-full shrink-0 flex-col gap-2 lg:w-auto lg:flex-row lg:items-center">
+          <NestedPillButton
+            variant="cobalt-on-lime"
+            size="sm"
+            icon={Copy}
+            onClick={() => onCopy(item.id)}
+            className="w-full justify-between lg:w-auto lg:justify-center"
+          >
+            Copy
+          </NestedPillButton>
+
+          {safeUrl ? (
+            <a
+              href={safeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex min-h-[44px] w-full items-center justify-between gap-2 rounded-full bg-brand-cobalt px-4 text-sm font-semibold text-white shadow-pop-cobalt transition-colors hover:bg-brand-cobalt-deep lg:w-auto lg:justify-center"
+            >
+              <span>Open</span>
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-lime text-brand-ink transition-transform duration-200 ease-[var(--ease-spring)] group-hover:scale-110 group-hover:rotate-12">
+                <ExternalLink size={14} strokeWidth={2} aria-hidden="true" />
+              </span>
+            </a>
+          ) : null}
+
+          <NestedPillButton
+            variant="ink"
+            size="sm"
+            icon={Trash2}
+            aria-label="Remove item now"
+            onClick={() => onBurn(item.id)}
+            className="w-full justify-between lg:w-auto lg:justify-center"
+          >
+            Remove
+          </NestedPillButton>
+        </div>
       </article>
     )
   }
@@ -331,6 +405,17 @@ export function TransferCard({
             {saved ? 'Saved' : 'Save'}
           </NestedPillButton>
         </div>
+
+        <NestedPillButton
+          variant="ink"
+          size="sm"
+          icon={Trash2}
+          aria-label="Remove item now"
+          onClick={() => onBurn(item.id)}
+          className="w-full justify-between sm:w-auto sm:justify-center"
+        >
+          Remove
+        </NestedPillButton>
       </div>
     </article>
   )

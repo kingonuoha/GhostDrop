@@ -1,3 +1,6 @@
+import { useState } from 'react'
+import { QRCodeSVG } from 'qrcode.react'
+import { QrCode } from 'lucide-react'
 import type { DeviceType, PeerInfo } from '../../lib/p2p'
 import { cn } from '../../lib/cn'
 import {
@@ -64,6 +67,8 @@ type ConnectionBridgeProps = {
   localDeviceType: DeviceType
   /** Self label for this screen, from `useGhostRoom`, never hardcoded here. */
   localDeviceName: string
+  /** Pairing link encoded in the in-room QR drawer. */
+  joinUrl: string
   className?: string
 }
 
@@ -78,8 +83,10 @@ export function ConnectionBridge({
   peers,
   localDeviceType,
   localDeviceName,
+  joinUrl,
   className,
 }: ConnectionBridgeProps) {
+  const [qrOpen, setQrOpen] = useState(false)
   const isLinked = peers.length > 0
   const firstPeer = peers[0]
   const peerLabel = firstPeer
@@ -161,6 +168,45 @@ export function ConnectionBridge({
           Type this code on your other screen.
         </p>
       )}
+
+      <div className="relative mt-4 flex flex-col gap-3">
+        <button
+          type="button"
+          aria-expanded={qrOpen}
+          aria-controls={qrOpen ? 'room-qr-panel' : undefined}
+          onClick={() => setQrOpen((open) => !open)}
+          className="inline-flex min-h-[44px] items-center justify-center gap-2 self-start rounded-full bg-brand-surface px-4 text-sm font-semibold text-brand-ink transition-colors hover:bg-brand-line focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-cobalt"
+        >
+          <QrCode size={16} strokeWidth={2} aria-hidden="true" />
+          <span>{qrOpen ? 'Hide QR Code' : 'Show QR Code'}</span>
+        </button>
+
+        {qrOpen ? (
+          <div
+            id="room-qr-panel"
+            className="flex w-full flex-col items-center gap-3 rounded-[24px] bg-brand-surface p-4"
+          >
+            <div className="text-brand-ink">
+              <QRCodeSVG
+                value={joinUrl}
+                size={148}
+                /*
+                  Two modules of white inside the SVG, plus the panel padding and
+                  the caption gap, keeps the quiet zone above the four module
+                  minimum on every edge so a rear camera locks on first try.
+                */
+                marginSize={2}
+                bgColor="transparent"
+                fgColor="currentColor"
+                title="Scan this code with your other screen"
+              />
+            </div>
+            <p className="text-center text-xs font-semibold text-brand-ink-muted">
+              Scan with your other screen to link up
+            </p>
+          </div>
+        ) : null}
+      </div>
     </section>
   )
 }

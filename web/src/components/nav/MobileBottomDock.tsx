@@ -99,9 +99,9 @@ export function MobileBottomDock() {
         <div
           ref={timerPanelRef}
           id="mobile-timer-panel"
-          role="dialog"
+          role="group"
           aria-label="Auto-delete timer"
-          className="rounded-[28px] border border-brand-line bg-brand-surface p-4 shadow-lift"
+          className="rounded-[28px] border border-brand-line bg-brand-stone p-4 shadow-lift"
         >
           <div className="flex items-center justify-between gap-2">
             <p className="type-eyebrow text-brand-ink-muted">Cleans up after</p>
@@ -109,7 +109,7 @@ export function MobileBottomDock() {
               type="button"
               onClick={closeTimer}
               aria-label="Close timer options"
-              className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-stone text-brand-ink transition-colors hover:bg-brand-line"
+              className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-surface text-brand-ink transition-colors hover:bg-brand-line"
             >
               <X size={18} strokeWidth={2} aria-hidden="true" />
             </button>
@@ -131,7 +131,7 @@ export function MobileBottomDock() {
                       'flex min-h-[44px] w-full items-center justify-between gap-2 rounded-full px-4 text-left text-sm font-semibold transition-colors',
                       isSelected
                         ? 'bg-brand-lime text-brand-ink'
-                        : 'text-brand-ink hover:bg-brand-stone',
+                        : 'text-brand-ink hover:bg-brand-surface',
                     )}
                   >
                     <span>{TTL_LABELS[preset]}</span>
@@ -151,7 +151,7 @@ export function MobileBottomDock() {
                 closeTimer()
                 openFeedback()
               }}
-              className="flex min-h-[44px] w-full items-center justify-center gap-2 rounded-full border border-brand-line bg-brand-stone/60 px-4 text-xs font-bold text-brand-ink transition-colors hover:bg-brand-stone"
+              className="flex min-h-[44px] w-full items-center justify-center gap-2 rounded-full border border-brand-line bg-brand-surface/70 px-4 text-xs font-bold text-brand-ink transition-colors hover:bg-brand-surface"
             >
               <MessageSquare size={14} strokeWidth={2} aria-hidden="true" />
               <span>Have an idea or feedback?</span>
@@ -184,6 +184,9 @@ export function MobileBottomDock() {
               )}
             >
               <Icon size={18} strokeWidth={2} aria-hidden="true" />
+              {tab.id === 'timer' ? (
+                <span className="sr-only">Auto-delete: </span>
+              ) : null}
               <span className="truncate">{tab.label}</span>
             </button>
           )

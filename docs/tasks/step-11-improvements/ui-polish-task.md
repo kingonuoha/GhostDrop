@@ -37,10 +37,10 @@ Ensure all 10 Step 11 UX additions meet GhostDrop's locked visual design system,
 ---
 
 ## Verification Checklist
-- [ ] `SUCCESS_FILE_RECEIVED` is documented in `docs/02-brand-persona-and-copy.md` and implemented in `web/src/lib/copyDeck.ts` and `web/src/components/room/FeedbackNotice.tsx`.
-- [ ] All interactive controls in `DesktopTopPillBar`, `ConnectionBridge`, `TransferFeed`, and `TransferCard` measure `>= 44px` in both dimensions and have visible `:focus-visible` rings.
-- [ ] `HowItWorks.tsx` has the `Kind language for peace of mind` section removed and maintains clean heading hierarchy (`H1` -> `H2`).
-- [ ] All toasts display the 5-second emptying progress bar (`100% -> 0%`) and auto-dismiss after `5000ms`.
-- [ ] Zero horizontal overflow (`scrollWidth === clientWidth`) across `/`, `/room/GHST48`, `/join?room=GHST48`, and `/how-it-works` at `360px`, `768px`, `1024px`, and `1440px`.
-- [ ] Zero em dashes (`U+2014`), zero en dashes (`U+2013`), zero emojis, zero technical jargon in rendered DOM text, and all squiggles animate exclusively via `stroke-dashoffset`.
-- [ ] `npm run type-check`, `npm run lint`, and `npm run build` in `web/` exit `0`.
+- [x] `SUCCESS_FILE_RECEIVED` is documented in `docs/02-brand-persona-and-copy.md` and implemented in `web/src/lib/copyDeck.ts` and `web/src/components/room/FeedbackNotice.tsx`.
+- [x] All interactive controls in `DesktopTopPillBar`, `ConnectionBridge`, `TransferFeed`, and `TransferCard` measure `>= 44px` in both dimensions and have visible `:focus-visible` rings.
+- [x] `HowItWorks.tsx` has the `Kind language for peace of mind` section removed and maintains clean heading hierarchy (`H1` -> `H2`).
+- [x] All toasts display the 5-second emptying progress bar (`100% -> 0%`) and auto-dismiss after `5000ms`.
+- [x] Zero horizontal overflow (`scrollWidth === clientWidth`) across `/`, `/room/GHST48`, `/join?room=GHST48`, and `/how-it-works` at `360px`, `768px`, `1024px`, and `1440px`.
+- [x] Zero em dashes (`U+2014`), zero en dashes (`U+2013`), zero emojis, zero technical jargon in rendered DOM text, and all squiggles animate exclusively via `stroke-dashoffset`.
+- [x] `npm run type-check`, `npm run lint`, and `npm run build` in `web/` exit `0`.

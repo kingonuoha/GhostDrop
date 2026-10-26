@@ -41,15 +41,30 @@ export interface AddTextInput {
 
 export interface AddFileInput {
   id?: string
-  file: Blob
+  /**
+   * Required for a file this device owns. Omitted for an incoming transfer at
+   * FILE_START, where the reassembled Blob does not exist yet and arrives
+   * later through `completeReceivedFile`.
+   */
+  file?: Blob
+  /** Declared byte count from FILE_START, used only when `file` is absent. */
+  size?: number
   fileName: string
   mime?: string
   direction: EphemeralItemDirection
+  /** Ignored while `file` is absent: a placeholder's TTL starts at completion. */
   ttlMs?: number | null
   burnOnCopy?: boolean
   peerId?: string
   status?: EphemeralItemStatus
   createdAt?: number
+}
+
+/** Options for promoting a placeholder item to `ready` once its bytes land. */
+export interface CompleteReceivedFileOptions {
+  /** Milliseconds until auto-delete. Undefined keeps the item's own timer. */
+  ttlMs?: number | null
+  burnOnCopy?: boolean
 }
 
 /** Fields a caller may change after creation. `blobUrl` is deliberately absent. */
@@ -223,28 +238,86 @@ export class EphemeralStore {
     // strand a URL that the store then refuses to track.
     this.assertIdAvailable(id)
     const status = input.status ?? 'ready'
+    const file = input.file
     const item: EphemeralItem = {
       id,
       kind: 'file',
       fileName: input.fileName,
-      mime: input.mime ?? input.file.type ?? 'application/octet-stream',
-      size: input.file.size,
+      mime: input.mime ?? file?.type ?? 'application/octet-stream',
+      size: file ? file.size : (input.size ?? 0),
       direction: input.direction,
       peerId: input.peerId,
       createdAt,
-      deleteAt: resolveDeleteAt(createdAt, input.ttlMs, burnOnCopy),
+      // A placeholder has no bytes yet, so it holds no countdown: a sweep must
+      // never delete an in-flight transfer. The TTL starts when
+      // completeReceivedFile stamps the completion clock.
+      deleteAt: file === undefined ? null : resolveDeleteAt(createdAt, input.ttlMs, burnOnCopy),
       burnOnCopy,
       status,
     }
-    if (carriesObjectUrl(status)) {
-      const blobUrl = this.createObjectUrl(input.file)
+    // An incoming FILE_START carries no Blob yet, so it gets no URL here. The
+    // bytes and the single URL for that id arrive in completeReceivedFile.
+    if (file !== undefined && carriesObjectUrl(status)) {
+      const blobUrl = this.createObjectUrl(file)
       if (blobUrl !== undefined) item.blobUrl = blobUrl
       // Live Blob for clipboard and native share. Cleared with the URL on every
       // removal path, so the bytes never outlive the item.
-      item.blob = input.file
+      item.blob = file
     }
     this.putItem(item)
     return item
+  }
+
+  /**
+   * Promotes an incoming placeholder (registered at FILE_START with no Blob)
+   * to `ready` once every chunk is reassembled.
+   *
+   * The old URL, if any, is revoked before the new one is minted, so the ledger
+   * stays exact and `leakedObjectUrlCount` cannot drift. `createdAt` and
+   * `deleteAt` restart from the completion clock, so a slow transfer never
+   * spends its own TTL while the bytes are still arriving.
+   * Returns null when the id is unknown or the store is disposed.
+   */
+  completeReceivedFile(
+    id: string,
+    file: Blob,
+    options: CompleteReceivedFileOptions = {},
+  ): EphemeralItem | null {
+    if (this.disposed) return null
+
+    const current = this.items.get(id)
+    if (!current) return null
+
+    const completedAt = this.clock()
+    const burnOnCopy = options.burnOnCopy ?? current.burnOnCopy
+    const ttlMs =
+      options.ttlMs !== undefined
+        ? options.ttlMs
+        : current.deleteAt === null
+          ? null
+          : Math.max(0, current.deleteAt - current.createdAt)
+
+    // Revoke first: one id never holds two live URLs, not even for one tick.
+    this.revokeUrl(current.blobUrl)
+
+    const next: EphemeralItem = {
+      ...current,
+      mime: file.type || current.mime || 'application/octet-stream',
+      size: file.size,
+      blob: file,
+      burnOnCopy,
+      createdAt: completedAt,
+      deleteAt: resolveDeleteAt(completedAt, ttlMs, burnOnCopy),
+      status: 'ready',
+    }
+
+    const blobUrl = this.createObjectUrl(file)
+    if (blobUrl !== undefined) next.blobUrl = blobUrl
+    else delete next.blobUrl
+
+    this.items.set(id, next)
+    this.commit()
+    return next
   }
 
   updateItem(id: string, patch: EphemeralItemPatch): EphemeralItem | null {

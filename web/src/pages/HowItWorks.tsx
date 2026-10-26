@@ -8,9 +8,7 @@
 import { Fragment } from 'react'
 import {
   ArrowRight,
-  CheckCircle2,
   Clock,
-  Ghost,
   QrCode,
   ScanLine,
   Send,
@@ -24,8 +22,6 @@ import { OrbBadge } from '../components/brand/OrbBadge'
 import { SquiggleCardBg } from '../components/brand/SquiggleCardBg'
 import type { SquiggleTone } from '../components/brand/SquiggleCardBg'
 import { TeleportCounterBadge } from '../components/brand/TeleportCounterBadge'
-import { FeedbackCard } from '../components/ui/FeedbackCard'
-import { buildFeedback } from '../lib/copyDeck'
 import { cn } from '../lib/cn'
 import { navigate } from '../lib/router'
 
@@ -79,12 +75,6 @@ const STEPS: readonly Step[] = [
     pillClass: 'bg-brand-surface text-brand-ink',
     squiggleTone: 'forest',
   },
-]
-
-const ALERTS = [
-  { ...buildFeedback('SUCCESS_FILE_SENT', { fileName: 'Your photo' }), icon: CheckCircle2 },
-  { ...buildFeedback('INFO_TTL_EXPIRED', { preset: '50m', itemName: 'this photo' }), icon: Sparkles },
-  { ...buildFeedback('ERR_ROOM_NOT_FOUND'), icon: Ghost },
 ]
 
 /**
@@ -192,31 +182,6 @@ export function HowItWorks() {
           )
         })}
       </ol>
-
-      <section aria-labelledby="how-alerts-title" className="flex flex-col gap-4">
-        <div className="flex flex-col gap-1.5">
-          <p className="type-eyebrow flex items-center gap-2 text-brand-ink-muted">
-            <ShieldCheck size={14} strokeWidth={2} aria-hidden="true" />
-            <span>Kind language for peace of mind</span>
-          </p>
-          <h2 id="how-alerts-title" className="type-h2 text-balance">
-            Helpful messages you will actually understand.
-          </h2>
-        </div>
-
-        <div className="grid gap-4 md:grid-cols-3">
-          {ALERTS.map((alert) => (
-            <FeedbackCard
-              key={alert.key}
-              tone={alert.tone}
-              icon={alert.icon}
-              title={alert.title}
-              body={alert.body}
-              className="h-full"
-            />
-          ))}
-        </div>
-      </section>
 
       <section
         aria-labelledby="how-questions-title"

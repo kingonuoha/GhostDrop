@@ -24,6 +24,14 @@ import { P2PError, type P2PErrorCode } from './errors'
 const MAX_SETTLED_TRANSFER_IDS = 64
 
 /**
+ * A transfer that starts and then stalls would leave a permanent receiving
+ * card, because the store placeholder only settles on completion or on error.
+ * Each active transfer owns one timer, re-armed on every accepted chunk, so a
+ * silent stream fails its own card instead of hanging forever.
+ */
+export const IDLE_TIMEOUT_MS = 30000
+
+/**
  * A rejected FILE_START cannot cancel a sender mid stream, and binary frames
  * carry no transfer id, so the receiver absorbs at most one file worth of
  * orphan frames per rejection instead of reporting one error per frame.
@@ -45,9 +53,28 @@ export interface ReceivedFileItem {
   receivedAt: number
 }
 
+/**
+ * A FILE_START that passed every validation gate and is now assembling in
+ * memory. Emitted before any chunk lands, so the receiver screen can show a
+ * live card at 0 percent instead of waiting for the whole file.
+ */
+export interface StartedFileTransfer {
+  id: string
+  name: string
+  size: number
+  mime: string
+  totalChunks: number
+  ttlMs: number | null
+  dropAndNuke: boolean
+  burnOnRead: boolean
+  startedAt: number
+}
+
 export interface ChunkReceiverOptions {
   /** Sends control packets back to the room (FILE_ACK). */
   send: (packet: WirePacket) => void
+  /** Fires once per accepted FILE_START, never for a rejected start. */
+  onStart?: (transfer: StartedFileTransfer) => void
   onItem?: (item: ReceivedFileItem) => void
   onProgress?: (progress: TransferProgress) => void
   onError?: (error: P2PError) => void
@@ -69,10 +96,13 @@ interface ActiveTransfer {
   pending: PendingChunk | null
   startedAt: number
   lastProgressAt: number
+  /** Idle watchdog handle. Exactly one live timer per active transfer. */
+  idleTimer: ReturnType<typeof setTimeout> | null
 }
 
 export class ChunkReceiver {
   private readonly send: (packet: WirePacket) => void
+  private readonly onStart: ((transfer: StartedFileTransfer) => void) | undefined
   private readonly onItem: ((item: ReceivedFileItem) => void) | undefined
   private readonly onProgress: ((progress: TransferProgress) => void) | undefined
   private readonly onError: ((error: P2PError) => void) | undefined
@@ -86,6 +116,7 @@ export class ChunkReceiver {
 
   constructor(options: ChunkReceiverOptions) {
     this.send = options.send
+    this.onStart = options.onStart
     this.onItem = options.onItem
     this.onProgress = options.onProgress
     this.onError = options.onError
@@ -167,6 +198,9 @@ export class ChunkReceiver {
     transfer.bytesReceived += data.byteLength
     transfer.chunksReceived += 1
 
+    // Bytes really landed, so the stall clock restarts.
+    this.armIdleTimer(transfer)
+
     this.reportProgress(transfer)
 
     if (transfer.chunksReceived === transfer.start.totalChunks) {
@@ -175,10 +209,13 @@ export class ChunkReceiver {
   }
 
   dispose(id: string): void {
+    const transfer = this.transfers.get(id)
+    if (transfer) this.clearIdleTimer(transfer)
     this.transfers.delete(id)
   }
 
   disposeAll(): void {
+    for (const transfer of this.transfers.values()) this.clearIdleTimer(transfer)
     this.transfers.clear()
   }
 
@@ -214,7 +251,7 @@ export class ChunkReceiver {
     this.strayBinaryAllowance = 0
 
     const startedAt = this.now()
-    this.transfers.set(start.id, {
+    const transfer: ActiveTransfer = {
       start,
       chunks: [],
       bytesReceived: 0,
@@ -222,6 +259,38 @@ export class ChunkReceiver {
       pending: null,
       startedAt,
       lastProgressAt: startedAt,
+      idleTimer: null,
+    }
+    this.transfers.set(start.id, transfer)
+    // Armed at FILE_START, so a sender that goes silent before the first chunk
+    // fails this transfer instead of leaving a card stuck at 0 percent.
+    this.armIdleTimer(transfer)
+
+    // Accepted, so the receiving card can appear before the first chunk lands.
+    // A rejected start returns above and never reaches this point.
+    this.onStart?.({
+      id: start.id,
+      name: start.name,
+      size: start.size,
+      mime: start.mime,
+      totalChunks: start.totalChunks,
+      ttlMs: start.ttlMs,
+      dropAndNuke: start.dropAndNuke === true,
+      burnOnRead: start.burnOnRead === true,
+      startedAt,
+    })
+
+    this.onProgress?.({
+      id: start.id,
+      direction: 'receive',
+      bytesTransferred: 0,
+      totalBytes: start.size,
+      chunksTransferred: 0,
+      totalChunks: start.totalChunks,
+      percent: 0,
+      bytesPerSecond: 0,
+      startedAt,
+      updatedAt: startedAt,
     })
 
     if (start.size === 0) {
@@ -235,7 +304,7 @@ export class ChunkReceiver {
       // A rejected or finished id stays settled, so its trailing frames are silent.
       if (this.settledTransferIds.has(header.id)) return
       this.reportError(
-        new P2PError('UNKNOWN_TRANSFER', 'FILE_CHUNK arrived for an unknown transfer'),
+        new P2PError('UNKNOWN_TRANSFER', 'FILE_CHUNK arrived for an unknown transfer', header.id),
       )
       return
     }
@@ -272,9 +341,15 @@ export class ChunkReceiver {
       // zero-byte file finishes at FILE_START), so a late FILE_END for a known
       // settled transfer is a no-op and never an error.
       if (this.settledTransferIds.has(id)) return
-      this.reportError(new P2PError('UNKNOWN_TRANSFER', 'FILE_END arrived for an unknown transfer'))
+      this.reportError(
+        new P2PError('UNKNOWN_TRANSFER', 'FILE_END arrived for an unknown transfer', id),
+      )
       return
     }
+
+    // Every branch below settles this transfer, so the watchdog stops here and
+    // never fires against a finished or failed id.
+    this.clearIdleTimer(transfer)
 
     if (transfer.pending) {
       this.failTransfer(transfer, 'PROTOCOL_ERROR', 'FILE_END arrived before the last binary frame')
@@ -340,10 +415,31 @@ export class ChunkReceiver {
 
   private failTransfer(transfer: ActiveTransfer, code: P2PErrorCode, message: string): void {
     const id = transfer.start.id
+    this.clearIdleTimer(transfer)
     this.transfers.delete(id)
     this.markSettled(id)
     this.sendAck(id, 'ERROR')
-    this.reportError(new P2PError(code, message))
+    this.reportError(new P2PError(code, message, id))
+  }
+
+  /**
+   * Starts or restarts the stall clock for one transfer. The callback checks
+   * that the same transfer is still the live one, so a timer that was already
+   * queued when the transfer settled cannot fail a later transfer.
+   */
+  private armIdleTimer(transfer: ActiveTransfer): void {
+    this.clearIdleTimer(transfer)
+    transfer.idleTimer = setTimeout(() => {
+      transfer.idleTimer = null
+      if (this.transfers.get(transfer.start.id) !== transfer) return
+      this.failTransfer(transfer, 'BACKPRESSURE_TIMEOUT', 'No chunks arrived in time')
+    }, IDLE_TIMEOUT_MS)
+  }
+
+  private clearIdleTimer(transfer: ActiveTransfer): void {
+    if (transfer.idleTimer === null) return
+    clearTimeout(transfer.idleTimer)
+    transfer.idleTimer = null
   }
 
   /** Remembers a finished id with bounded, oldest-first eviction. */
@@ -366,7 +462,7 @@ export class ChunkReceiver {
       MAX_STRAY_BINARY_FRAMES,
     )
     this.sendAck(start.id, 'ERROR')
-    this.reportError(new P2PError(code, message))
+    this.reportError(new P2PError(code, message, start.id))
   }
 
   private sendAck(id: string, status: FileAckPacket['status']): void {
@@ -377,7 +473,7 @@ export class ChunkReceiver {
       this.reportError(
         error instanceof P2PError
           ? error
-          : new P2PError('NO_OPEN_CHANNEL', 'Could not send FILE_ACK'),
+          : new P2PError('NO_OPEN_CHANNEL', 'Could not send FILE_ACK', id),
       )
     }
   }

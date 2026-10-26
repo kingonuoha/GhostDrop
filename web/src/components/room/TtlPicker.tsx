@@ -1,6 +1,7 @@
 import { Clock, Flame, Power, Timer } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { cn } from '../../lib/cn'
+import { TTL_LABELS, TTL_PRESET_ORDER } from '../../lib/constants'
 import type { TtlPreset } from '../../types/protocol'
 
 type TtlOption = {
@@ -10,15 +11,30 @@ type TtlOption = {
 }
 
 /**
- * Plain English presets from docs/02-brand-persona-and-copy.md section 2.
- * The word TTL never reaches the screen.
+ * One icon per preset. Wording never lives here: the visible label comes from
+ * `TTL_LABELS` so the picker, the desktop pill bar and the phone dock all read
+ * the same sentence. `24h` keeps an icon so adding it to `TTL_PRESET_ORDER`
+ * later needs no second edit here.
  */
-export const TTL_OPTIONS: readonly TtlOption[] = [
-  { preset: 'BURN_ON_COPY', label: 'Delete after 1st copy', icon: Flame },
-  { preset: '15m', label: '15 mins', icon: Timer },
-  { preset: '50m', label: '50 mins', icon: Clock },
-  { preset: 'TAB_CLOSE', label: 'When I close this page', icon: Power },
-]
+const TTL_ICON: Readonly<Record<TtlPreset, LucideIcon>> = {
+  BURN_ON_COPY: Flame,
+  '15m': Timer,
+  '50m': Clock,
+  '24h': Clock,
+  TAB_CLOSE: Power,
+}
+
+/**
+ * Plain English presets from docs/02-brand-persona-and-copy.md section 2.
+ * Order comes from `TTL_PRESET_ORDER` and wording from `TTL_LABELS`, so one
+ * edit in `constants.ts` reaches every surface at once. The word TTL never
+ * reaches the screen.
+ */
+export const TTL_OPTIONS: readonly TtlOption[] = TTL_PRESET_ORDER.map((preset) => ({
+  preset,
+  label: TTL_LABELS[preset],
+  icon: TTL_ICON[preset],
+}))
 
 type TtlPickerProps = {
   value: TtlPreset
