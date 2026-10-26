@@ -35,6 +35,7 @@ export type RoomFeedbackKey =
   | 'INFO_OFFLINE_READY'
   | 'INFO_OFFLINE_REPLY_READY'
   | 'ERR_OFFLINE_CODE_INVALID'
+  | 'ERR_MIC_DENIED'
 
 export type RoomFeedbackTone = 'success' | 'error' | 'warning' | 'info'
 
@@ -298,6 +299,16 @@ export function buildFeedback(
         body: 'That offline link code looks incomplete. Copy it again from your other screen!',
         actionLabel: 'Try Again',
       }
+    case 'ERR_MIC_DENIED':
+      // Sound is always a shortcut, never the only door, so this points at the
+      // two paths that still work. Source: docs/02-brand-persona-and-copy.md 2.2.
+      return {
+        key,
+        tone: 'error',
+        title: 'Microphone is off',
+        body: 'No problem! Scan the reply code with your camera or paste it below.',
+        actionLabel: 'Got It',
+      }
     default:
       return {
         key,
@@ -388,3 +399,28 @@ export const OFFLINE_GUEST_REPLY_BODY =
   'On your other screen, point its camera at this code. No camera on that screen? Copy this code and paste it there.'
 export const OFFLINE_COPY_REPLY_CTA = 'Copy code instead'
 export const OFFLINE_SWITCH_CTA = 'No internet? Link directly on Wi-Fi or Hotspot'
+
+/*
+  Offline sound handshake and the compact pairing card.
+  Source: docs/02-brand-persona-and-copy.md section 2.2, step 15 brief section 5.
+
+  Sound is a shortcut past the camera, never a replacement for it: the camera
+  scan and the paste row stay on screen at all times. Nothing here names the
+  sound itself, a signal, a channel or a device: the reader's partner is always
+  "your other device". Every label is short enough for a 44px pill at 360px.
+*/
+export const OFFLINE_SOUND_SEND_CTA = 'Send Reply with Sound'
+export const OFFLINE_SOUND_SENDING_LABEL = 'Playing sound wave...'
+export const OFFLINE_SOUND_LISTEN_CTA = 'Listen for Sound'
+// Longest pill label in the deck at 34 characters. If it wraps inside the pill
+// at 360px, swap in the shorter 21 character "Listening for reply..." and keep
+// the listening state word visible.
+export const OFFLINE_SOUND_LISTENING_LABEL = 'Listening for your other device...'
+export const OFFLINE_SOUND_STOP_CTA = 'Stop Listening'
+// Sent state, 35 characters. It names the fallback out loud, so a quiet room or
+// a missed sound never leaves the reader staring at a dead button.
+export const OFFLINE_SOUND_SENT_LABEL = 'Sound sent. No link? Show the code.'
+export const OFFLINE_SHARE_CODE_CTA = 'Share Code'
+export const OFFLINE_COPY_INVITE_SHORT_CTA = 'Copy invite code'
+export const OFFLINE_PASTE_ROW_PLACEHOLDER = 'Or paste reply code...'
+export const PAIRING_SHORT_CODE_NOTE = 'Short code, quick scan'

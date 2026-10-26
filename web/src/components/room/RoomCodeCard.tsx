@@ -11,6 +11,7 @@ import {
   PAIRING_OFFLINE_PREPARING,
   PAIRING_QR_TITLE_OFFLINE,
   PAIRING_QR_TITLE_ONLINE,
+  PAIRING_SHORT_CODE_NOTE,
 } from '../../lib/copyDeck'
 import { scanCardHelper, scanCardTitle } from '../../lib/device'
 import type { LanCandidate } from '../../lib/lanInfo'
@@ -235,43 +236,53 @@ export function RoomCodeCard({
         One square surface panel for both views, so switching or waiting for the
         direct link code never resizes the card. The offline symbol is width
         bound and shrinks on a narrow screen instead of overflowing, and the
-        preparing line holds the same panel rather than an empty box.
+        preparing line holds the same panel rather than an empty box. The short
+        code note under the offline panel is one line of small type, so the
+        compact controls below stay the only real height difference.
       */}
-      <div
-        className={cn(
-          'relative flex aspect-square w-full items-center justify-center rounded-[24px] bg-brand-surface p-3 shadow-soft',
-          isOfflineView ? 'max-w-[288px]' : 'max-w-[212px]',
-        )}
-      >
-        {isOfflineView ? (
-          offlineInviteToken ? (
+      <div className="relative flex w-full flex-col items-center gap-1.5">
+        <div
+          className={cn(
+            'relative flex aspect-square w-full items-center justify-center rounded-[24px] bg-brand-surface p-3 shadow-soft',
+            isOfflineView ? 'max-w-[272px]' : 'max-w-[212px]',
+          )}
+        >
+          {isOfflineView ? (
+            offlineInviteToken ? (
+              <QRCodeSVG
+                value={offlineJoinUrl}
+                size={248}
+                level="L"
+                marginSize={2}
+                bgColor="transparent"
+                fgColor="currentColor"
+                title={PAIRING_QR_TITLE_OFFLINE}
+                className="h-full w-full text-brand-ink"
+              />
+            ) : (
+              <p className="max-w-[20ch] text-center text-xs font-bold leading-snug text-brand-ink-muted">
+                {PAIRING_OFFLINE_PREPARING}
+              </p>
+            )
+          ) : (
             <QRCodeSVG
-              value={offlineJoinUrl}
-              size={264}
-              level="L"
+              value={joinUrl}
+              size={168}
+              level="M"
               marginSize={2}
               bgColor="transparent"
               fgColor="currentColor"
-              title={PAIRING_QR_TITLE_OFFLINE}
+              title={PAIRING_QR_TITLE_ONLINE}
               className="h-full w-full text-brand-ink"
             />
-          ) : (
-            <p className="max-w-[20ch] text-center text-xs font-bold leading-snug text-brand-ink-muted">
-              {PAIRING_OFFLINE_PREPARING}
-            </p>
-          )
-        ) : (
-          <QRCodeSVG
-            value={joinUrl}
-            size={168}
-            level="M"
-            marginSize={2}
-            bgColor="transparent"
-            fgColor="currentColor"
-            title={PAIRING_QR_TITLE_ONLINE}
-            className="h-full w-full text-brand-ink"
-          />
-        )}
+          )}
+        </div>
+
+        {isOfflineView ? (
+          <p className="text-[0.66rem] font-bold uppercase leading-tight tracking-[0.08em] text-brand-ink/60">
+            {PAIRING_SHORT_CODE_NOTE}
+          </p>
+        ) : null}
       </div>
 
       {isOfflineView ? null : (

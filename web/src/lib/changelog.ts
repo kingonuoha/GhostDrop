@@ -32,10 +32,41 @@ export const CHANGELOG_SEEN_KEY = 'ghostdrop.last_seen_version'
 
 export const CHANGELOG_RELEASES: readonly ChangelogRelease[] = [
   {
+    version: '0.17',
+    dateTime: '26 Oct 2026, 7:40 PM',
+    headline: 'A tiny code, a sound that links your screens, and one tap to share.',
+    isCurrent: true,
+    items: [
+      {
+        category: 'speed',
+        title: 'A much smaller code',
+        description:
+          'The no internet code is far shorter now, so it scans in a blink instead of filling the screen.',
+      },
+      {
+        category: 'feature',
+        title: 'Link by sound',
+        description:
+          'No camera on one screen? Play a short sound and the other screen hears it and links up.',
+      },
+      {
+        category: 'fix',
+        title: 'A tidier no internet card',
+        description:
+          'The no internet card no longer stacks a tall form, so it is shorter and easier to take in.',
+      },
+      {
+        category: 'feature',
+        title: 'One tap to copy or share',
+        description:
+          'Copy the code or send it to a friend in one tap, whichever is easier for you.',
+      },
+    ],
+  },
+  {
     version: '0.16',
     dateTime: '26 Oct 2026, 5:20 PM',
     headline: 'A switch for pairings, a shorter code, and words that fit any device.',
-    isCurrent: true,
     items: [
       {
         category: 'feature',

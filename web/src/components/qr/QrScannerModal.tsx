@@ -86,17 +86,22 @@ function extractRoomCode(payload: string): string | null {
 
 /**
  * Reads both shapes a GhostDrop code can arrive in: the plain 6 letter room
- * code and the offline link code, which may be a bare `GD1...` value or sit in
- * a `/join?room=XXXXXX#gd=...` link.
+ * code and the offline link code, which may be a bare `GD2...`, `GD1...` or
+ * `GD1Z...` value or sit in a `/join?room=XXXXXX#gd=...` link.
  */
 function extractScannerPayload(raw: string): ScannerPayload {
   const offlineToken = extractCompactTokenFromInput(raw)
   return { roomCode: extractRoomCode(raw), offlineToken }
 }
 
-/** Quick shape test, so the 6 letter field can double as an offline code field. */
+/**
+ * Quick shape test, so the 6 letter field can double as an offline code field.
+ * Covers every token family the codec accepts: GD2 (binary), GD1 (JSON) and
+ * GD1Z (deflated JSON), in a bare value, a space grouped value, or a `#gd=`,
+ * `?gd=` or `&gd=` link.
+ */
 function looksLikeOfflineCode(raw: string): boolean {
-  return /^\s*GD1/i.test(raw) || raw.includes('#gd=') || raw.includes('gd=GD1')
+  return /GD[12]Z?\./i.test(raw) || /gd=/i.test(raw)
 }
 
 /**
@@ -700,11 +705,17 @@ export function QrScannerModal({
 
   const handleCodeChange = (event: ChangeEvent<HTMLInputElement>) => {
     const raw = event.target.value
+
     if (looksLikeOfflineCode(raw)) {
-      setCode('')
-      void submitOfflineCode(raw)
+      // An offline body is case sensitive, so the raw text is kept exactly as
+      // typed. Folding it to uppercase or cutting it to 6 characters would
+      // corrupt every lowercase character, and the Connect button carries the
+      // whole value to the handshake instead.
+      setCode(raw)
+      setCodeError(false)
       return
     }
+
     // Normalise before clamping so a pasted "gh st 48" keeps all 6 letters.
     setCode(normalizeRoomCode(raw).slice(0, ROOM_CODE_LENGTH))
     setCodeError(false)
@@ -719,6 +730,12 @@ export function QrScannerModal({
 
   const characters = Array.from({ length: ROOM_CODE_LENGTH }, (_, index) => code[index] ?? '')
   const isComplete = code.length === ROOM_CODE_LENGTH
+  /**
+   * True while the field holds something shaped like an offline code. Only that
+   * state gets a case preserving field: the 6 letter room code keeps the spaced,
+   * uppercase treatment it has always had.
+   */
+  const isOfflineEntry = looksLikeOfflineCode(code)
 
   return (
     <div
@@ -1024,7 +1041,13 @@ export function QrScannerModal({
                 codeError ? 'ring-2 ring-brand-error' : 'focus-within:ring-2 focus-within:ring-brand-cobalt',
               )}
             >
-              <div aria-hidden="true" className="grid grid-cols-6 gap-1.5 sm:gap-2">
+              {/* The slot grid is the room code visual. It keeps its height for
+                  an offline code so the dialog does not jump, but it goes
+                  invisible and the field below shows the real characters. */}
+              <div
+                aria-hidden="true"
+                className={cn('grid grid-cols-6 gap-1.5 sm:gap-2', isOfflineEntry && 'invisible')}
+              >
                 {characters.map((character, index) => {
                   const filled = character.length > 0
                   const isNext = code.length === index && !codeError
@@ -1061,12 +1084,17 @@ export function QrScannerModal({
                 onPaste={handleCodePaste}
                 autoComplete="off"
                 autoCorrect="off"
-                autoCapitalize="characters"
+                autoCapitalize={isOfflineEntry ? 'none' : 'characters'}
                 spellCheck={false}
                 inputMode="text"
                 aria-invalid={codeError}
                 aria-describedby={codeError ? errorId : undefined}
-                className="absolute inset-0 h-full w-full cursor-text rounded-[20px] bg-transparent text-[1rem] uppercase tracking-[0.4em] text-transparent caret-transparent outline-none"
+                className={cn(
+                  'absolute inset-0 h-full w-full cursor-text rounded-[20px] bg-transparent outline-none',
+                  isOfflineEntry
+                    ? 'px-4 text-[0.95rem] font-semibold tracking-normal text-brand-ink caret-brand-cobalt'
+                    : 'text-[1rem] uppercase tracking-[0.4em] text-transparent caret-transparent',
+                )}
               />
             </div>
 
@@ -1091,7 +1119,7 @@ export function QrScannerModal({
               size="lg"
               variant="lime-on-cobalt"
               icon={ArrowRight}
-              disabled={!isComplete}
+              disabled={!isComplete && !isOfflineEntry}
               className="mt-3 w-full justify-between"
             >
               Connect Now

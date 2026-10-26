@@ -1,11 +1,11 @@
 import type { TtlPreset } from '../types/protocol'
 
 /**
- * Shipped app version, rendered as `v0.16` beside the GhostDrop wordmark on
+ * Shipped app version, rendered as `v0.17` beside the GhostDrop wordmark on
  * both the desktop top pill bar and the mobile status header.
  * Source: AGENTS.md section 5, decisions.md D-014 item 1.
  */
-export const APP_VERSION = '0.16'
+export const APP_VERSION = '0.17'
 
 /**
  * How long a toast stays on screen before it closes itself. The drain bar in

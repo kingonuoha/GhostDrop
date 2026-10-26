@@ -7,6 +7,7 @@ import {
   Clock,
   Download,
   Ghost,
+  MicOff,
   QrCode,
   RefreshCw,
   SaveCheck,
@@ -48,6 +49,7 @@ const ICONS: Record<RoomFeedbackKey, LucideIcon> = {
   INFO_OFFLINE_READY: Wifi,
   INFO_OFFLINE_REPLY_READY: QrCode,
   ERR_OFFLINE_CODE_INVALID: RefreshCw,
+  ERR_MIC_DENIED: MicOff,
 }
 
 type FeedbackNoticeProps = {

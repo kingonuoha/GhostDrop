@@ -98,6 +98,45 @@ export type WirePacket =
 - Set `dataChannel.bufferedAmountLowThreshold = 65536` (`64KB`).
 - If `dataChannel.bufferedAmount > 262144` (`256KB`), await a Promise that resolves on the `bufferedamountlow` event before reading/sending the next slice.
 
+### Offline Pairing Codecs (`GD1`, `GD1Z`, `GD2`)
+
+`compactSdp.ts` is the only source of offline pairing tokens. Three shapes are accepted on every decode path:
+
+| Prefix | Shape | Typical length | Notes |
+| :--- | :--- | ---: | :--- |
+| `GD1.` | base64url of UTF-8 JSON | 282 to 423 | Always available, synchronous |
+| `GD1Z.` | base64url of deflate-raw JSON | 250 to 400 | Needs `CompressionStream` |
+| `GD2.` | base64url of the binary envelope below | 92 to 159 | Preferred when packable, 73 percent smaller than GD1 |
+
+`encodeCompactSdp` returns the shortest of the three. `decodeCompactSdp` and `decodeCompactSdpSync` accept `GD2.` and `GD1.`; only the async decoder can inflate `GD1Z.`, and the sync decoder throws for it by design.
+
+Binary envelope, 3 header bytes, then payload:
+
+| Field | Bytes | Notes |
+| :--- | :--- | :--- |
+| flags | 1 | bit 0 kind offer or answer, bits 2 to 3 setup, bits 4 to 5 device, bits 6 to 7 candidate count |
+| lengths | 1 | high nibble room length 4 to 12, low nibble ufrag length minus 4 |
+| pwd length | 1 | pwd length minus 16 |
+| room, ufrag, pwd | 4 to 12, 4 to 16, 16 to 32 | ASCII |
+| fingerprint | 32 | raw sha-256 DTLS fingerprint bytes |
+| candidates | 7 each | flags, four IPv4 octets, big endian uint16 port |
+
+- At most 3 candidates, private IPv4 UDP host first, then private srflx, then public host, deduped by address and port.
+- Pack only when `mid` is `0`, `sctp-port` is `5000`, every chosen candidate is IPv4 without `tcpType`, and the fingerprint is exactly 32 bytes. Otherwise return null and fall back to `GD1Z.` or `GD1.`.
+- Peer id and device name are omitted. Decode synthesizes `ghostdrop-room-<room>` for an offer and `ghostdrop-peer-<first 8 fingerprint hex>` for an answer, and `HELLO_PEER` replaces the friendly device name within milliseconds of the channel opening.
+- Human display groups the body in fours separated by spaces. Extraction strips that whitespace. The body is base64url and stays case sensitive, because hyphens are data characters and case folding would cost about 20 percent more characters.
+
+### Acoustic Pairing Channel
+
+`acousticModem.ts` returns the guest answer, or any offline token, over sound when a camera is not practical.
+
+- Frame: 1 byte kind (`0` GD2, `1` GD1Z, `2` GD1), 2 byte big endian payload length, UTF-8 token bytes, CRC-16-CCITT (poly `0x1021`, init `0xFFFF`, check `0x29B1`).
+- Modulation: 60ms preamble at 1500 Hz then 1650 Hz, then one byte per 22ms symbol. Dual band 16-FSK, low nibble 1850 to 3050 Hz, high nibble 3300 to 4500 Hz, 80 Hz spacing, 5ms raised cosine edges.
+- Payload cap 240 bytes, which covers GD2 with room to spare and rejects long GD1 tokens.
+- A 110 byte token is a 115 byte frame and about 2.6 seconds of airtime.
+- Capture requests echo cancellation, noise suppression and auto gain all off, and stops every track and closes the context on success, error, abort, timeout and unmount.
+- Synthetic reliability is high at ordinary noise levels. Real room reliability, reverb and clock drift are verified only by the two device script in `docs/tasks/step-15-v017-offline-codec-and-acoustic/qa-report.md`. Sound is always an optional shortcut, never the only path.
+
 ---
 
 ## 4. PWA Web Share Target API (`manifest.webmanifest` + `src/sw.ts`)

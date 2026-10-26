@@ -53,7 +53,16 @@ npm run build       # Production typecheck + Vite PWA bundle build
 npm run preview     # Preview production PWA build locally
 npm run lint        # ESLint check
 npm run type-check  # tsc --noEmit
+npm test            # Compile and run the Node test suites
 ```
+
+### Large Document Writes (P0 - NARROW BAN)
+
+Agents keep full use of the shell for builds, tests, git, probes and read-only inspection. Only one action is banned:
+
+1. **Do not write an authored document through a shell command.** QA reports, task files, plans, briefs, changelogs and long source blocks must be created or edited with the `write` and `edit` tools. No `cat > file <<EOF`, no `echo > file`, no PowerShell redirection, no pasting a whole report into a command.
+2. Build artifacts and generated output from a checked in script are fine, for example the compiled test folder or `dist/`.
+3. **If a write stalls, stop immediately and return the content you already have.** Do not retry with a heredoc or a different shell trick. The orchestrator will persist the result with `write`.
 
 ---
 
@@ -96,7 +105,7 @@ npm run type-check  # tsc --noEmit
 
 ## 5. Versioning and GitHub Main-Branch Bump Rule (P0)
 
-1. **Current Baseline Version:** `0.16` (`v0.16`), synced in `web/package.json` (`"version": "0.16"`) and `APP_VERSION = '0.16'` in `web/src/lib/constants.ts`. Step 11 shipped 0.14, and the 0.16 fix batch (progress wave, shared timer, burn notice, offline pairing card) added no dependencies.
+1. **Current Baseline Version:** `0.17` (`v0.17`), synced in `web/package.json` (`"version": "0.17"`) and `APP_VERSION = '0.17'` in `web/src/lib/constants.ts`. Step 11 shipped 0.14, step 15 shipped 0.17 with the GD2 binary token and the acoustic pairing channel, and every batch since 0.14 added zero dependencies.
 2. **Navbar Display:** Render the baseline as small display text directly beside the `GhostDrop` wordmark in `<Logo />` on both Desktop (`DesktopTopPillBar`) and Mobile (`MobileStatusHeader`). The version is read from `APP_VERSION`, never hardcoded in a component.
 3. **Version Anatomy (`<whole>.<decimal>`):**
    - **Whole number (`X` in `X.Y`):** Increments whenever a **new dependency** is installed in `web/package.json` (and resets `.Y` to `.0`, or `.1` for the first task in that major version).

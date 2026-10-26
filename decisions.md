@@ -260,3 +260,19 @@
   4. Offline direct pairing stays a two exchange handshake, because each screen must learn the other network details and no server exists to relay them. The copy must say two scans plainly, and the host card must offer a paste fallback for a computer without a camera.
   5. The host paste fallback accepts the same compact token as the QR scanner and raises the existing playful invalid-code notice on failure, never a raw error.
 - **Rationale:** Two devices that disagree about when files vanish is a real data-lifetime bug, not a preference. The remaining fixes remove avoidable dead ends without changing the locked wire chunking, TTL per item semantics, or the zero cost serverless architecture.
+
+---
+
+## D-022: GD2 Binary Offline Token and Acoustic Pairing Channel
+- **Date:** 2026-10-26
+- **Status:** LOCKED
+- **Scope:** `web/src/lib/p2p/compactSdp.ts`, `web/src/lib/p2p/acousticModem.ts`, `web/src/components/room/OfflineLinkCard.tsx`, `web/src/components/room/RoomCodeCard.tsx`, `docs/06-protocol-and-tech-spec.md`
+- **Decision:**
+  1. Offline pairing supports a third token shape, `GD2.` plus unpadded base64url of a binary envelope. It is preferred whenever it packs, and `GD1.` and `GD1Z.` remain fully decodable so a mixed tab or an older reply never breaks.
+  2. `GD2.` omits the peer id and device name, because `HELLO_PEER` carries both within milliseconds of the channel opening. Decode synthesizes `ghostdrop-room-<room>` for an offer and `ghostdrop-peer-<first 8 fingerprint hex>` for an answer.
+  3. `GD2.` packs at most 3 candidates, private IPv4 UDP host first. Any non packable field returns null and the existing compressed JSON token takes over, so the binary path can never be the reason a link fails.
+  4. Human display groups the body in fours with spaces. The body stays case sensitive because base64url uses hyphens as data and case folding would cost about 20 percent more characters. Copy and paste always round trip.
+  5. Acoustic pairing sends the existing token over sound as a short optional channel. It never replaces the QR, copy, share or paste paths, and the listening control only renders where microphone capture is actually possible.
+  6. The microphone is requested with echo cancellation, noise suppression and automatic gain all disabled, and every track and audio context is released on success, error, abort, timeout and unmount. Denial maps to the playful `ERR_MIC_DENIED` copy, never a raw error.
+  7. Acoustic payload is capped at 240 bytes. A GD2 token fits, long legacy tokens do not.
+- **Rationale:** The two exchange handshake stays, because serverless WebRTC needs both descriptions. Sound removes the laptop camera from the second exchange without adding a server or a dependency, and the binary token makes the QR roughly three times sparser so scanning is fast again.

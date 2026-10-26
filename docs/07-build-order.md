@@ -4,7 +4,7 @@
 
 ---
 
-## Step-by-Step Build Sequence (14 Gates)
+## Step-by-Step Build Sequence (15 Gates)
 
 1. **Step 1: Stage UI Design Import and Audit (`ghostdrop-orchestrator`)**
    - Verify Stage/Stitch design exports are placed in `design/` or `docs/design/`.
@@ -42,3 +42,12 @@
    - Fix `navigator.onLine` false positives on offline Wi-Fi/hotspots with fast `2,500ms` signaling failover and unmask RFC1918 hotspot IPv4 `host` candidates when mobile data is ON or OFF. Recorded as D-016.
    - Version `0.10` to `0.11` (zero new dependencies).
    - **Status: Signed off PASS.** QA report `docs/tasks/step-13-v011-total-offline-and-hotspot-direct-bridge/qa-report.md` records 0 P0, 0 P1, 0 P2, 5 P3 at version `0.11`. `type-check`, `lint`, and `build` all exit `0`. Token length exceeds the plan estimate (P3-1, measured 231 to 405 chars) but shipped QR pitch stays at or above `2.96 px`.
+14. **Step 14: v0.12 Grandma Changelog, Google Sheets Feedback and PostHog Analytics**
+   - `/whats-new` with date-time markers, in-app feedback to Google Sheets, privacy-first PostHog events and a cached `/api/stats` counter. Recorded as D-017, D-018 and D-019. Signed off PASS at `0.12`.
+15. **Step 15: v0.17 GD2 Binary Offline Token, Acoustic Pairing and Compact Pairing Card (`ghostdrop-backend` -> `ghostdrop-ui-polish` -> `ghostdrop-web` -> `ghostdrop-qa`)**
+   - Add `GD2.` bit-packed tokens with peer id and device name omitted, 3 candidate cap and safe fallback to `GD1Z.`, so a realistic offer drops from ~423 to ~115 characters and the reply QR from version 13 to version 6.
+   - Add `acousticModem.ts`, a zero dependency dual band 16-FSK channel with CRC-16-CCITT, so the guest can return the reply by sound and the host can complete with no laptop camera.
+   - Add a zero dependency Node test harness (`npm test`, 31 cases) covering codec round trips, legacy tokens and acoustic frame DSP.
+   - Compact the pairing card: guest sound CTA plus Copy and Share pills, host Scan and Listen row plus a single inline paste pill, offline QR at 248.
+   - Version `0.16` to `0.17` (zero new dependencies). Recorded as D-022.
+   - **Status: Signed off PASS.** QA report `docs/tasks/step-15-v017-offline-codec-and-acoustic/qa-report.md` records 0 P0, 0 P1, 5 P2, 10 P3, 31 of 31 tests and all four commands at exit `0`. Real room sound remains a manual two device check.

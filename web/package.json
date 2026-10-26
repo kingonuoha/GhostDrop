@@ -1,7 +1,7 @@
 {
   "name": "ghostdrop-web",
   "private": true,
-  "version": "0.16",
+  "version": "0.17",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,6 +10,7 @@
     "preview": "vite preview",
     "lint": "eslint .",
     "signal": "node scripts/signal.mjs",
+    "test": "tsc -p tsconfig.test.json && node scripts/run-tests.mjs",
     "type-check": "tsc --noEmit -p tsconfig.app.json && tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.sw.json"
   },
   "dependencies": {
