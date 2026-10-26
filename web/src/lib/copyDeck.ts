@@ -362,18 +362,31 @@ export const SOON_FOOTNOTE = 'No accounts. No uploads. Nothing left behind.'
   Hub pairing card.
   Source: docs/02-brand-persona-and-copy.md section 2, "Home and Pairing Screen".
 
-  The card offers two ways to connect and one shared QR title, so the reader can
-  pick a mode without meeting a network term. No line here names a fixed device:
-  the reader might already be holding the phone, so the partner is always "your
-  other device".
+  The card shows one code by default and keeps the no internet path as a quiet
+  text link under it, so a first time reader meets the ordinary path first. No
+  line here names a fixed device: the reader might already be holding the phone,
+  so the partner is always "your other device".
 */
-export const PAIRING_MODE_GROUP_LABEL = 'Connection type'
-export const PAIRING_MODE_ONLINE_LABEL = 'Online'
-export const PAIRING_MODE_OFFLINE_LABEL = 'No internet'
 export const PAIRING_OFFLINE_PREPARING = 'Getting your no internet code ready...'
 export const PAIRING_QR_TITLE_ONLINE = 'Scan this code with your other device'
 export const PAIRING_QR_TITLE_OFFLINE =
   'Scan this code with your other device. No internet needed.'
+
+/*
+  Offline as a quiet secondary link, not a second first choice.
+  Source: docs/02-brand-persona-and-copy.md section 2, rule 1.
+
+  The link sits below the normal code at 11px, so it stays findable without
+  competing with the QR. 26 characters measures about 150px at 11px, well inside
+  the 328px a 360px screen leaves after page padding. If a build ever tightens the
+  link to a narrow pill, ship "No internet? Link direct" (24 characters) instead
+  and keep the same placement. The helper is read once inside the no internet
+  view, never beside the link, so the closed state stays one short line.
+*/
+export const PAIRING_OFFLINE_LINK_CTA = 'No internet? Link directly'
+export const PAIRING_ONLINE_RETURN_CTA = 'Back to the normal code'
+export const PAIRING_OFFLINE_HELPER =
+  'Works on the same Wi-Fi or hotspot. No internet needed.'
 
 /*
   Offline direct linking.
@@ -424,3 +437,21 @@ export const OFFLINE_SHARE_CODE_CTA = 'Share Code'
 export const OFFLINE_COPY_INVITE_SHORT_CTA = 'Copy invite code'
 export const OFFLINE_PASTE_ROW_PLACEHOLDER = 'Or paste reply code...'
 export const PAIRING_SHORT_CODE_NOTE = 'Short code, quick scan'
+
+/*
+  Sound demoted to a secondary option, plus the system share path.
+  Source: docs/02-brand-persona-and-copy.md section 2.2.
+
+  The camera scan, the code and the two copy pills stay in view, so a quiet room
+  or a missing share sheet never hides the link. Both notes say the same one
+  thing in the same short shape: only the pairing code leaves, files stay on the
+  wireless network the two devices already share. 60 characters each, so each
+  note wraps to two short lines at 360px without shrinking the type.
+*/
+export const OFFLINE_MORE_WAYS_CTA = 'More ways to link'
+export const OFFLINE_FEWER_WAYS_CTA = 'Hide extra ways'
+export const OFFLINE_SOUND_NOTE =
+  'Sound sends the pairing code only. Your files go over Wi-Fi.'
+export const OFFLINE_SHARE_NOTE =
+  'Share sends the pairing code only. Your files go over Wi-Fi.'
+export const OFFLINE_SHARE_INVITE_CTA = 'Share invite'

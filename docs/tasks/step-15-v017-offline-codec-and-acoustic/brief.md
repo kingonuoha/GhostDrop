@@ -97,3 +97,23 @@ Shipped at `0.17`, zero new dependencies.
 The offline view remains about 174px taller than the online view. That is structural: a 248px QR needs a 272px panel, and four 44px controls cannot compress further. The section 1 goal said close to the online height, so the acceptance line is amended here rather than pretending the layout matches.
 
 Manual two device sound verification is still required. Script: `qa-report.md` section 7.
+
+---
+
+## 9. v0.18 Offline Demotion and Share (2026-10-26)
+
+**Device stamp:** `ASUS-LAPTOP-DNLA241D` - offline demotion - 2026-10-26
+
+Sound works but is unpleasant, and Web Bluetooth cannot pair two browsers because the API is central only and cannot advertise. Bluetooth would need a native peripheral, and files would still travel over WebRTC, so it was rejected for the PWA and deferred to the native phase.
+
+What shipped at `0.18`, zero dependencies:
+
+- Sound moved under `More ways to link` on the guest reply card and the host card. The QR and the Copy and Share pair lead again.
+- OS share added: guest `Share Code`, host `Share invite` using `offlineJoinUrl`, both gated on `navigator.share`.
+- Both share and sound show that only the pairing code travels and files stay on Wi-Fi.
+- The `Online` / `No internet` segmented control is gone. Offline is one quiet link below the normal code, with `Back to the normal code` inside. Automatic failover still switches the card.
+- Recorded as D-023. The dead `PAIRING_MODE_*` copy retired.
+
+Gates: `npm test` 31 of 31, `type-check`, `lint` and `build` exit 0. Entry 253.75 kB, precache 18 entries, 769.20 KiB.
+
+Manual: recheck the two device sound matrix under `qa-report.md` section 7, plus the quiet link and open `More ways` panel at 360.

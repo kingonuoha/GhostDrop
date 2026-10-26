@@ -210,3 +210,23 @@ Every finding above was addressed in the same session, before commit. Re-verifie
 | F-15 | FIXED | Sent line is now `Sound sent. No link? Show the code.`, 35 chars, mirrored in the copy doc |
 
 **Final state:** 0 P0, 0 P1, 0 open P2. One open P3 (F-12) and the manual real-room sound verification in section 7. Verdict remains PASS.
+
+---
+
+## 10. v0.18 Direction Change: Offline Demoted, Share Added
+
+After the first 0.17 build the user confirmed sound works but is unpleasant to hear, and asked for Bluetooth instead. Research rejected Web Bluetooth for a PWA: the spec is central role only, a site cannot advertise or run a GATT server, and Safari, iOS and Firefox have no support. Bluetooth pairing would need a native peripheral, and files would still travel over WebRTC.
+
+The user then chose to demote sound and add the OS share sheet, then asked that offline stop being a two-option toggle at the top of the card.
+
+| Change | Result |
+| :--- | :--- |
+| Sound demoted | Sound moved under a `More ways to link` disclosure on both cards. The QR and the copy pair lead. |
+| OS share | Guest `Share Code` and host `Share invite` use `navigator.share`, with `inviteUrl` where available. |
+| Code only warning | `Sound sends the pairing code only. Your files go over Wi-Fi.` and the share equivalent show with their path. |
+| Toggle removed | The `Online` / `No internet` segmented control is gone. Offline is one quiet link below the normal code, `No internet? Link directly`, with `Back to the normal code` inside. Failover still auto-switches. |
+| Dead copy | The three `PAIRING_MODE_*` exports retired. |
+
+Gates after the change: `npm test` 31 of 31, `type-check` 0, `lint` 0, `build` 0. Entry 253.75 kB, `jsqr` still isolated, precache 18 entries 769.20 KiB, zero dependencies.
+
+Still manual: the 0.17 two device sound matrix, muted or noisy room retries, and the 360px check of the quiet link and the open `More ways` panel.

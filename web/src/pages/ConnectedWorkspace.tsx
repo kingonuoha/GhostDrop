@@ -135,6 +135,7 @@ export function ConnectedWorkspace() {
         <OfflineLinkCard
           mode="host-waiting"
           token={room.offlineInviteToken}
+          inviteUrl={offlineJoinUrl}
           onOpenReplyScanner={() => openScanner('reply')}
           onAcceptReplyCode={(raw) => room.acceptOfflineToken(raw)}
           onCopyFeedback={room.announceFeedback}

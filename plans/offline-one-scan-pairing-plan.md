@@ -174,9 +174,66 @@ Because the phone is the transmitter and the computer is the receiver, the Matri
 4. Confirm that Safari desktops may fall back to the camera rather than blocking offline pairing.
 
 ## 8. Sources Consulted
-
 - Xender documentation and reviews: one device creates a local hotspot, the other joins, QR connects them, and the native app serves the transfer. `xender.org`, `xender.com/file_transfer_a2pc.html`.
 - LocalSend README: local REST API over HTTPS on port 53317 with multicast discovery, native app, no internet. `github.com/localsend/localsend`.
 - quiet-js README and API docs: Web Audio binding for libquiet, audible and ultrasonic profiles, cable up to 40 kbps, browser support table. `github.com/quiet/quiet-js`, `quiet.github.io/quiet-js/docs/Quiet.html`.
 - quiet profiles: `ulnarasonic-3600`, `audible-7k-channel-0`, `audible`, and the FEC and modulation settings. `quiet-profiles.json`.
 - ggwave README: 8 to 16 bytes per second, MIT licensed. `github.com/ggerganov/ggwave`, npm `ggwave`.
+
+---
+
+## 9. Bluetooth Assessment (2026-10-26)
+
+### Verdict
+
+Bluetooth cannot replace the sound burst in a pure PWA. Web Bluetooth only works in the central role. A website can connect to a remote GATT server, but a website cannot advertise or run a GATT server. Two browsers therefore cannot discover each other over Bluetooth, no matter what permissions the user grants.
+
+Sources: MDN describes the API as the ability to connect and interact with Bluetooth Low Energy peripherals. The Chrome capability guide states the specification allows websites, running in the Central role, to connect to remote GATT servers. The Web Bluetooth implementation status table lists GATT server connect, read and write from the browser only.
+
+Support is also asymmetric:
+
+| Browser | Web Bluetooth |
+| :--- | :--- |
+| Chrome desktop, Edge, Opera, Samsung Internet, Android Chrome | Supported |
+| Safari, iOS, iPadOS | Not supported, no plan |
+| Firefox | Not supported, no plan |
+| Linux Chrome | Partly, flag required |
+
+Global coverage is about 76 percent, and the missing quarter is exactly the iPhone.
+
+### What Bluetooth would require
+
+One side has to be a native peripheral. The realistic shape:
+
+1. A native Android or iOS app advertises a custom GATT service.
+2. The laptop Chrome tab connects as central, reads the offer token, writes the answer token.
+3. Both sides then open the WebRTC data channel over Wi-Fi or hotspot exactly as today.
+
+Bluetooth would carry roughly 115 bytes of pairing token. It would never carry a file. The files stay on the existing 16KB WebRTC stream over Wi-Fi or the phone hotspot.
+
+That means Bluetooth does not remove any native work compared with the Xender-style local server. It adds an app, an iOS gap, a permission chooser, custom service UUIDs and a pairing UX, to replace a sound burst that already works.
+
+### Browser-only alternative that does use Bluetooth
+
+The operating system share sheet. On Android, Nearby Share or Quick Share can hand a short text to a Windows laptop over Bluetooth or Wi-Fi Direct with no internet. On iPhone, AirDrop. The user still pastes the code on the other screen, but no browser API, no app and no dependency is involved. Files still go over WebRTC.
+
+### Recommendation
+
+1. Do not build Web Bluetooth for the PWA. It is architecturally impossible without a native peripheral.
+2. Demote the sound path. It works, but it is unpleasant. Put it behind a secondary control such as `More ways to link`, default to the QR plus paste, and remember the user choice. Keep it available for camera-free laptops because it is the only browser-only one-scan path.
+3. Reduce the annoyance if it stays: lower the gain, offer a near-ultrasonic profile around 17 to 19 kHz where the laptop microphone can still hear it, and shorten the burst.
+4. Add the OS share sheet as the no-camera, no-sound fallback, with copy that says the pairing code only travels, never the files.
+5. Revisit Bluetooth only with the planned native Phase 2 app, and then as a one-scan pairing channel with files still on WebRTC.
+
+---
+
+## 10. Demote the Offline Affordance (2026-10-26)
+
+Offline mode still has rough edges, so it should not sit in a two-option control at the top of the pairing card where a first time user meets it before the normal code.
+
+- Default card: normal QR, room code row, copy. Nothing about offline above the fold.
+- Below the code row, one quiet text link: `No internet? Link directly`.
+- Tapping it swaps the card into the no internet view, with one helper line and a `Back to the normal code` link.
+- An automatic failover to the direct engine may still switch the card, because in that moment the normal code genuinely cannot work.
+- Sound and share stay inside the existing `More ways to link` disclosure inside the offline view.
+- Rationale: the common path is one QR scan with internet. Offline is a rescue path, and a rescue path should not be the first decision a user has to make.

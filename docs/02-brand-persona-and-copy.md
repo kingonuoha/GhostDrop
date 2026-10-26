@@ -27,9 +27,8 @@
 - **Page H1 (`Laroka`):** `Send photos and text between your screens.`
 - **Left Card Title (`Laroka`):** `Scan with your other device` (a phone reads `Scan with your other screen`)
 - **Left Card Helper:** `Open the camera on your other device and point it here:` (a phone reads `Open the camera or GhostDrop on your PC or other phone:`)
-- **Pairing Card Mode Group Label:** `Connection type`
-- **Pairing Card Mode Chip (online):** `Online`
-- **Pairing Card Mode Chip (no internet):** `No internet`
+- **Pairing Card Quiet Offline Link (below the normal code):** `No internet? Link directly`
+- **Pairing Card Return Link (inside the no internet view):** `Back to the normal code`
 - **Pairing Card Preparing Line (no internet, shown while the code is built):** `Getting your no internet code ready...`
 - **Pairing Card QR Title (online):** `Scan this code with your other device`
 - **Pairing Card QR Title (no internet):** `Scan this code with your other device. No internet needed.`
@@ -47,6 +46,11 @@
   - `When I close this page`
 
 Device wording rule: pairing copy never names a fixed device. The reader may already be holding the phone, so every line says `your other device` or `your other screen`, and the only mention of a specific machine is the phone helper naming `your PC or other phone` so a phone reader knows what to look for.
+
+Pairing card rule (replaces the old `Online` / `No internet` segmented control):
+1. **One code by default, offline as a quiet link.** The card shows the normal code and nothing else competes with it. No internet is never a mode chip and never a first choice: it is a small text link below the code (`PAIRING_OFFLINE_LINK_CTA`, `No internet? Link directly`). Tapping it swaps the card into the no internet view, and `PAIRING_ONLINE_RETURN_CTA` (`Back to the normal code`) returns. A failover to the direct engine may still switch the card on its own when the ordinary path cannot connect; the reader never has to find the link first.
+2. **The helper reads once, inside the view.** `PAIRING_OFFLINE_HELPER` (`Works on the same Wi-Fi or hotspot. No internet needed.`) appears one time inside the open no internet view, never beside the quiet link, so the closed card stays a single short line.
+3. **Code only leaves the device, files stay on the wireless network.** Any sound or share path keeps its own note beside it: `OFFLINE_SOUND_NOTE` under the sound controls and `OFFLINE_SHARE_NOTE` under the share action, both saying the same thing in the same short shape (`... sends the pairing code only. Your files go over Wi-Fi.`). The note never appears without the path, and the path never appears without the note.
 
 ### 2.1 Prelaunch Coming Soon Wall (`/` before launch)
 
@@ -98,16 +102,25 @@ When the two screens share a Wi-Fi network or a phone hotspot but no internet, l
 | `OFFLINE_COPY_INVITE_SHORT_CTA` | `Copy invite code` |
 | `OFFLINE_PASTE_ROW_PLACEHOLDER` | `Or paste reply code...` |
 | `PAIRING_SHORT_CODE_NOTE` | `Short code, quick scan` |
+| `OFFLINE_MORE_WAYS_CTA` | `More ways to link` |
+| `OFFLINE_FEWER_WAYS_CTA` | `Hide extra ways` |
+| `OFFLINE_SOUND_NOTE` | `Sound sends the pairing code only. Your files go over Wi-Fi.` |
+| `OFFLINE_SHARE_NOTE` | `Share sends the pairing code only. Your files go over Wi-Fi.` |
+| `OFFLINE_SHARE_INVITE_CTA` | `Share invite` |
+| `PAIRING_OFFLINE_LINK_CTA` | `No internet? Link directly` |
+| `PAIRING_ONLINE_RETURN_CTA` | `Back to the normal code` |
+| `PAIRING_OFFLINE_HELPER` | `Works on the same Wi-Fi or hotspot. No internet needed.` |
 
 Offline linking rules:
 1. **Two screens, two codes.** The Host shows the invite card, the Guest shows the reply card, and the Host reads the reply. No screen ever shows more than one code at a time. The order is fixed and stated on screen: your other device reads the Host code first, then the Host reads the reply. Saying so up front stops the second scan reading as an unexpected extra chore.
 2. **Plain everyday words only.** No network or connection terms reach the screen. The code is called a code, the camera is called a camera, and the partner screen is always `your other device` or `your other screen`, never a fixed device name.
-3. **One obvious button per card, never one door per card.** The Guest card leads with `Send Reply with Sound` at full width, keeps the reply QR at 248 below it, then puts two copy pills side by side: `Copy Code` and `Share Code`, with Share shown only where the browser offers sharing. The Host panel carries `Scan or Paste Reply` first and `Copy Offline Code` second, plus a paste field (`OFFLINE_PASTE_LABEL`, `OFFLINE_PASTE_ROW_PLACEHOLDER`, `OFFLINE_PASTE_CTA`) so a screen without a camera can still finish by pasting the reply code.
+3. **One obvious button per card, never one door per card.** The Guest card leads with the reply QR at 248, then puts the two copy pills side by side: `Copy Code` and `Share Code`, with Share shown only where the browser offers sharing. Sound is now a secondary option: `Send Reply with Sound` lives under `OFFLINE_MORE_WAYS_CTA` (`More ways to link`), and `OFFLINE_FEWER_WAYS_CTA` (`Hide extra ways`) folds it back away, so the camera and the two copy pills are what a first time reader sees. The Host panel carries `Scan or Paste Reply` first and `Copy Offline Code` second, plus a paste field (`OFFLINE_PASTE_LABEL`, `OFFLINE_PASTE_ROW_PLACEHOLDER`, `OFFLINE_PASTE_CTA`) so a screen without a camera can still finish by pasting the reply code.
 4. **A camera free path always exists.** Every offline step can be finished by copying and pasting a code instead of scanning, so a denied camera is never a dead end.
 5. **Zero em dashes, zero en dashes, zero emojis.** The badge accent is a `Wifi` SVG icon inside a `#CDF22B` pill, never a symbol character.
-6. **Sound is a shortcut, never the only door.** `Send Reply with Sound` and `Listen for Sound` sit beside the camera scan and the paste row, and those two always stay on screen. A refused microphone raises `ERR_MIC_DENIED` and points straight at the camera and the paste row, so the sound path can fail without costing the reader the link.
+6. **Sound is a shortcut, never the only door.** `Send Reply with Sound` and `Listen for Sound` fold away under `OFFLINE_MORE_WAYS_CTA`, while the camera scan and the paste row always stay on screen. A refused microphone raises `ERR_MIC_DENIED` and points straight at the camera and the paste row, so the sound path can fail without costing the reader the link.
 7. **Short labels for short pills.** Every sound and compact card label fits one line in a 44px pill at 360px. `Listening for your other device...` is the longest at 34 characters, so if it wraps in the built pill, use `Listening for reply...` instead and keep the listening state word.
 8. **The compact card explains itself in four words.** `PAIRING_SHORT_CODE_NOTE` (`Short code, quick scan`) sits under the offline QR, so the smaller code reads as a gift rather than a puzzle. `Copy invite code` stays a short action, and the paste row keeps its own short placeholder (`Or paste reply code...`) instead of a full sentence.
+9. **Code only leaves the device, files stay on the wireless network.** Every sound or share path carries its own note beside it: `OFFLINE_SOUND_NOTE` under the sound controls, `OFFLINE_SHARE_NOTE` under the share action, both saying the same thing in the same short shape (`... sends the pairing code only. Your files go over Wi-Fi.`). `OFFLINE_SHARE_INVITE_CTA` (`Share invite`) follows the same rule, and the note never appears without the path and the path never appears without the note.
 
 ---
 

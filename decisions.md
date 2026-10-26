@@ -276,3 +276,18 @@
   6. The microphone is requested with echo cancellation, noise suppression and automatic gain all disabled, and every track and audio context is released on success, error, abort, timeout and unmount. Denial maps to the playful `ERR_MIC_DENIED` copy, never a raw error.
   7. Acoustic payload is capped at 240 bytes. A GD2 token fits, long legacy tokens do not.
 - **Rationale:** The two exchange handshake stays, because serverless WebRTC needs both descriptions. Sound removes the laptop camera from the second exchange without adding a server or a dependency, and the binary token makes the QR roughly three times sparser so scanning is fast again.
+
+---
+
+## D-023: Offline Is a Rescue Path, Not the Front Door
+- **Date:** 2026-10-26
+- **Status:** LOCKED
+- **Scope:** `web/src/components/room/RoomCodeCard.tsx`, `web/src/components/room/OfflineLinkCard.tsx`, `web/src/lib/copyDeck.ts`
+- **Decision:**
+  1. The pairing card shows the normal QR, the room code row and copy by default. Offline is never a mode chip at the top of the card and never the first decision a new user has to make.
+  2. Offline is reached through one quiet text link below the normal code, `No internet? Link directly`. Tapping it swaps the card into the no internet view. `Back to the normal code` returns. A helper line appears once inside that view.
+  3. An automatic failover to the direct engine may still switch the card, because at that moment the normal code cannot work. That is the one case where offline takes over without a tap.
+  4. The acoustic path is demoted under `More ways to link`. It remains available for a screen without a camera, but it is never the lead action.
+  5. The OS share sheet carries the pairing code only. The UI must state that only the code is shared and files travel over Wi-Fi. This applies to the guest `Share Code` and the host `Share invite` actions.
+  6. Web Bluetooth is rejected for the PWA. It is central role only, cannot advertise, and has no iOS or Firefox support. Bluetooth pairing would require a native peripheral and is deferred to the native Phase 2 app, with files staying on WebRTC.
+- **Rationale:** Offline still has rough edges. The common path is one scan with internet, so the rescue path should be one tap away, not a permanent choice in the user's face. Sound and share stay available where they help without promising more than they deliver.

@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { QRCodeSVG } from 'qrcode.react'
-import { Check, Copy } from 'lucide-react'
+import { Check, Copy, Wifi } from 'lucide-react'
 import type { DeviceType } from '../../lib/p2p'
 import { cn } from '../../lib/cn'
 import type { RoomFeedbackKey } from '../../lib/copyDeck'
 import {
-  PAIRING_MODE_GROUP_LABEL,
-  PAIRING_MODE_OFFLINE_LABEL,
-  PAIRING_MODE_ONLINE_LABEL,
+  PAIRING_OFFLINE_HELPER,
+  PAIRING_OFFLINE_LINK_CTA,
   PAIRING_OFFLINE_PREPARING,
+  PAIRING_ONLINE_RETURN_CTA,
   PAIRING_QR_TITLE_OFFLINE,
   PAIRING_QR_TITLE_ONLINE,
   PAIRING_SHORT_CODE_NOTE,
@@ -37,6 +37,14 @@ async function copyToClipboard(value: string): Promise<boolean> {
 }
 
 type PairingView = 'online' | 'offline'
+
+/**
+ * The quiet text link that moves between the two views. No fill, no border, a
+ * 44px target and one weight step below the primary controls, so the normal card
+ * never reads as a two-option choice.
+ */
+const QUIET_LINK_CLASS =
+  'inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-full px-3 text-[0.72rem] font-semibold text-brand-ink-muted underline-offset-4 transition-colors duration-200 hover:text-brand-ink hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-cobalt focus-visible:ring-offset-2'
 
 type RoomCodeCardProps = {
   code: string
@@ -71,10 +79,14 @@ type RoomCodeCardProps = {
  * Left hub card: the lime Swatch 3 pairing card.
  * Layout reference: docs/design/ghostdrop_ultra_clean_desktop_hub_grandma_edition.
  *
- * One card, two views. The segmented control swaps the QR and its controls
- * instead of stacking both, so the card stays short in either mode. The online
- * view uses the short everyday link; the no internet view uses the same link
- * plus the direct link code, which is much denser and needs level L.
+ * The normal view is the whole card: title, QR, room code row and copy. Offline
+ * is a rescue path reached through one quiet link under the code, never a mode
+ * choice at the top. Source: decisions.md D-023, plans/offline-one-scan-pairing-plan.md
+ * section 10.
+ *
+ * The online view carries the short everyday link. The offline view swaps in the
+ * same link plus the direct link code, which is much denser and needs level L,
+ * and adds the compact reply controls underneath.
  */
 export function RoomCodeCard({
   code,
@@ -107,8 +119,8 @@ export function RoomCodeCard({
   /**
    * A failover to the direct engine makes the short online code useless, so the
    * card follows the room the moment it goes offline. The ref is what makes
-   * this a false to true transition only: a user who deliberately taps Online
-   * afterwards is not fought by the effect.
+   * this a false to true transition only: a user who deliberately taps the
+   * return link afterwards is not fought by the effect.
    */
   const wasOfflineDirectRef = useRef(false)
 
@@ -137,49 +149,14 @@ export function RoomCodeCard({
   }, [code, onCopyFeedback])
 
   /**
-   * Choosing the no internet view starts the direct link the first time, so the
-   * QR can carry its code. Choosing online again is a view change only and never
-   * tears the direct engine down.
+   * Following the quiet link starts the direct link the first time, so the QR
+   * can carry its code. Returning is a view change only and never tears the
+   * direct engine down.
    */
-  const selectOffline = () => {
+  const openOfflineView = () => {
     setView('offline')
     if (!isOfflineDirect) onActivateOffline?.()
   }
-
-  const pairingToggle = (
-    <div
-      role="group"
-      aria-label={PAIRING_MODE_GROUP_LABEL}
-      className="relative flex w-full max-w-[300px] items-center gap-1 rounded-full bg-brand-surface/80 p-1"
-    >
-      <button
-        type="button"
-        aria-pressed={!isOfflineView}
-        onClick={() => setView('online')}
-        className={cn(
-          'inline-flex min-h-[44px] flex-1 items-center justify-center rounded-full px-3 text-xs font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-cobalt',
-          isOfflineView
-            ? 'text-brand-ink-muted hover:bg-brand-surface'
-            : 'bg-brand-lime text-brand-ink shadow-soft',
-        )}
-      >
-        {PAIRING_MODE_ONLINE_LABEL}
-      </button>
-      <button
-        type="button"
-        aria-pressed={isOfflineView}
-        onClick={selectOffline}
-        className={cn(
-          'inline-flex min-h-[44px] flex-1 items-center justify-center rounded-full px-3 text-xs font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-cobalt',
-          isOfflineView
-            ? 'bg-brand-lime text-brand-ink shadow-soft'
-            : 'text-brand-ink-muted hover:bg-brand-surface',
-        )}
-      >
-        {PAIRING_MODE_OFFLINE_LABEL}
-      </button>
-    </div>
-  )
 
   return (
     <section
@@ -200,8 +177,6 @@ export function RoomCodeCard({
           {scanCardHelper(deviceType)}
         </p>
       </div>
-
-      {pairingToggle}
 
       {lanOptions.length > 1 ? (
         <div
@@ -232,39 +207,74 @@ export function RoomCodeCard({
         </div>
       ) : null}
 
-      {/*
-        One square surface panel for both views, so switching or waiting for the
-        direct link code never resizes the card. The offline symbol is width
-        bound and shrinks on a narrow screen instead of overflowing, and the
-        preparing line holds the same panel rather than an empty box. The short
-        code note under the offline panel is one line of small type, so the
-        compact controls below stay the only real height difference.
-      */}
-      <div className="relative flex w-full flex-col items-center gap-1.5">
+      {isOfflineView ? (
+        /*
+          The rescue path. One helper line, the dense invite QR, the short code
+          note, the compact reply controls and a quiet way back. Nothing here is
+          mounted while the normal card is showing, so the default card carries
+          no offline affordance beyond its single link.
+        */
         <div
-          className={cn(
-            'relative flex aspect-square w-full items-center justify-center rounded-[24px] bg-brand-surface p-3 shadow-soft',
-            isOfflineView ? 'max-w-[272px]' : 'max-w-[212px]',
-          )}
+          id="pairing-offline-view"
+          className="relative flex w-full flex-col items-center gap-4"
         >
-          {isOfflineView ? (
-            offlineInviteToken ? (
-              <QRCodeSVG
-                value={offlineJoinUrl}
-                size={248}
-                level="L"
-                marginSize={2}
-                bgColor="transparent"
-                fgColor="currentColor"
-                title={PAIRING_QR_TITLE_OFFLINE}
-                className="h-full w-full text-brand-ink"
-              />
-            ) : (
-              <p className="max-w-[20ch] text-center text-xs font-bold leading-snug text-brand-ink-muted">
-                {PAIRING_OFFLINE_PREPARING}
-              </p>
-            )
-          ) : (
+          <p className="text-[0.72rem] font-semibold leading-snug text-brand-ink-muted">
+            {PAIRING_OFFLINE_HELPER}
+          </p>
+
+          <div className="relative flex w-full flex-col items-center gap-1.5">
+            <div className="relative flex aspect-square w-full max-w-[272px] items-center justify-center rounded-[24px] bg-brand-surface p-3 shadow-soft">
+              {offlineInviteToken ? (
+                <QRCodeSVG
+                  value={offlineJoinUrl}
+                  size={248}
+                  level="L"
+                  marginSize={2}
+                  bgColor="transparent"
+                  fgColor="currentColor"
+                  title={PAIRING_QR_TITLE_OFFLINE}
+                  className="h-full w-full text-brand-ink"
+                />
+              ) : (
+                <p className="max-w-[20ch] text-center text-xs font-bold leading-snug text-brand-ink-muted">
+                  {PAIRING_OFFLINE_PREPARING}
+                </p>
+              )}
+            </div>
+
+            <p className="text-[0.66rem] font-bold uppercase leading-tight tracking-[0.08em] text-brand-ink/60">
+              {PAIRING_SHORT_CODE_NOTE}
+            </p>
+          </div>
+
+          <OfflineLinkCard
+            variant="inline"
+            mode="host-waiting"
+            token={offlineInviteToken}
+            inviteUrl={offlineJoinUrl}
+            onOpenReplyScanner={onOpenReplyScanner}
+            onAcceptReplyCode={onAcceptReplyCode}
+            onCopyFeedback={onCopyFeedback}
+            className="relative w-full"
+          />
+
+          <button
+            type="button"
+            onClick={() => setView('online')}
+            aria-expanded={isOfflineView}
+            aria-controls="pairing-online-view"
+            className={cn('relative', QUIET_LINK_CLASS)}
+          >
+            <span>{PAIRING_ONLINE_RETURN_CTA}</span>
+          </button>
+        </div>
+      ) : (
+        /*
+          The everyday card. The QR, the code row and copy only, with the offline
+          rescue path one quiet tap below the code.
+        */
+        <div id="pairing-online-view" className="relative flex w-full flex-col items-center gap-6">
+          <div className="relative flex aspect-square w-full max-w-[212px] items-center justify-center rounded-[24px] bg-brand-surface p-3 shadow-soft">
             <QRCodeSVG
               value={joinUrl}
               size={168}
@@ -275,45 +285,46 @@ export function RoomCodeCard({
               title={PAIRING_QR_TITLE_ONLINE}
               className="h-full w-full text-brand-ink"
             />
-          )}
-        </div>
+          </div>
 
-        {isOfflineView ? (
-          <p className="text-[0.66rem] font-bold uppercase leading-tight tracking-[0.08em] text-brand-ink/60">
-            {PAIRING_SHORT_CODE_NOTE}
-          </p>
-        ) : null}
-      </div>
+          <div className="relative flex w-full items-center justify-between gap-2 rounded-full bg-brand-surface py-2 pl-3 pr-2 shadow-soft sm:pl-4">
+            <span className="shrink-0 text-[0.58rem] font-bold uppercase tracking-[0.06em] text-brand-ink-muted sm:text-[0.7rem] sm:tracking-[0.1em] md:hidden lg:inline">
+              Or type code:
+            </span>
+            <span className="room-code min-w-0 flex-1 overflow-hidden text-ellipsis text-center text-[0.95rem] sm:text-[1.35rem] md:text-[1.05rem] lg:text-[1.1rem] xl:text-[1.2rem]">
+              <span aria-hidden="true">{spacedCode(code)}</span>
+              <span className="sr-only">Room code {code}</span>
+            </span>
+            <button
+              type="button"
+              onClick={() => {
+                void handleCopy()
+              }}
+              aria-label={copied ? 'Code copied' : 'Copy the room code'}
+              className={cn(
+                'flex h-11 w-11 shrink-0 items-center justify-center rounded-full transition-colors duration-200',
+                copied
+                  ? 'bg-brand-ink text-brand-lime'
+                  : 'bg-brand-cobalt text-white hover:bg-brand-cobalt-deep',
+              )}
+            >
+              {copied ? (
+                <Check size={18} strokeWidth={2} aria-hidden="true" />
+              ) : (
+                <Copy size={18} strokeWidth={2} aria-hidden="true" />
+              )}
+            </button>
+          </div>
 
-      {isOfflineView ? null : (
-        <div className="relative flex w-full items-center justify-between gap-2 rounded-full bg-brand-surface py-2 pl-3 pr-2 shadow-soft sm:pl-4">
-          <span className="shrink-0 text-[0.58rem] font-bold uppercase tracking-[0.06em] text-brand-ink-muted sm:text-[0.7rem] sm:tracking-[0.1em] md:hidden lg:inline">
-            Or type code:
-          </span>
-          <span
-            className="room-code min-w-0 flex-1 overflow-hidden text-ellipsis text-center text-[0.95rem] sm:text-[1.35rem] md:text-[1.05rem] lg:text-[1.1rem] xl:text-[1.2rem]"
-          >
-            <span aria-hidden="true">{spacedCode(code)}</span>
-            <span className="sr-only">Room code {code}</span>
-          </span>
           <button
             type="button"
-            onClick={() => {
-              void handleCopy()
-            }}
-            aria-label={copied ? 'Code copied' : 'Copy the room code'}
-            className={cn(
-              'flex h-11 w-11 shrink-0 items-center justify-center rounded-full transition-colors duration-200',
-              copied
-                ? 'bg-brand-ink text-brand-lime'
-                : 'bg-brand-cobalt text-white hover:bg-brand-cobalt-deep',
-            )}
+            onClick={openOfflineView}
+            aria-expanded={isOfflineView}
+            aria-controls="pairing-offline-view"
+            className={QUIET_LINK_CLASS}
           >
-            {copied ? (
-              <Check size={18} strokeWidth={2} aria-hidden="true" />
-            ) : (
-              <Copy size={18} strokeWidth={2} aria-hidden="true" />
-            )}
+            <Wifi size={12} strokeWidth={2} aria-hidden="true" className="shrink-0" />
+            <span>{PAIRING_OFFLINE_LINK_CTA}</span>
           </button>
         </div>
       )}
@@ -321,18 +332,6 @@ export function RoomCodeCard({
       <p aria-live="polite" className="sr-only">
         {copied ? 'Code copied. Ready to paste.' : ''}
       </p>
-
-      {isOfflineView ? (
-        <OfflineLinkCard
-          variant="inline"
-          mode="host-waiting"
-          token={offlineInviteToken}
-          onOpenReplyScanner={onOpenReplyScanner}
-          onAcceptReplyCode={onAcceptReplyCode}
-          onCopyFeedback={onCopyFeedback}
-          className="relative w-full"
-        />
-      ) : null}
     </section>
   )
 }

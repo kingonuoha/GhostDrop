@@ -32,10 +32,35 @@ export const CHANGELOG_SEEN_KEY = 'ghostdrop.last_seen_version'
 
 export const CHANGELOG_RELEASES: readonly ChangelogRelease[] = [
   {
+    version: '0.18',
+    dateTime: '26 Oct 2026, 9:10 PM',
+    headline: 'A calmer pairing card, a share button, and a clear word about your files.',
+    isCurrent: true,
+    items: [
+      {
+        category: 'feature',
+        title: 'Sound is still there',
+        description:
+          'The sound that links two screens now lives under More ways to link, so the code stays the first thing you see.',
+      },
+      {
+        category: 'feature',
+        title: 'Share the code from your phone',
+        description:
+          'You can now send the pairing code straight to your share sheet and pick how it travels.',
+      },
+      {
+        category: 'privacy',
+        title: 'Only the code travels',
+        description:
+          'Sharing sends the pairing code alone. Your files still go straight between your own screens over Wi-Fi.',
+      },
+    ],
+  },
+  {
     version: '0.17',
     dateTime: '26 Oct 2026, 7:40 PM',
     headline: 'A tiny code, a sound that links your screens, and one tap to share.',
-    isCurrent: true,
     items: [
       {
         category: 'speed',

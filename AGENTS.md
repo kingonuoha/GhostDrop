@@ -105,7 +105,7 @@ Agents keep full use of the shell for builds, tests, git, probes and read-only i
 
 ## 5. Versioning and GitHub Main-Branch Bump Rule (P0)
 
-1. **Current Baseline Version:** `0.17` (`v0.17`), synced in `web/package.json` (`"version": "0.17"`) and `APP_VERSION = '0.17'` in `web/src/lib/constants.ts`. Step 11 shipped 0.14, step 15 shipped 0.17 with the GD2 binary token and the acoustic pairing channel, and every batch since 0.14 added zero dependencies.
+1. **Current Baseline Version:** `0.18` (`v0.18`), synced in `web/package.json` (`"version": "0.18"`) and `APP_VERSION = '0.18'` in `web/src/lib/constants.ts`. Step 11 shipped 0.14, step 15 shipped 0.18 with the GD2 binary token and the acoustic pairing channel, and every batch since 0.14 added zero dependencies.
 2. **Navbar Display:** Render the baseline as small display text directly beside the `GhostDrop` wordmark in `<Logo />` on both Desktop (`DesktopTopPillBar`) and Mobile (`MobileStatusHeader`). The version is read from `APP_VERSION`, never hardcoded in a component.
 3. **Version Anatomy (`<whole>.<decimal>`):**
    - **Whole number (`X` in `X.Y`):** Increments whenever a **new dependency** is installed in `web/package.json` (and resets `.Y` to `.0`, or `.1` for the first task in that major version).

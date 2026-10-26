@@ -1,22 +1,27 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react'
 import { QRCodeSVG } from 'qrcode.react'
-import { Check, ClipboardPaste, Copy, Mic, MicOff, Share2, Volume2, Wifi } from 'lucide-react'
+import { Check, ChevronDown, ClipboardPaste, Copy, Mic, MicOff, Share2, Volume2, Wifi } from 'lucide-react'
 import { cn } from '../../lib/cn'
 import type { RoomFeedbackKey } from '../../lib/copyDeck'
 import {
   OFFLINE_BADGE_LABEL,
   OFFLINE_COPY_INVITE_SHORT_CTA,
+  OFFLINE_FEWER_WAYS_CTA,
   OFFLINE_GUEST_REPLY_BODY,
   OFFLINE_GUEST_REPLY_TITLE,
   OFFLINE_HOST_STEP_BODY,
   OFFLINE_HOST_STEP_TITLE,
+  OFFLINE_MORE_WAYS_CTA,
   OFFLINE_PASTE_CTA,
   OFFLINE_PASTE_LABEL,
   OFFLINE_PASTE_ROW_PLACEHOLDER,
   OFFLINE_SCAN_REPLY_CTA,
   OFFLINE_SHARE_CODE_CTA,
+  OFFLINE_SHARE_INVITE_CTA,
+  OFFLINE_SHARE_NOTE,
   OFFLINE_SOUND_LISTENING_LABEL,
   OFFLINE_SOUND_LISTEN_CTA,
+  OFFLINE_SOUND_NOTE,
   OFFLINE_SOUND_SENDING_LABEL,
   OFFLINE_SOUND_SEND_CTA,
   OFFLINE_SOUND_SENT_LABEL,
@@ -94,6 +99,12 @@ export interface OfflineLinkCardProps {
   /** Triggered when copy succeeds or fails so the page toast announces it. */
   onCopyFeedback?: (key: RoomFeedbackKey) => void
   /**
+   * Pairing link for the invite share sheet. The host passes its
+   * `offlineJoinUrl`, so a shared invite arrives as a tappable link. Without it
+   * the human readable token is shared instead.
+   */
+  inviteUrl?: string
+  /**
    * `panel` is the standalone card used on the workspace and mobile pages.
    * `inline` drops the badge, heading, body and outer padding, keeping only the
    * reply row, the paste pill and the copy action for use directly under a
@@ -113,6 +124,8 @@ const LISTEN_TIMEOUT_MS = 20000
 const COPY_CODE_LABEL = 'Copy Code'
 /** Share sheet title, so a shared reply arrives with a recognisable name. */
 const SHARE_TITLE = 'GhostDrop reply code'
+/** Invite share title, matching the pairing copy. */
+const SHARE_INVITE_TITLE = 'GhostDrop invite'
 
 type SoundState = 'idle' | 'sending' | 'sent'
 
@@ -121,11 +134,11 @@ type SoundState = 'idle' | 'sending' | 'sent'
  * Source: docs/02-brand-persona-and-copy.md section 2.2, decisions.md D-016 item 2,
  * docs/tasks/step-15-v017-offline-codec-and-acoustic/brief.md section 5.
  *
- * Guest side shows the reply QR its other screen reads, plus a sound shortcut for
- * a screen with no camera. Host side is a compact pair of rows that fits inside
- * the pairing card and carries no QR of its own, because the host QR already
- * lives there. Sound is always a shortcut: the camera and paste paths stay
- * mounted while a burst plays or the microphone is open.
+ * Guest side leads with the reply QR its other screen reads. Host side is a
+ * compact stack of rows that fits inside the pairing card and carries no QR of
+ * its own, because the host QR already lives there. Sound and the operating
+ * system share sheet sit behind a closed `More ways to link` disclosure, so the
+ * camera and paste paths are what a reader meets first.
  */
 export function OfflineLinkCard({
   mode,
@@ -133,6 +146,7 @@ export function OfflineLinkCard({
   onOpenReplyScanner,
   onAcceptReplyCode,
   onCopyFeedback,
+  inviteUrl,
   variant = 'panel',
   className,
 }: OfflineLinkCardProps) {
@@ -141,7 +155,9 @@ export function OfflineLinkCard({
   const [listening, setListening] = useState(false)
   const [pasteValue, setPasteValue] = useState('')
   const [accepting, setAccepting] = useState(false)
+  const [moreOpen, setMoreOpen] = useState(false)
   const pasteId = useId()
+  const moreId = `offline-more-${useId().replace(/[^a-zA-Z0-9_-]/g, '')}`
 
   const mountedRef = useRef(true)
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -160,6 +176,9 @@ export function OfflineLinkCard({
    * nobody can hear would promise a link that never happens.
    */
   const canPlaySound = typeof window !== 'undefined' && window.isSecureContext === true
+  /** True where the operating system can take over a plain text share. */
+  const shareSupported =
+    typeof navigator !== 'undefined' && typeof navigator.share === 'function'
 
   /**
    * Releases the microphone and the pending 20 second timer. Every exit path
@@ -203,11 +222,14 @@ export function OfflineLinkCard({
     }
   }, [stopListening])
 
-  // A fresh token means a fresh handshake, so the tick and the sound state
-  // reset with it.
+  // A fresh token means a fresh handshake, so the tick, the sound state and the
+  // disclosure all reset with it. A panel that closes on its own must not leave
+  // the microphone open behind it.
   useEffect(() => {
     setCopied(false)
     setSoundState('idle')
+    setMoreOpen(false)
+    stopListening()
     if (copiedTimerRef.current !== null) {
       clearTimeout(copiedTimerRef.current)
       copiedTimerRef.current = null
@@ -216,7 +238,7 @@ export function OfflineLinkCard({
       clearTimeout(soundTimerRef.current)
       soundTimerRef.current = null
     }
-  }, [token])
+  }, [stopListening, token])
 
   const handleCopy = useCallback(async () => {
     if (!token) {
@@ -251,6 +273,35 @@ export function OfflineLinkCard({
       // The copy pill above stays one tap away, so nothing is lost.
     }
   }, [token])
+
+  /**
+   * Hands the invite to the operating system share sheet, so a phone can move it
+   * to another screen with AirDrop, Quick Share or Nearby Share, all of which
+   * work with no internet. The link is preferred because it opens itself on the
+   * other screen; the readable code is the fallback.
+   */
+  const handleShareInvite = useCallback(async () => {
+    if (typeof navigator === 'undefined' || typeof navigator.share !== 'function') return
+    const text = inviteUrl ?? (token ? humanReadable(token) : '')
+    if (!text) return
+
+    try {
+      await navigator.share({ title: SHARE_INVITE_TITLE, text })
+    } catch {
+      // A closed sheet leaves the copy action on screen, so nothing is lost.
+    }
+  }, [inviteUrl, token])
+
+  /**
+   * Opens and closes the secondary ways to link. Closing while the microphone is
+   * open releases it at once, with no error. A burst already playing is left
+   * alone: its sent state lives in the live region outside this panel.
+   */
+  const toggleMore = useCallback(() => {
+    const next = !moreOpen
+    setMoreOpen(next)
+    if (!next) stopListening()
+  }, [moreOpen, stopListening])
 
   /**
    * Plays the reply as one sound burst. The QR and the copy pills keep their
@@ -374,8 +425,6 @@ export function OfflineLinkCard({
         : soundState === 'sent'
           ? OFFLINE_SOUND_SENT_LABEL
           : OFFLINE_SOUND_SEND_CTA
-    const canShare =
-      typeof navigator !== 'undefined' && typeof navigator.share === 'function'
 
     return (
       <section
@@ -396,29 +445,6 @@ export function OfflineLinkCard({
             {OFFLINE_GUEST_REPLY_BODY}
           </p>
         </div>
-
-        {/*
-          Sound sits above the QR so a phone with a clear speaker is one tap from
-          finishing. It only exists where a secure context can actually play it.
-          The pill stays enabled while sending so it never leaves the tab order:
-          the internal `sending` guard absorbs a second tap, and the label itself
-          carries the state.
-        */}
-        {canPlaySound ? (
-          <NestedPillButton
-            variant="lime-on-cobalt"
-            size="md"
-            icon={Volume2}
-            onClick={() => {
-              void handleSendSound()
-            }}
-            aria-busy={soundState === 'sending'}
-            aria-label={soundLabel}
-            className="relative w-full"
-          >
-            {soundLabel}
-          </NestedPillButton>
-        ) : null}
 
         {/*
           Measured token lengths across the offline flow: a GD2 reply lands near
@@ -444,42 +470,100 @@ export function OfflineLinkCard({
 
         {/* Two equal pills at 44px. At 360 the guest card inner width is 288,
             so each pill gets 140 and neither label can wrap or overflow. */}
-        <div className="relative flex w-full items-stretch gap-2">
-          <button
-            type="button"
-            onClick={() => {
-              void handleCopy()
-            }}
-            aria-label={copied ? 'Reply code copied' : 'Copy the reply code'}
-            className={cn(
-              'inline-flex min-h-[44px] min-w-0 flex-1 items-center justify-center gap-2 rounded-full px-3 text-sm font-bold transition-colors duration-200 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-cobalt focus-visible:ring-offset-2',
-              copied
-                ? 'bg-brand-ink text-brand-lime'
-                : 'bg-brand-surface text-brand-ink hover:bg-brand-stone',
-            )}
-          >
-            {copied ? (
-              <Check size={16} strokeWidth={2} aria-hidden="true" className="shrink-0" />
-            ) : (
-              <Copy size={16} strokeWidth={2} aria-hidden="true" className="shrink-0" />
-            )}
-            <span className="truncate">{COPY_CODE_LABEL}</span>
-          </button>
-
-          {canShare ? (
+        <div className="relative flex w-full flex-col items-center gap-1.5">
+          <div className="flex w-full items-stretch gap-2">
             <button
               type="button"
               onClick={() => {
-                void handleShare()
+                void handleCopy()
               }}
-              aria-label="Share the reply code"
-              className="inline-flex min-h-[44px] min-w-0 flex-1 items-center justify-center gap-2 rounded-full bg-brand-surface px-3 text-sm font-bold text-brand-ink transition-colors duration-200 hover:bg-brand-stone active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-cobalt focus-visible:ring-offset-2"
+              aria-label={copied ? 'Reply code copied' : 'Copy the reply code'}
+              className={cn(
+                'inline-flex min-h-[44px] min-w-0 flex-1 items-center justify-center gap-2 rounded-full px-3 text-sm font-bold transition-colors duration-200 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-cobalt focus-visible:ring-offset-2',
+                copied
+                  ? 'bg-brand-ink text-brand-lime'
+                  : 'bg-brand-surface text-brand-ink hover:bg-brand-stone',
+              )}
             >
-              <Share2 size={16} strokeWidth={2} aria-hidden="true" className="shrink-0" />
-              <span className="truncate">{OFFLINE_SHARE_CODE_CTA}</span>
+              {copied ? (
+                <Check size={16} strokeWidth={2} aria-hidden="true" className="shrink-0" />
+              ) : (
+                <Copy size={16} strokeWidth={2} aria-hidden="true" className="shrink-0" />
+              )}
+              <span className="truncate">{COPY_CODE_LABEL}</span>
             </button>
+
+            {shareSupported ? (
+              <button
+                type="button"
+                onClick={() => {
+                  void handleShare()
+                }}
+                aria-label="Share the reply code"
+                className="inline-flex min-h-[44px] min-w-0 flex-1 items-center justify-center gap-2 rounded-full bg-brand-surface px-3 text-sm font-bold text-brand-ink transition-colors duration-200 hover:bg-brand-stone active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-cobalt focus-visible:ring-offset-2"
+              >
+                <Share2 size={16} strokeWidth={2} aria-hidden="true" className="shrink-0" />
+                <span className="truncate">{OFFLINE_SHARE_CODE_CTA}</span>
+              </button>
+            ) : null}
+          </div>
+
+          {/* Kept outside the disclosure: the reader must learn that only the
+              code travels before they tap anything. */}
+          {shareSupported ? (
+            <p className="text-[11px] font-semibold leading-snug text-brand-ink/60">
+              {OFFLINE_SHARE_NOTE}
+            </p>
           ) : null}
         </div>
+
+        {/*
+          Sound is demoted behind a quiet text disclosure, per
+          plans/offline-one-scan-pairing-plan.md section 9. The QR leads again,
+          and a phone with no camera on the other side can still find the burst.
+        */}
+        {canPlaySound ? (
+          <div className="relative w-full text-center">
+            <button
+              type="button"
+              onClick={toggleMore}
+              aria-expanded={moreOpen}
+              aria-controls={moreId}
+              className="inline-flex min-h-[44px] items-center justify-center gap-1 rounded-full px-2 text-xs font-bold text-brand-ink/70 transition-colors duration-200 hover:text-brand-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-cobalt focus-visible:ring-offset-2"
+            >
+              <span>{moreOpen ? OFFLINE_FEWER_WAYS_CTA : OFFLINE_MORE_WAYS_CTA}</span>
+              <ChevronDown
+                size={14}
+                strokeWidth={2}
+                aria-hidden="true"
+                className={cn('transition-transform duration-200', moreOpen && 'rotate-180')}
+              />
+            </button>
+
+            <div id={moreId}>
+              {moreOpen ? (
+                <div className="mt-1 flex flex-col items-center gap-2">
+                  <NestedPillButton
+                    variant="lime-on-cobalt"
+                    size="md"
+                    icon={Volume2}
+                    onClick={() => {
+                      void handleSendSound()
+                    }}
+                    aria-busy={soundState === 'sending'}
+                    aria-label={soundLabel}
+                    className="w-full"
+                  >
+                    {soundLabel}
+                  </NestedPillButton>
+                  <p className="text-[11px] font-semibold leading-snug text-brand-ink/60">
+                    {OFFLINE_SOUND_NOTE}
+                  </p>
+                </div>
+              ) : null}
+            </div>
+          </div>
+        ) : null}
 
         <p aria-live="polite" className="sr-only">
           {copied ? 'Reply code copied. Ready to paste.' : ''}
@@ -494,7 +578,7 @@ export function OfflineLinkCard({
       type="button"
       onClick={onOpenReplyScanner}
       aria-label={OFFLINE_SCAN_REPLY_CTA}
-      className="inline-flex min-h-[44px] min-w-0 flex-1 items-center justify-center rounded-full bg-brand-cobalt px-2 text-[0.72rem] font-bold leading-tight text-white transition-colors duration-200 hover:bg-brand-cobalt-deep active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-ink focus-visible:ring-offset-2"
+      className="inline-flex min-h-[44px] w-full min-w-0 items-center justify-center rounded-full bg-brand-cobalt px-4 text-sm font-bold leading-tight text-white transition-colors duration-200 hover:bg-brand-cobalt-deep active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-ink focus-visible:ring-offset-2"
     >
       <span className="truncate">{OFFLINE_SCAN_REPLY_CTA}</span>
     </button>
@@ -519,16 +603,16 @@ export function OfflineLinkCard({
       aria-busy={listening}
       aria-label={listening ? OFFLINE_SOUND_STOP_CTA : OFFLINE_SOUND_LISTEN_CTA}
       className={cn(
-        'inline-flex min-h-[44px] min-w-0 flex-1 items-center justify-center gap-1.5 rounded-full px-1.5 text-[0.72rem] font-bold leading-tight transition-colors duration-200 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-cobalt focus-visible:ring-offset-2',
+        'inline-flex min-h-[44px] w-full items-center justify-center gap-1.5 rounded-full px-4 text-sm font-bold leading-tight transition-colors duration-200 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-cobalt focus-visible:ring-offset-2',
         listening
           ? 'bg-brand-ink text-brand-lime'
           : 'bg-brand-surface text-brand-ink hover:bg-brand-stone',
       )}
     >
       {listening ? (
-        <MicOff size={14} strokeWidth={2} aria-hidden="true" className="shrink-0" />
+        <MicOff size={15} strokeWidth={2} aria-hidden="true" className="shrink-0" />
       ) : (
-        <Mic size={14} strokeWidth={2} aria-hidden="true" className="shrink-0" />
+        <Mic size={15} strokeWidth={2} aria-hidden="true" className="shrink-0" />
       )}
       <span className="truncate">
         {listening ? OFFLINE_SOUND_STOP_CTA : OFFLINE_SOUND_LISTEN_CTA}
@@ -590,42 +674,113 @@ export function OfflineLinkCard({
       disabled={!token}
       aria-label={copied ? 'Invite code copied' : 'Copy the invite code'}
       className={cn(
-        'inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-full px-3 text-xs font-bold transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-cobalt focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+        'inline-flex min-h-[44px] min-w-0 items-center justify-center gap-1.5 rounded-full px-2 text-xs font-bold transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-cobalt focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
         copied ? 'text-brand-forest' : 'text-brand-ink/70 hover:bg-brand-ink/5 hover:text-brand-ink',
       )}
     >
       {copied ? (
-        <Check size={14} strokeWidth={2} aria-hidden="true" />
+        <Check size={14} strokeWidth={2} aria-hidden="true" className="shrink-0" />
       ) : (
-        <Copy size={14} strokeWidth={2} aria-hidden="true" />
+        <Copy size={14} strokeWidth={2} aria-hidden="true" className="shrink-0" />
       )}
-      <span>{copied ? 'Copied' : OFFLINE_COPY_INVITE_SHORT_CTA}</span>
+      <span className="truncate">{copied ? 'Copied' : OFFLINE_COPY_INVITE_SHORT_CTA}</span>
     </button>
   )
 
+  const shareInviteButton = shareSupported ? (
+    <button
+      type="button"
+      onClick={() => {
+        void handleShareInvite()
+      }}
+      disabled={!token && !inviteUrl}
+      aria-label={OFFLINE_SHARE_INVITE_CTA}
+      className="inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-full bg-brand-surface px-4 text-sm font-bold text-brand-ink transition-colors duration-200 hover:bg-brand-stone active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-cobalt focus-visible:ring-offset-2"
+    >
+      <Share2 size={16} strokeWidth={2} aria-hidden="true" className="shrink-0" />
+      <span className="truncate">{OFFLINE_SHARE_INVITE_CTA}</span>
+    </button>
+  ) : null
+
+  const hasMoreWays = soundSupported || shareSupported
+
+  const moreWaysToggle = hasMoreWays ? (
+    <button
+      type="button"
+      onClick={toggleMore}
+      aria-expanded={moreOpen}
+      aria-controls={moreId}
+      className="inline-flex min-h-[44px] min-w-0 items-center justify-center gap-1 rounded-full px-2 text-xs font-bold text-brand-ink/70 transition-colors duration-200 hover:text-brand-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-cobalt focus-visible:ring-offset-2"
+    >
+      <span className="truncate">
+        {moreOpen ? OFFLINE_FEWER_WAYS_CTA : OFFLINE_MORE_WAYS_CTA}
+      </span>
+      <ChevronDown
+        size={14}
+        strokeWidth={2}
+        aria-hidden="true"
+        className={cn('transition-transform duration-200', moreOpen && 'rotate-180')}
+      />
+    </button>
+  ) : null
+
+  /*
+    Secondary ways to link, closed by default. Sound and the operating system
+    share sheet are both demoted here, so the visible card is the scan, the paste
+    row and the copy action. Source: plans/offline-one-scan-pairing-plan.md
+    section 9 recommendation 2 and 4.
+  */
+  const moreWaysPanel = hasMoreWays ? (
+    <div id={moreId}>
+      {moreOpen ? (
+        <div className="mt-1 flex flex-col gap-2.5 rounded-[18px] bg-brand-ink/5 p-3">
+          {soundSupported ? (
+            <div className="flex flex-col items-stretch gap-1">
+              {listenButton}
+              <p
+                aria-live="polite"
+                className={cn(
+                  'text-[11px] font-semibold leading-snug text-brand-ink',
+                  !listening && 'sr-only',
+                )}
+              >
+                {listening ? OFFLINE_SOUND_LISTENING_LABEL : ''}
+              </p>
+              <p className="text-[11px] font-semibold leading-snug text-brand-ink/60">
+                {OFFLINE_SOUND_NOTE}
+              </p>
+            </div>
+          ) : null}
+
+          {shareInviteButton ? (
+            <div className="flex flex-col items-stretch gap-1">
+              {shareInviteButton}
+              <p className="text-[11px] font-semibold leading-snug text-brand-ink/60">
+                {OFFLINE_SHARE_NOTE}
+              </p>
+            </div>
+          ) : null}
+        </div>
+      ) : null}
+    </div>
+  ) : null
+
   if (variant === 'inline') {
     // Sits directly under the pairing QR, so it adds no card chrome and never
-    // repeats the heading or badge of the card above it.
+    // repeats the heading or badge of the card above it. The copy action and the
+    // disclosure share one 44px row, so the closed card keeps its old height.
     return (
       <div className={cn('relative w-full text-left text-brand-ink', className)}>
-        <div className="flex flex-wrap items-stretch gap-2">
-          {scanButton}
-          {listenButton}
-        </div>
-
-        <p
-          aria-live="polite"
-          className={cn(
-            'mt-1.5 font-semibold text-brand-ink/70',
-            listening ? 'text-[0.7rem]' : 'sr-only',
-          )}
-        >
-          {listening ? OFFLINE_SOUND_LISTENING_LABEL : ''}
-        </p>
+        <div className="flex flex-wrap items-stretch gap-2">{scanButton}</div>
 
         <div className="mt-2">{pasteRow}</div>
 
-        <div className="mt-1 flex justify-center">{copyInviteAction}</div>
+        <div className="mt-1 flex flex-nowrap items-center justify-center gap-x-2">
+          {copyInviteAction}
+          {moreWaysToggle}
+        </div>
+
+        {moreWaysPanel}
       </div>
     )
   }
@@ -648,21 +803,16 @@ export function OfflineLinkCard({
       </h3>
       <p className="mt-1.5 text-sm font-semibold text-brand-ink/75">{OFFLINE_HOST_STEP_BODY}</p>
 
-      <div className="mt-3.5 flex flex-wrap items-stretch gap-2">
-        {scanButton}
-        {listenButton}
-      </div>
-
-      <p
-        aria-live="polite"
-        className={cn('mt-1.5 font-semibold text-brand-ink/70', listening ? 'text-[0.7rem]' : 'sr-only')}
-      >
-        {listening ? OFFLINE_SOUND_LISTENING_LABEL : ''}
-      </p>
+      <div className="mt-3.5 flex flex-wrap items-stretch gap-2">{scanButton}</div>
 
       <div className="mt-2">{pasteRow}</div>
 
-      <div className="mt-1 flex justify-center">{copyInviteAction}</div>
+      <div className="mt-1 flex flex-nowrap items-center justify-center gap-x-2">
+        {copyInviteAction}
+        {moreWaysToggle}
+      </div>
+
+      {moreWaysPanel}
 
       <p aria-live="polite" className="sr-only">
         {copied ? 'Offline code copied. Send it to your other screen.' : ''}
