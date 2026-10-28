@@ -10,6 +10,7 @@
 7. `docs/05-motion-spec.md` (Self-Drawing SVG Squiggle Line and Reduced-Motion Rules)
 8. `docs/06-protocol-and-tech-spec.md` (WebRTC 16KB Chunking, PeerJS Multi-Peer Room, PWA Share Target)
 9. `docs/07-build-order.md` and `docs/08-qa-checklist.md` (Sequential Gates and QA Verification)
+10. `docs/09-large-file-throughput-and-media-transfer-spec.md` (Large File WebRTC Throughput Optimization Spec)
 
 ---
 
@@ -64,6 +65,7 @@ GhostDrop/
 │   ├── 06-protocol-and-tech-spec.md
 │   ├── 07-build-order.md
 │   ├── 08-qa-checklist.md
+│   ├── 09-large-file-throughput-and-media-transfer-spec.md
 │   ├── design/                    # Mirror design export folder inside docs/
 │   ├── tasks/                     # Agent task briefs and QA reports
 │   └── tokens/                    # tokens.json and tokens.css
