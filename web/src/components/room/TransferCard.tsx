@@ -20,8 +20,6 @@ import { canNativeShare } from '../../lib/device'
 import { formatFileSize, formatTimeLeft, shortenText } from '../../lib/format'
 import { NestedPillButton } from '../brand/NestedPillButton'
 import { SquiggleCardBg } from '../brand/SquiggleCardBg'
-import { MotionPulse } from '../rive/MotionPulse'
-import { RiveCanvas } from '../rive/RiveCanvas'
 import { Numerals } from '../ui/Numerals'
 
 /** Card skins from docs/design.md section 3, rotated so no two notes match. */
@@ -201,23 +199,10 @@ export function TransferCard({
           </span>
         </div>
 
-        {/*
-          The transfer moment. The parcel lifts off when this row appears and
-          again when the last byte lands, so the same canvas tells the whole
-          story. It is decorative only: the bar above carries the progress and
-          the accessibility label, and nothing here can slow a byte down.
-        */}
-        <div className="relative flex items-center gap-3">
-          <RiveCanvas target="teleport" className="pointer-events-none h-12 w-12 shrink-0">
-            <MotionPulse input="launch" pulse={percent >= 100 ? 2 : 1} />
-          </RiveCanvas>
-          <div className="min-w-0 flex-1">
-            <ProgressSquiggle
-              value={progress}
-              label={isReceiving ? 'Receiving progress' : 'Sending progress'}
-            />
-          </div>
-        </div>
+        <ProgressSquiggle
+          value={progress}
+          label={isReceiving ? 'Receiving progress' : 'Sending progress'}
+        />
 
         <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1 text-xs font-semibold text-brand-ink-muted">
           <span className="min-w-0 break-words">
@@ -408,7 +393,6 @@ export function TransferCard({
             variant="lime-on-cobalt"
             size="sm"
             icon={copied ? Check : Copy}
-            motionState={copied ? 'success' : 'idle'}
             onClick={() => {
               onCopy(item.id)
               setCopied(true)
@@ -438,7 +422,6 @@ export function TransferCard({
             variant={isImage ? 'ink' : 'lime-on-cobalt'}
             size="sm"
             icon={saved ? Check : Download}
-            motionState={saved ? 'success' : 'idle'}
             onClick={() => {
               onSave(item.id)
               setSaved(true)

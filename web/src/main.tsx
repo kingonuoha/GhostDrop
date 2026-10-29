@@ -2,16 +2,6 @@ import { createRoot } from 'react-dom/client'
 import App from './App'
 import './index.css'
 
-/**
- * Pin the self hosted Rive runtime asset into the build.
- *
- * Vite only publishes a `?url` import when the module holding it is part of the
- * graph. The Rive canvas itself stays lazy, so without this reference the WASM
- * would be missing from `dist/` and the service worker could not precache it,
- * which is exactly what breaks the offline promise for motion.
- */
-import './lib/rive/wasmUrl'
-
 const rootElement = document.getElementById('root')
 
 if (!rootElement) {

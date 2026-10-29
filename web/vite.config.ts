@@ -133,14 +133,7 @@ export default defineConfig(({ command, mode }) => {
           },
         },
         injectManifest: {
-          // `riv` is the compiled Rive animation in `public/rive/` and `wasm` is
-          // the self hosted Rive runtime that Vite emits as a hashed asset from
-          // `@rive-app/canvas/rive.wasm?url`. Both must be precached, otherwise
-          // the motion layer disappears the moment the app goes offline.
-          globPatterns: ['**/*.{js,css,html,riv,wasm}'],
-          // The Rive WASM is 2.18 MB, just above Workbox's 2 MiB default, so it
-          // would be skipped and dropped from the precache manifest.
-          maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
+          globPatterns: ['**/*.{js,css,html}'],
         },
       }),
     ],

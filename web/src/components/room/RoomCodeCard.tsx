@@ -17,8 +17,6 @@ import { scanCardHelper, scanCardTitle } from '../../lib/device'
 import type { LanCandidate } from '../../lib/lanInfo'
 import { OrbBadge } from '../brand/OrbBadge'
 import { SquiggleCardBg } from '../brand/SquiggleCardBg'
-import { MotionPulse } from '../rive/MotionPulse'
-import { RiveCanvas } from '../rive/RiveCanvas'
 import { OfflineLinkCard } from './OfflineLinkCard'
 
 /** Single line, letter spaced room code that can never wrap. */
@@ -75,8 +73,6 @@ type RoomCodeCardProps = {
   onAcceptReplyCode?: (raw: string) => boolean | Promise<boolean>
   /** Switches this room to the direct link without waiting for a timeout. */
   onActivateOffline?: () => void
-  /** Live linked screen count, so the pairing frame can celebrate a join. */
-  peerCount?: number
 }
 
 /**
@@ -107,24 +103,10 @@ export function RoomCodeCard({
   onOpenReplyScanner,
   onAcceptReplyCode,
   onActivateOffline,
-  peerCount = 0,
 }: RoomCodeCardProps) {
   const [view, setView] = useState<PairingView>('online')
   const [copied, setCopied] = useState(false)
-  const [connectPulse, setConnectPulse] = useState(0)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const wasLinkedRef = useRef(peerCount > 0)
-
-  /**
-   * One pulse per join. The frame's `connect` state machine starts from idle, so
-   * a second screen arriving later celebrates on its own rather than replaying
-   * a queue. Source: docs/tasks/rive-motion/brief.md, QR frame wiring.
-   */
-  useEffect(() => {
-    const isLinked = peerCount > 0
-    if (isLinked && !wasLinkedRef.current) setConnectPulse((pulse) => pulse + 1)
-    wasLinkedRef.current = isLinked
-  }, [peerCount])
 
   useEffect(() => {
     return () => {
@@ -292,39 +274,17 @@ export function RoomCodeCard({
           rescue path one quiet tap below the code.
         */
         <div id="pairing-online-view" className="relative flex w-full flex-col items-center gap-6">
-          {/*
-            The motion frame is the card around the code, and the real code is a
-            crisp DOM layer centred on top of it. Nothing is ever painted over
-            the SVG, so cheap cameras still read it first time. The plate keeps
-            the quiet zone pure white on top of the frame's warm stone.
-          */}
-          <div className="relative mx-auto flex aspect-square w-[288px] max-w-full items-center justify-center">
-            <RiveCanvas
-              target="qr"
-              className="pointer-events-none absolute inset-0 h-full w-full"
-            >
-              <MotionPulse input="connect" pulse={connectPulse} />
-            </RiveCanvas>
-
-            {/*
-              288 CSS px is a 1.2 scale of the 240 artboard, so the 200 unit
-              ring paints a 120 px radius. The 160 px plate has a 113 px half
-              diagonal, which stays inside the ring with room to spare. The code
-              is a plain DOM SVG on plain white: no filter, no opacity and no
-              transform ever touches it.
-            */}
-            <div className="relative h-[160px] w-[160px] bg-brand-surface">
-              <QRCodeSVG
-                value={joinUrl}
-                size={160}
-                level="M"
-                marginSize={2}
-                bgColor="transparent"
-                fgColor="currentColor"
-                title={PAIRING_QR_TITLE_ONLINE}
-                className="h-full w-full text-brand-ink"
-              />
-            </div>
+          <div className="relative flex aspect-square w-full max-w-[212px] items-center justify-center rounded-[24px] bg-brand-surface p-3 shadow-soft">
+            <QRCodeSVG
+              value={joinUrl}
+              size={168}
+              level="M"
+              marginSize={2}
+              bgColor="transparent"
+              fgColor="currentColor"
+              title={PAIRING_QR_TITLE_ONLINE}
+              className="h-full w-full text-brand-ink"
+            />
           </div>
 
           <div className="relative flex w-full items-center justify-between gap-2 rounded-full bg-brand-surface py-2 pl-3 pr-2 shadow-soft sm:pl-4">
