@@ -38,6 +38,8 @@ import {
 } from '../../lib/p2p'
 import { ROOM_CODE_LENGTH } from '../../types/protocol'
 import { NestedPillButton } from '../brand/NestedPillButton'
+import { MotionPulse } from '../rive/MotionPulse'
+import { RiveCanvas } from '../rive/RiveCanvas'
 import { useGhostRoomContext } from '../shell/GhostRoomProvider'
 import type { GhostRoomContextValue } from '../shell/GhostRoomProvider'
 
@@ -239,6 +241,16 @@ export function QrScannerModal({
   const [torchAvailable, setTorchAvailable] = useState(false)
   const [torchOn, setTorchOn] = useState(false)
   const [captureStatus, setCaptureStatus] = useState<string | null>(null)
+  const [scanErrorPulse, setScanErrorPulse] = useState(0)
+
+  /**
+   * One pulse per failed read, so the frame's `error` shake is a single bounce
+   * rather than a loop. Missed photo, refused code and refused camera all land
+   * here, because every one of them is the same friendly retry moment.
+   */
+  const flagScanError = useCallback(() => {
+    setScanErrorPulse((pulse) => pulse + 1)
+  }, [])
 
   /** True when this browser can open a live preview on this origin. */
   const canUseLiveCamera =
@@ -277,6 +289,7 @@ export function QrScannerModal({
           if (mountedRef.current) {
             if (isReplyMode) setReplyError(true)
             else setCaptureStatus(OFFLINE_MISS_MESSAGE)
+            flagScanError()
           }
           restartCameraRef.current()
           return false
@@ -301,7 +314,7 @@ export function QrScannerModal({
       settledRef.current = false
       return false
     },
-    [isReplyMode, onAcceptOfflineToken, onClose, room],
+    [flagScanError, isReplyMode, onAcceptOfflineToken, onClose, room],
   )
 
   const acceptRef = useRef(submitPayload)
@@ -515,6 +528,11 @@ export function QrScannerModal({
     }
   }, [requestLiveCamera])
 
+  // A refused camera is the same friendly retry moment, so the frame shakes once.
+  useEffect(() => {
+    if (cameraFailed) flagScanError()
+  }, [cameraFailed, flagScanError])
+
   /**
    * Focus trap, Escape, body scroll lock, focus restore and an inert page
    * behind the dialog so virtual cursor users stay inside it.
@@ -621,7 +639,8 @@ export function QrScannerModal({
       return
     }
     setCaptureStatus(isReplyMode ? OFFLINE_MISS_MESSAGE : CAPTURE_MISS_MESSAGE)
-  }, [isReplyMode])
+    flagScanError()
+  }, [flagScanError, isReplyMode])
 
   const toggleTorch = async () => {
     const track = streamRef.current?.getVideoTracks()[0]
@@ -648,6 +667,7 @@ export function QrScannerModal({
       if (!token) {
         if (isReplyMode) setReplyError(true)
         else setCodeError(true)
+        flagScanError()
         return
       }
 
@@ -656,7 +676,7 @@ export function QrScannerModal({
 
       await submitPayload({ roomCode: null, offlineToken: token })
     },
-    [isReplyMode, submitPayload],
+    [flagScanError, isReplyMode, submitPayload],
   )
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -671,6 +691,7 @@ export function QrScannerModal({
     const normalized = normalizeRoomCode(code)
     if (!isValidRoomCode(normalized)) {
       setCodeError(true)
+      flagScanError()
       return
     }
     void submitPayload({ roomCode: normalized, offlineToken: null })
@@ -781,6 +802,29 @@ export function QrScannerModal({
         </p>
 
         <div className="relative mt-4 aspect-square w-full overflow-hidden rounded-[28px] bg-brand-ink">
+          {/*
+            The pairing frame sits under the camera layer, so it fills the
+            viewfinder while the camera wakes up and is covered by the live
+            picture the moment it arrives. Nothing is painted above the camera
+            or the code being read.
+          */}
+          {cameraFailed ? null : (
+            <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+              {/*
+                Same sizing as the pairing card: 288 CSS px is a 1.2 scale of
+                the 240 artboard, so the whole 200 unit ring is visible instead
+                of hiding behind one edge. `max-w-full` keeps it inside the
+                viewfinder on a narrow screen.
+              */}
+              <RiveCanvas
+                target="qr"
+                className="aspect-square w-[288px] max-w-full"
+              >
+                <MotionPulse input="error" pulse={scanErrorPulse} />
+              </RiveCanvas>
+            </div>
+          )}
+
           <video
             ref={videoRef}
             playsInline

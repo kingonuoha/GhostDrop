@@ -1,0 +1,6 @@
+name: ghostdrop-motion
+output:
+  dir: ../web/public/rive
+logs:
+  file: build/rive.log
+  problems: build/problems.log

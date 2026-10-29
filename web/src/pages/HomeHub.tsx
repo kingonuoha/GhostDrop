@@ -120,6 +120,7 @@ export function HomeHub() {
           onActivateOffline={() => {
             void room.activateOfflineDirect()
           }}
+          peerCount={peers.length}
           className="md:col-span-5"
         />
 

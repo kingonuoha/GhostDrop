@@ -291,3 +291,21 @@
   5. The OS share sheet carries the pairing code only. The UI must state that only the code is shared and files travel over Wi-Fi. This applies to the guest `Share Code` and the host `Share invite` actions.
   6. Web Bluetooth is rejected for the PWA. It is central role only, cannot advertise, and has no iOS or Firefox support. Bluetooth pairing would require a native peripheral and is deferred to the native Phase 2 app, with files staying on WebRTC.
 - **Rationale:** Offline still has rough edges. The common path is one scan with internet, so the rescue path should be one tap away, not a permanent choice in the user's face. Sound and share stay available where they help without promising more than they deliver.
+
+---
+
+## D-024: Rive Is the Motion Layer, Authored as RML Text
+- **Date:** 2026-10-29
+- **Status:** LOCKED
+- **Scope:** `ghostdrop-motion/`, `web/public/rive/ghostdrop-motion.riv`, `web/src/lib/rive/`, `web/src/components/rive/`, `NestedPillButton.tsx`, `RoomCodeCard.tsx`, `QrScannerModal.tsx`, `TransferCard.tsx`, `PoofNotice.tsx`
+- **Decision:**
+  1. Interaction motion runs on `@rive-app/react-canvas` (`4.38.0`, Canvas2D renderer). The art is flat vector with no feathering or Rive Text, so the smaller runtime wins and the WebGL2 package is not used.
+  2. The artboards are authored as RML text in `ghostdrop-motion/` with the official Rive CLI and compiled to one file, `web/public/rive/ghostdrop-motion.riv`, holding `CtaPill`, `QrFrame`, `Teleport` and `Poof`. One file keeps the offline cache small and the trigger vocabulary shared.
+  3. Bounce comes from the artwork, not from code. Overshoot uses Elastic interpolators and Cubic easing inside the timelines. React only fires triggers.
+  4. Triggers are state machine inputs fired from the idle state and reset by exit time, `press` and `success` on `cta`, `connect` and `error` on `qr`, `launch` on `teleport`, `vanish` on `poof`. Data binding properties are the documented successor and the isolation lives in `useRiveTrigger.ts` and `motionContext.ts`, so migrating later touches two files.
+  5. The squiggly line stays SVG with `stroke-dashoffset` drawing. Rive must never animate the squiggle.
+  6. The QR stays a crisp DOM layer on a plain white plate. No canvas ever resamples or filters the code. Rive animates only the frame, ring, brackets and pulse around it.
+  7. The Rive WASM is self hosted and version pinned, `setWasmFallbackUrl(null)` and `setWasmThreadsUrl(null)` are both set, and the `.riv` plus the WASM are precached. Loading nothing from a CDN is a product promise, not an optimisation.
+  8. `prefers-reduced-motion` is honoured live through `matchMedia`, with no autoplay and one held frame.
+  9. The Rive runtime is a lazy chunk. It must never enter the first paint bundle, and `useRiveTrigger.ts` must never be imported by a light component.
+- **Rationale:** The brief asked for smooth, bouncy, morphing motion that survives offline and never compromises the wire protocol or the scannability of the QR. Authoring as text keeps the animation reviewable in git, and keeping the QR and the squiggle on their existing standards means the brand signatures stay honest.

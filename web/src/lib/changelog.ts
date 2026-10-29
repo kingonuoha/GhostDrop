@@ -32,10 +32,35 @@ export const CHANGELOG_SEEN_KEY = 'ghostdrop.last_seen_version'
 
 export const CHANGELOG_RELEASES: readonly ChangelogRelease[] = [
   {
+    version: '1.0',
+    dateTime: '29 Oct 2026, 12:22 AM',
+    headline: 'Buttons now bounce when you tap them, and the pairing card gently breathes while it waits.',
+    isCurrent: true,
+    items: [
+      {
+        category: 'feature',
+        title: 'Buttons that answer your tap',
+        description:
+          'The main button now dips under your finger and gives a small happy hop once the two screens are linked.',
+      },
+      {
+        category: 'feature',
+        title: 'A pairing card that feels alive',
+        description:
+          'The card around the pairing code slowly breathes while it waits, and gives a gentle nod when a screen joins.',
+      },
+      {
+        category: 'feature',
+        title: 'A little puff when things go',
+        description:
+          'Sent files get a quick playful pop on their way across, and a soft puff when their timer runs out.',
+      },
+    ],
+  },
+  {
     version: '0.18',
     dateTime: '26 Oct 2026, 9:10 PM',
     headline: 'A calmer pairing card, a share button, and a clear word about your files.',
-    isCurrent: true,
     items: [
       {
         category: 'feature',
